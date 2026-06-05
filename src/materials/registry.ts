@@ -1,0 +1,99 @@
+import type { ComponentType } from 'react'
+import InsertionSortMaterial from './data-structure/insertion-sort/InsertionSortMaterial'
+import BinaryTreeTraversalMaterial from './data-structure/binary-tree-traversal/BinaryTreeTraversalMaterial'
+import BstOperationsMaterial from './data-structure/bst-operations/BstOperationsMaterial'
+
+/**
+ * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
+ *
+ * To add a new material:
+ *   1. Create a folder under the right course, e.g.
+ *      src/materials/data-structure/binary-search/BinarySearchMaterial.tsx
+ *   2. Export a default React component from it.
+ *   3. Import it here and add an entry to that course's `materials` array.
+ *
+ * A material with status 'soon' (and no `component`) shows as a disabled
+ * "coming soon" card in the menu — handy for sketching out a syllabus.
+ */
+
+export interface Material {
+  id: string
+  title: string
+  subtitle: string
+  status: 'ready' | 'soon'
+  component?: ComponentType
+}
+
+export interface Course {
+  id: string
+  /** e.g. "MK" — shown as a small chip before the course name. */
+  code: string
+  name: string
+  /** Accent color (hex) used for the course's cards/badges. */
+  accent: string
+  materials: Material[]
+}
+
+export const COURSES: Course[] = [
+  {
+    id: 'data-structure',
+    code: 'MK',
+    name: 'Data Structure',
+    accent: '#3b82f6',
+    materials: [
+      {
+        id: 'insertion-sort',
+        title: 'Insertion Sort',
+        subtitle: 'Sorting · membangun prefix terurut satu per satu',
+        status: 'ready',
+        component: InsertionSortMaterial,
+      },
+      {
+        id: 'binary-tree-traversal',
+        title: 'Binary Tree Traversal',
+        subtitle: 'Tree · preorder, inorder, postorder, level-order',
+        status: 'ready',
+        component: BinaryTreeTraversalMaterial,
+      },
+      {
+        id: 'bst-operations',
+        title: 'Binary Search Tree',
+        subtitle: 'BST · insert, search, delete (3 kasus)',
+        status: 'ready',
+        component: BstOperationsMaterial,
+      },
+      // Sketch of upcoming materials — flip to 'ready' + add a component later.
+      {
+        id: 'bubble-sort',
+        title: 'Bubble Sort',
+        subtitle: 'Sorting · menukar pasangan bersebelahan',
+        status: 'soon',
+      },
+    ],
+  },
+  {
+    id: 'cloud-computing',
+    code: 'MK',
+    name: 'Cloud Computing',
+    accent: '#a855f7',
+    materials: [
+      {
+        id: 'load-balancing',
+        title: 'Load Balancing',
+        subtitle: 'Distribusi request ke banyak server',
+        status: 'soon',
+      },
+      {
+        id: 'autoscaling',
+        title: 'Auto Scaling',
+        subtitle: 'Menambah/mengurangi instance sesuai beban',
+        status: 'soon',
+      },
+    ],
+  },
+]
+
+/** Flat lookup of every runnable material, keyed by `${courseId}/${materialId}`. */
+export function findMaterial(courseId: string, materialId: string): Material | undefined {
+  return COURSES.find((c) => c.id === courseId)?.materials.find((m) => m.id === materialId)
+}

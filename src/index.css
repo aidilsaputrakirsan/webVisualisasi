@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: #e5e7eb;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle radial vignette for the recording background */
+.stage-bg {
+  background:
+    radial-gradient(60% 60% at 50% 35%, rgba(59, 130, 246, 0.06), transparent 70%),
+    radial-gradient(50% 50% at 70% 80%, rgba(168, 85, 247, 0.06), transparent 70%),
+    #0a0a0a;
+}
