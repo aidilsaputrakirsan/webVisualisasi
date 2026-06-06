@@ -8,6 +8,10 @@ import BasicSortingMaterial from './data-structure/basic-sorting/BasicSortingMat
 import AdvancedSortingMaterial from './data-structure/advanced-sorting/AdvancedSortingMaterial'
 import TrieMaterial from './data-structure/trie/TrieMaterial'
 import TensorMaterial from './data-structure/tensor/TensorMaterial'
+import CiPipelineMaterial from './cloud-computing/ci-pipeline/CiPipelineMaterial'
+import CdPipelineMaterial from './cloud-computing/cd-pipeline/CdPipelineMaterial'
+import MonolithMaterial from './cloud-computing/monolith/MonolithMaterial'
+import MicroservicesMaterial from './cloud-computing/microservices/MicroservicesMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -118,6 +122,34 @@ export const COURSES: Course[] = [
     name: 'Cloud Computing',
     accent: '#a855f7',
     materials: [
+      {
+        id: 'ci-pipeline',
+        title: 'CI Pipeline',
+        subtitle: 'CI/CD · GitHub Actions: test paralel → build',
+        status: 'ready',
+        component: CiPipelineMaterial,
+      },
+      {
+        id: 'cd-pipeline',
+        title: 'CD Pipeline',
+        subtitle: 'CI/CD · auto-deploy ke Railway (deploy gate)',
+        status: 'ready',
+        component: CdPipelineMaterial,
+      },
+      {
+        id: 'monolith',
+        title: 'Monolith',
+        subtitle: 'Satu app · satu DB shared (pembanding microservices)',
+        status: 'ready',
+        component: MonolithMaterial,
+      },
+      {
+        id: 'microservices',
+        title: 'Microservices',
+        subtitle: 'Dekomposisi · request flow via API Gateway',
+        status: 'ready',
+        component: MicroservicesMaterial,
+      },
       {
         id: 'load-balancing',
         title: 'Load Balancing',
