@@ -1,37 +1,36 @@
-import { TRAVERSALS, type Kind } from './traversal'
+import { MODES, type Mode } from './sorting'
 
 export interface ControlsProps {
   isPlaying: boolean
   atEnd: boolean
   speed: number
-  kind: Kind
+  mode: Mode
   soundOn: boolean
   onPlayPause: () => void
   onStep: () => void
   onReset: () => void
   onSpeedChange: (v: number) => void
-  onKindChange: (k: Kind) => void
+  onModeChange: (m: Mode) => void
   onToggleSound: () => void
 }
 
-const KINDS = Object.keys(TRAVERSALS) as Kind[]
+const ORDER: Mode[] = ['merge', 'quick', 'heap']
 
 export default function Controls(props: ControlsProps) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white/90 p-4 shadow-card backdrop-blur">
-      {/* Traversal picker */}
-      <div className="grid grid-cols-2 gap-2">
-        {KINDS.map((k) => (
+      <div className="grid grid-cols-3 gap-2">
+        {ORDER.map((m) => (
           <button
-            key={k}
-            onClick={() => props.onKindChange(k)}
+            key={m}
+            onClick={() => props.onModeChange(m)}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-              props.kind === k
+              props.mode === m
                 ? 'border border-amber-400 bg-amber-100 text-amber-800'
                 : 'border border-stone-200 bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
-            {TRAVERSALS[k].label}
+            {MODES[m].label}
           </button>
         ))}
       </div>

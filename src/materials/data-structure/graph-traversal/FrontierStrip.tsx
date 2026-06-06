@@ -1,19 +1,32 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { node } from './tree'
 
-/** The BFS queue strip (level-order only). FIFO: front is on the left. */
-export default function QueueView({ queue }: { queue: number[] }) {
+/** The queue (BFS) or call stack (DFS) strip. For a stack, the top (current)
+ *  is on the right. */
+export default function FrontierStrip({
+  label,
+  items,
+  tone,
+}: {
+  label: string
+  items: string[]
+  tone: 'queue' | 'stack'
+}) {
+  const color =
+    tone === 'queue'
+      ? { border: '#2563EB', bg: '#DBEAFE', text: '#1E40AF' }
+      : { border: '#D97706', bg: '#FDEBC8', text: '#92400E' }
+
   return (
     <div className="flex items-center justify-center gap-4" style={{ minHeight: 78 }}>
       <span className="font-mono text-stone-500" style={{ fontSize: 24 }}>
-        Queue
+        {label}
       </span>
       <div
         className="flex items-center gap-2.5 rounded-2xl border border-stone-200 bg-white/70 px-4"
         style={{ minHeight: 64, minWidth: 120 }}
       >
         <AnimatePresence initial={false}>
-          {queue.length === 0 ? (
+          {items.length === 0 ? (
             <motion.span
               key="empty"
               initial={{ opacity: 0 }}
@@ -25,18 +38,18 @@ export default function QueueView({ queue }: { queue: number[] }) {
               kosong
             </motion.span>
           ) : (
-            queue.map((id) => (
+            items.map((id, i) => (
               <motion.div
-                key={id}
+                key={`${id}-${i}`}
                 layout
                 initial={{ opacity: 0, scale: 0.6 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24 }}
                 className="flex items-center justify-center rounded-lg border-2 font-mono font-semibold"
-                style={{ width: 48, height: 48, fontSize: 24, borderColor: '#2563EB', background: '#DBEAFE', color: '#1E40AF' }}
+                style={{ width: 48, height: 48, fontSize: 24, borderColor: color.border, background: color.bg, color: color.text }}
               >
-                {node(id).value}
+                {id}
               </motion.div>
             ))
           )}

@@ -4,28 +4,20 @@ import MaterialStage from '../../../shared/MaterialStage'
 import TitleBlock from '../../../shared/TitleBlock'
 import CodeBlock from '../../../shared/CodeBlock'
 import { useChrome } from '../../../shared/chrome'
-import BstTreeView from './BstTreeView'
+import HashTableView from './HashTableView'
 import Controls from './Controls'
-import { buildSteps, MODES, SEQUENCE, type Mode } from './operations'
-import {
-  ensureAudio,
-  setMuted,
-  playCompare,
-  playInsert,
-  playVisit,
-  playReturn,
-  playDone,
-} from '../../../audio/sounds'
+import { buildSteps, KEYS, SIZE, MODES, type Mode } from './hashtable'
+import { ensureAudio, setMuted, playVisit, playCompare, playDequeue, playDone } from '../../../audio/sounds'
 
 const BASE_DELAY_MS = 850
 
 const BADGES = [
-  { label: 'AVG', value: 'O(log n)', color: '#3b82f6' },
+  { label: 'AVG', value: 'O(1)', color: '#3b82f6' },
   { label: 'WORST', value: 'O(n)', color: '#a855f7' },
 ]
 
-export default function BstOperationsMaterial() {
-  const [mode, setMode] = useState<Mode>('build')
+export default function HashTableMaterial() {
+  const [mode, setMode] = useState<Mode>('chaining')
   const [index, setIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
@@ -35,8 +27,8 @@ export default function BstOperationsMaterial() {
   const steps = useMemo(() => buildSteps(mode), [mode])
   const atEnd = index >= steps.length - 1
   const step = steps[Math.min(index, steps.length - 1)]
+  const def = MODES[mode]
 
-  // Sound — each step carries a cue.
   const lastSounded = useRef('')
   useEffect(() => {
     if (!soundOn) return
@@ -45,20 +37,16 @@ export default function BstOperationsMaterial() {
     lastSounded.current = key
     if (index === 0) return
 
-    const pitch = step.phaseValue ?? 50
+    const pitch = step.insertingKey ?? 30
     switch (step.sound) {
-      case 'compare':
-        playCompare(pitch)
-        break
       case 'place':
-        playInsert(pitch)
-        break
-      case 'found':
         playVisit(pitch)
         break
-      case 'fail':
-      case 'remove':
-        playReturn()
+      case 'probe':
+        playDequeue(pitch)
+        break
+      case 'compare':
+        playCompare(pitch)
         break
       case 'done':
         playDone()
@@ -66,7 +54,6 @@ export default function BstOperationsMaterial() {
     }
   }, [index, mode, soundOn, step])
 
-  // Autoplay.
   const timer = useRef<number | null>(null)
   useEffect(() => {
     if (!isPlaying) return
@@ -74,9 +61,7 @@ export default function BstOperationsMaterial() {
       setIsPlaying(false)
       return
     }
-    timer.current = window.setTimeout(() => {
-      setIndex((i) => Math.min(i + 1, steps.length - 1))
-    }, BASE_DELAY_MS / speed)
+    timer.current = window.setTimeout(() => setIndex((i) => Math.min(i + 1, steps.length - 1)), BASE_DELAY_MS / speed)
     return () => {
       if (timer.current) window.clearTimeout(timer.current)
     }
@@ -112,7 +97,6 @@ export default function BstOperationsMaterial() {
     setIsPlaying(false)
   }, [])
 
-  // Keyboard: Space / → / R
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === 'INPUT') return
@@ -132,19 +116,48 @@ export default function BstOperationsMaterial() {
   return (
     <>
       <MaterialStage>
-        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 90, paddingBottom: 130, gap: 30 }}>
-          <TitleBlock title="BINARY SEARCH TREE" subtitle={MODES[mode].desc} badges={BADGES} />
+        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 90, paddingBottom: 130, gap: 26 }}>
+          <TitleBlock title="HASH TABLE" subtitle={def.desc} badges={BADGES} />
 
-          {mode === 'build' ? (
-            <InsertTape phaseValue={step.phaseValue} />
-          ) : (
-            <PhaseChip label={step.phaseLabel} value={step.phaseValue} />
-          )}
+          {/* Insert tape */}
+          <div className="flex items-center gap-3 font-mono">
+            <span className="text-stone-500" style={{ fontSize: 22 }}>
+              Insert
+            </span>
+            <div className="flex items-center gap-2">
+              {KEYS.map((k) => {
+                const active = step.insertingKey === k
+                return (
+                  <div
+                    key={k}
+                    className="flex items-center justify-center rounded-lg border-2 font-semibold"
+                    style={{
+                      width: 56,
+                      height: 50,
+                      fontSize: 22,
+                      borderColor: active ? '#D97706' : '#D3C8B6',
+                      background: active ? '#FDEBC8' : '#FFFFFF',
+                      color: active ? '#92400E' : '#A89E90',
+                    }}
+                  >
+                    {k}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
 
-          <BstTreeView step={step} />
+          {/* Hash formula chip */}
+          <div
+            className="flex items-center gap-3 rounded-full border font-mono"
+            style={{ padding: '7px 20px', fontSize: 22, borderColor: '#CBD9F0', background: '#EAF1FB', color: '#1E40AF' }}
+          >
+            {step.formula ?? `h(key) = key % ${SIZE}`}
+          </div>
 
-          {/* Status line */}
-          <div className="flex items-center justify-center" style={{ height: 52 }}>
+          <HashTableView step={step} mode={mode} />
+
+          <div className="flex items-center justify-center" style={{ height: 50 }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={step.status}
@@ -153,14 +166,14 @@ export default function BstOperationsMaterial() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
                 className="rounded-full border font-mono"
-                style={{ fontSize: 23, padding: '9px 24px', borderColor: '#E4DCCF', background: '#FFFFFF', color: '#4A4338' }}
+                style={{ fontSize: 22, padding: '8px 22px', borderColor: '#E4DCCF', background: '#FFFFFF', color: '#4A4338' }}
               >
                 {step.status}
               </motion.div>
             </AnimatePresence>
           </div>
 
-          <CodeBlock filename={MODES[mode].filename} source={MODES[mode].code} activeLine={step.line} fontSize={21} />
+          <CodeBlock filename={def.filename} source={def.code} activeLine={step.line} fontSize={22} />
 
           <div className="font-mono text-stone-400" style={{ fontSize: 22 }}>
             step {Math.min(index + 1, steps.length)} / {steps.length}
@@ -187,53 +200,5 @@ export default function BstOperationsMaterial() {
         />
       </div>
     </>
-  )
-}
-
-/** Tape of the insert sequence; inserted ones go green, the current one amber. */
-function InsertTape({ phaseValue }: { phaseValue: number | null }) {
-  const currentIdx = phaseValue === null ? SEQUENCE.length : SEQUENCE.indexOf(phaseValue)
-  return (
-    <div className="flex items-center gap-3 font-mono">
-      <span className="text-stone-500" style={{ fontSize: 22 }}>
-        Insert
-      </span>
-      <div className="flex items-center gap-2">
-        {SEQUENCE.map((v, i) => {
-          const done = i < currentIdx
-          const current = i === currentIdx
-          return (
-            <div
-              key={v}
-              className="flex items-center justify-center rounded-lg border-2 font-mono font-semibold"
-              style={{
-                width: 50,
-                height: 50,
-                fontSize: 22,
-                borderColor: current ? '#D97706' : done ? '#15803D' : '#D3C8B6',
-                background: current ? '#FDEBC8' : done ? '#DCFCE7' : '#FFFFFF',
-                color: current ? '#92400E' : done ? '#166534' : '#A89E90',
-                boxShadow: current ? '0 4px 14px rgba(217,119,6,0.30)' : 'none',
-              }}
-            >
-              {v}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-/** Compact chip showing the current Search/Delete target. */
-function PhaseChip({ label, value }: { label: string; value: number | null }) {
-  return (
-    <div
-      className="flex items-center gap-3 rounded-full border font-mono"
-      style={{ padding: '8px 22px', fontSize: 24, borderColor: '#F0C98A', background: '#FDEBC8' }}
-    >
-      <span style={{ color: '#9C8458' }}>{label}</span>
-      <span className="font-bold" style={{ color: '#92400E' }}>{value ?? '—'}</span>
-    </div>
   )
 }

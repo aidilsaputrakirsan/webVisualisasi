@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
@@ -14,16 +14,17 @@ body,
 
 body {
   margin: 0;
-  background: #0a0a0a;
-  color: #e5e7eb;
+  background: #f1e9db;
+  color: #211c16;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Subtle radial vignette for the recording background */
+/* Editorial "paper" stage — warm off-white with a soft, barely-there grain of
+   amber/cream light so it reads like a printed sheet rather than flat white. */
 .stage-bg {
   background:
-    radial-gradient(60% 60% at 50% 35%, rgba(59, 130, 246, 0.06), transparent 70%),
-    radial-gradient(50% 50% at 70% 80%, rgba(168, 85, 247, 0.06), transparent 70%),
-    #0a0a0a;
+    radial-gradient(70% 55% at 50% 22%, rgba(217, 119, 6, 0.05), transparent 70%),
+    radial-gradient(55% 45% at 78% 85%, rgba(180, 83, 9, 0.04), transparent 70%),
+    #faf7f2;
 }

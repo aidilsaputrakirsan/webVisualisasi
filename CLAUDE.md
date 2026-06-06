@@ -1,8 +1,9 @@
 # CLAUDE.md
 
-Project ini membuat **visualisasi materi ajar** bergaya AlgoMaster (tema gelap neon,
-canvas 9:16, untuk direkam jadi video). Materi dikelompokkan per mata kuliah di
-`src/materials/<course>/<material-id>/`.
+Project ini membuat **visualisasi materi ajar** dengan tema **"Editorial Paper"**
+(light: kertas hangat + aksen amber + judul serif, canvas 9:16, untuk direkam jadi
+video). Warna terpusat di `src/shared/theme.ts`. Materi dikelompokkan per mata kuliah
+di `src/materials/<course>/<material-id>/`.
 
 ## Alur kerja utama
 

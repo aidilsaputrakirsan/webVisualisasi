@@ -19,14 +19,17 @@ export default function CodeBlock({
 }) {
   return (
     <div
-      className="overflow-hidden rounded-3xl border border-neutral-800 bg-[#0d0d11] shadow-2xl"
-      style={{ width }}
+      className="overflow-hidden rounded-2xl border"
+      style={{ width, borderColor: '#E4DCCF', background: '#FFFFFF', boxShadow: '0 6px 18px rgba(33,28,22,0.06)' }}
     >
-      <div className="flex items-center gap-2.5 border-b border-neutral-800 px-6 py-3.5">
-        <span className="h-4 w-4 rounded-full bg-[#ff5f56]" />
-        <span className="h-4 w-4 rounded-full bg-[#ffbd2e]" />
-        <span className="h-4 w-4 rounded-full bg-[#27c93f]" />
-        <span className="ml-3 font-mono text-neutral-500" style={{ fontSize: fontSize - 4 }}>
+      <div
+        className="flex items-center gap-2.5 border-b px-6 py-3.5"
+        style={{ borderColor: '#EFE8DB', background: '#F6F0E6' }}
+      >
+        <span className="h-3.5 w-3.5 rounded-full" style={{ background: '#E0C09A' }} />
+        <span className="h-3.5 w-3.5 rounded-full" style={{ background: '#EAD7BC' }} />
+        <span className="h-3.5 w-3.5 rounded-full" style={{ background: '#D9CBB3' }} />
+        <span className="ml-3 font-mono" style={{ fontSize: fontSize - 4, color: '#9C8F7B' }}>
           {filename}
         </span>
       </div>
@@ -39,13 +42,16 @@ export default function CodeBlock({
               {active && (
                 <motion.div
                   layoutId="code-highlight"
-                  className="absolute inset-y-0 left-0 right-0 border-l-4 border-amber-400 bg-amber-400/10"
+                  className="absolute inset-y-0 left-0 right-0 border-l-4"
+                  style={{ borderColor: '#D97706', background: 'rgba(217,119,6,0.12)' }}
                   transition={{ type: 'spring', stiffness: 400, damping: 34 }}
                 />
               )}
               <div className="relative flex gap-5 px-3">
-                <span className="w-7 select-none text-right text-neutral-600">{i + 1}</span>
-                <pre className={active ? 'text-amber-200' : 'text-neutral-300'}>{line || ' '}</pre>
+                <span className="w-7 select-none text-right" style={{ color: '#C2B7A4' }}>
+                  {i + 1}
+                </span>
+                <pre style={{ color: active ? '#92400E' : '#3A3329' }}>{line || ' '}</pre>
               </div>
             </div>
           )

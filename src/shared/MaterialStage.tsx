@@ -32,7 +32,7 @@ export default function MaterialStage({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-black">
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ background: '#F1E9DB' }}>
       <div
         className="stage-bg relative shrink-0 overflow-hidden"
         style={{
@@ -40,6 +40,8 @@ export default function MaterialStage({ children }: { children: ReactNode }) {
           height: CANVAS_H,
           transform: `scale(${scale})`,
           transformOrigin: 'center center',
+          border: '1px solid #E4DCCF',
+          boxShadow: '0 18px 60px rgba(33,28,22,0.14)',
         }}
       >
         {children}

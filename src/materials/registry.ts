@@ -1,7 +1,13 @@
 import type { ComponentType } from 'react'
-import InsertionSortMaterial from './data-structure/insertion-sort/InsertionSortMaterial'
 import BinaryTreeTraversalMaterial from './data-structure/binary-tree-traversal/BinaryTreeTraversalMaterial'
 import BstOperationsMaterial from './data-structure/bst-operations/BstOperationsMaterial'
+import GraphTraversalMaterial from './data-structure/graph-traversal/GraphTraversalMaterial'
+import ArraySearchMaterial from './data-structure/array-search/ArraySearchMaterial'
+import HashTableMaterial from './data-structure/hash-table/HashTableMaterial'
+import BasicSortingMaterial from './data-structure/basic-sorting/BasicSortingMaterial'
+import AdvancedSortingMaterial from './data-structure/advanced-sorting/AdvancedSortingMaterial'
+import TrieMaterial from './data-structure/trie/TrieMaterial'
+import TensorMaterial from './data-structure/tensor/TensorMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -42,13 +48,6 @@ export const COURSES: Course[] = [
     accent: '#3b82f6',
     materials: [
       {
-        id: 'insertion-sort',
-        title: 'Insertion Sort',
-        subtitle: 'Sorting · membangun prefix terurut satu per satu',
-        status: 'ready',
-        component: InsertionSortMaterial,
-      },
-      {
         id: 'binary-tree-traversal',
         title: 'Binary Tree Traversal',
         subtitle: 'Tree · preorder, inorder, postorder, level-order',
@@ -62,12 +61,54 @@ export const COURSES: Course[] = [
         status: 'ready',
         component: BstOperationsMaterial,
       },
-      // Sketch of upcoming materials — flip to 'ready' + add a component later.
       {
-        id: 'bubble-sort',
-        title: 'Bubble Sort',
-        subtitle: 'Sorting · menukar pasangan bersebelahan',
-        status: 'soon',
+        id: 'graph-traversal',
+        title: 'Graph Traversal',
+        subtitle: 'Graph · BFS & DFS (Queue / Stack)',
+        status: 'ready',
+        component: GraphTraversalMaterial,
+      },
+      {
+        id: 'array-search',
+        title: 'Array Search',
+        subtitle: 'Searching · Linear vs Binary Search',
+        status: 'ready',
+        component: ArraySearchMaterial,
+      },
+      {
+        id: 'hash-table',
+        title: 'Hash Table',
+        subtitle: 'Hashing · chaining & linear probing',
+        status: 'ready',
+        component: HashTableMaterial,
+      },
+      {
+        id: 'basic-sorting',
+        title: 'Sorting Dasar',
+        subtitle: 'Sorting · Bubble, Selection & Insertion',
+        status: 'ready',
+        component: BasicSortingMaterial,
+      },
+      {
+        id: 'advanced-sorting',
+        title: 'Sorting Lanjutan',
+        subtitle: 'Sorting · Merge, Quick & Heap (O(n log n))',
+        status: 'ready',
+        component: AdvancedSortingMaterial,
+      },
+      {
+        id: 'trie',
+        title: 'Trie (Prefix Tree)',
+        subtitle: 'Big Data & AI · autocomplete berbasis prefix',
+        status: 'ready',
+        component: TrieMaterial,
+      },
+      {
+        id: 'tensor',
+        title: 'Tensor',
+        subtitle: 'AI/ML · scalar → vector → matrix → tensor',
+        status: 'ready',
+        component: TensorMaterial,
       },
     ],
   },

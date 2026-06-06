@@ -11,7 +11,8 @@
 ## 1. Tujuan Project
 
 Aplikasi web untuk **bahan ajar**: setiap "materi" adalah visualisasi algoritma/
-konsep bergaya **AlgoMaster.io** (tema gelap neon), dirancang untuk **direkam layar**
+konsep dengan tema **"Editorial Paper"** (light, kertas hangat + aksen amber, font serif
+untuk judul) — identitas sendiri, dirancang untuk **direkam layar**
 menjadi video/reel 9:16. User memilih materi dari menu, lalu menjalankannya.
 
 Materi dikelompokkan per **mata kuliah (MK)**, mis. *Data Structure*, *Cloud Computing*.
@@ -96,18 +97,25 @@ Lihat contoh: `insertion-sort/insertionSort.ts` dan `binary-tree-traversal/trave
 - Panel kontrol **tidak** boleh di dalam `<MaterialStage>` (biar frame rekaman bersih).
 - Letakkan sebagai sibling: `<div className="fixed bottom-4 left-4 z-50 w-[…]">`.
 
-### Palet warna (status elemen)
-| Makna | Warna | Hex |
-|-------|-------|-----|
-| Aktif / sedang diproses (key, pointer) | amber | `#f59e0b` |
-| Selesai / terurut / dikunjungi | hijau | `#22c55e` |
-| Sedang dibandingkan / di queue | biru | `#60a5fa` |
-| Idle / belum tersentuh | abu | `#3f3f46` |
-| Badge TIME | biru | `#3b82f6` |
-| Badge SPACE | ungu | `#a855f7` |
+### Tema & palet — "Editorial Paper" (light)
 
-Beri **glow** (box-shadow neon) pada elemen aktif/selesai. Angka & kode pakai **font
-mono**; prosa pakai sans (default).
+**Sumber warna tunggal: [`src/shared/theme.ts`](src/shared/theme.ts).** Jangan hardcode
+hex baru di komponen — impor dari sini. Latar = kertas hangat (`#FAF7F2`), aksen =
+amber (`#D97706`), teks = ink (`#211C16`). Judul pakai **font serif** (`font-serif`,
+Fraunces); angka & kode **mono**; prosa **sans**.
+
+Untuk warna state node/kotak, pakai objek `NODE` (semantik) dan petakan state lokal:
+
+| Makna semantik | Token | Dipakai untuk |
+|----------------|-------|---------------|
+| `NODE.active` (amber) | aktif / key / pointer | elemen yang sedang diproses |
+| `NODE.done` (hijau) | selesai / terurut / dikunjungi | hasil/visited |
+| `NODE.info` (biru) | dibandingkan / di queue | highlight sekunder |
+| `NODE.idle` (kertas) | belum tersentuh | default |
+
+Edge pohon pakai `EDGE.idle/done/active`. **Tidak ada glow neon** — gunakan
+**bayangan halus** (sudah ada di `theme.ts` tiap state). Chrome berbasis class
+(Controls, menu, status) pakai utility Tailwind `stone-*` (netral) + `amber-*` (aksen).
 
 ### Animasi
 - Spring halus untuk geser posisi: `{ type: 'spring', stiffness: 300, damping: 30 }`.

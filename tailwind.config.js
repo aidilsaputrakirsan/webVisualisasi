@@ -14,10 +14,11 @@ export default {
       fontFamily: {
         mono: ['"JetBrains Mono"', '"Fira Code"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Fraunces', 'Georgia', 'ui-serif', 'serif'],
       },
       boxShadow: {
-        'glow-green': '0 0 18px rgba(34,197,94,0.55), 0 0 4px rgba(34,197,94,0.9)',
-        'glow-amber': '0 0 22px rgba(245,158,11,0.6), 0 0 6px rgba(245,158,11,0.9)',
+        sheet: '0 18px 50px rgba(33,28,22,0.12), 0 2px 8px rgba(33,28,22,0.06)',
+        card: '0 1px 3px rgba(33,28,22,0.06), 0 6px 18px rgba(33,28,22,0.06)',
       },
     },
   },

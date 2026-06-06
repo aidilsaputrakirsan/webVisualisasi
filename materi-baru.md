@@ -1,11 +1,11 @@
-# MODUL 10: BINARY SEARCH TREE (BST)
+# MODUL 15: STRUKTUR DATA DALAM BIG DATA DAN AI
 
 ---
 
 **Mata Kuliah:** Struktur Data  
 **Program Studi:** Sistem Informasi - Institut Teknologi Kalimantan  
 **SKS:** 3 (2 Teori + 1 Praktikum)  
-**Pertemuan:** 10 dari 16
+**Pertemuan:** 15 dari 16
 
 ---
 
@@ -17,10 +17,10 @@ Berdasarkan **Permendikbud No. 3 Tahun 2020** tentang SN-Dikti:
 |----------|----------|--------|
 | **TEORI (2 SKS)** | | |
 | Tatap Muka | Kuliah di kelas | 100 menit |
-| Tugas Terstruktur | Pengembangan dari praktikum (dikumpulkan) | 120 menit |
+| Tugas Terstruktur | Pengembangan dari presentasi (dikumpulkan) | 120 menit |
 | Belajar Mandiri | Belajar sendiri | 120 menit |
 | **PRAKTIKUM (1 SKS)** | | |
-| Kegiatan Lab | Praktikum di lab | 100 menit |
+| Kegiatan Lab | Presentasi Proyek Kelompok | 100 menit |
 | Belajar Mandiri | Belajar sendiri | 70 menit |
 | **TOTAL** | | **510 menit (~8.5 jam)** |
 
@@ -30,1164 +30,824 @@ Berdasarkan **Permendikbud No. 3 Tahun 2020** tentang SN-Dikti:
 
 ### Sub-CPMK
 Setelah menyelesaikan pertemuan ini, mahasiswa mampu:
-1. Menjelaskan properti dan keunggulan Binary Search Tree
-2. Mengimplementasikan operasi insert, search, dan delete pada BST
-3. Menganalisis kompleksitas operasi BST pada kasus terbaik dan terburuk
-4. Memahami konsep balanced BST dan mengapa balancing penting
+1. Menjelaskan bagaimana struktur data digunakan dalam konteks Big Data dan Artificial Intelligence
+2. Memahami konsep dan mengimplementasikan Trie (Prefix Tree) sederhana
+3. Memahami konsep Tensor sebagai struktur data utama dalam Machine Learning
+4. Mengidentifikasi struktur data yang tepat untuk berbagai skenario Big Data dan AI
 
 ### Indikator Pencapaian
-- Mahasiswa dapat menjelaskan properti BST (left < root < right)
-- Mahasiswa dapat membangun BST dari urutan insert yang diberikan
-- Mahasiswa dapat melakukan operasi insert, search, dan delete dengan benar
-- Mahasiswa dapat menganalisis kapan BST menjadi tidak efisien (degenerate)
+- Mahasiswa dapat menjelaskan hubungan antara struktur data dengan Big Data dan AI
+- Mahasiswa dapat mengimplementasikan Trie sederhana dalam Python
+- Mahasiswa dapat menjelaskan perbedaan Scalar, Vector, Matrix, dan Tensor
+- Mahasiswa dapat mempresentasikan proyek kelompok implementasi struktur data
 
 ---
 
 # BAGIAN A: TATAP MUKA (100 Menit)
 
-## 1. Pendahuluan BST (15 menit)
+## 1. Pendahuluan: Struktur Data dalam Era Big Data & AI (10 menit)
 
-### 1.1 Mengapa Perlu BST?
+### 1.1 Mengapa Topik Ini Penting?
 
-Pada pertemuan sebelumnya, kita sudah mempelajari Binary Tree. Namun Binary Tree biasa tidak memiliki aturan penempatan data, sehingga **pencarian membutuhkan O(n)** — harus mengecek semua node.
+Selama 14 pertemuan sebelumnya, kita telah mempelajari berbagai struktur data fundamental. Sekarang kita akan melihat **bagaimana struktur data tersebut diterapkan** dalam dua bidang paling relevan saat ini: **Big Data** dan **Artificial Intelligence**.
 
-**Binary Search Tree (BST)** menambahkan aturan khusus agar pencarian bisa dilakukan secara efisien, mirip dengan prinsip Binary Search pada array.
+> 💡 **Pesan Utama:**
+> Struktur data bukan hanya teori — ia adalah **fondasi** yang menentukan apakah sistem Big Data dan AI bisa bekerja secara efisien atau tidak.
 
-| Struktur Data | Search | Insert | Delete |
-|---------------|--------|--------|--------|
-| Array (unsorted) | O(n) | O(1) | O(n) |
-| Array (sorted) | O(log n) | O(n) | O(n) |
-| Linked List | O(n) | O(1) | O(n) |
-| **BST (balanced)** | **O(log n)** | **O(log n)** | **O(log n)** |
-
-> 💡 BST menggabungkan keunggulan **pencarian cepat** (seperti sorted array) dengan **insert/delete cepat** (seperti linked list).
-
-### 1.2 Properti BST
-
-**Binary Search Tree** adalah Binary Tree dengan aturan:
-
-1. Semua node di **subtree kiri** memiliki nilai **lebih kecil** dari node saat ini
-2. Semua node di **subtree kanan** memiliki nilai **lebih besar** dari node saat ini
-3. Subtree kiri dan kanan juga merupakan BST (**rekursif**)
-4. **Tidak ada duplikasi** nilai (opsional, tergantung implementasi)
+### 1.2 Peta Hubungan
 
 ```mermaid
 flowchart TB
-    N50((50)) --> N30((30))
-    N50 --> N70((70))
-    N30 --> N20((20))
-    N30 --> N40((40))
-    N70 --> N60((60))
-    N70 --> N80((80))
+    SD[📊 STRUKTUR DATA<br/>Yang Sudah Dipelajari] --> BD[💾 BIG DATA]
+    SD --> AI[🤖 ARTIFICIAL INTELLIGENCE]
     
-    style N50 fill:#4472C4,color:#fff
-    style N30 fill:#DEEBF7
-    style N70 fill:#DEEBF7
-    style N20 fill:#70AD47,color:#fff
-    style N40 fill:#70AD47,color:#fff
-    style N60 fill:#70AD47,color:#fff
-    style N80 fill:#70AD47,color:#fff
+    BD --> BD1[Array → Data Processing]
+    BD --> BD2[Hash Table → Key-Value Store]
+    BD --> BD3[Graph → Social Network Analysis]
+    BD --> BD4[Tree → Database Indexing]
+    BD --> BD5[Trie → Autocomplete & Search]
+    
+    AI --> AI1[Array/Matrix → Dataset]
+    AI --> AI2[Tensor → Neural Network]
+    AI --> AI3[Graph → Knowledge Graph]
+    AI --> AI4[Tree → Decision Tree]
+    AI --> AI5[Queue → BFS dalam Game AI]
+    
+    style SD fill:#4472C4,color:#fff
+    style BD fill:#FFC000,color:#000
+    style AI fill:#70AD47,color:#fff
 ```
 
-**Verifikasi properti BST pada tree di atas:**
-- Root = 50
-- Subtree kiri (30, 20, 40) → semua < 50 ✅
-- Subtree kanan (70, 60, 80) → semua > 50 ✅
-- Node 30: left(20) < 30 < right(40) ✅
-- Node 70: left(60) < 70 < right(80) ✅
+### 1.3 Struktur Data yang Sudah Dipelajari vs Penerapannya
 
-### 1.3 BST Valid vs Tidak Valid
-
-```mermaid
-flowchart TB
-    subgraph VALID [✅ BST Valid]
-        V50((50)) --> V30((30))
-        V50 --> V70((70))
-        V30 --> V20((20))
-        V30 --> V40((40))
-    end
-    
-    subgraph INVALID [❌ BUKAN BST]
-        I50((50)) --> I30((30))
-        I50 --> I70((70))
-        I30 --> I20((20))
-        I30 --> I60((60))
-    end
-    
-    style V50 fill:#70AD47,color:#fff
-    style I50 fill:#FF6B6B,color:#fff
-    style I60 fill:#FFC000,color:#000
-```
-
-> ❌ Tree kanan **bukan BST** karena node 60 berada di subtree kiri dari 50, padahal 60 > 50.
-
-> 💡 **Perhatian:** Properti BST bukan hanya membandingkan node dengan parent-nya, tetapi dengan **seluruh ancestor**. Node 60 memang > 30 (parent-nya), tapi harus juga < 50 (grandparent-nya yang merupakan root).
-
-### 1.4 Hubungan BST dengan Inorder Traversal
-
-> 🔑 **Fakta Penting:** Inorder traversal pada BST **selalu menghasilkan data terurut ascending**.
-
-Contoh: Inorder pada BST di atas → **20 30 40 50 60 70 80**
-
-Ini bisa digunakan untuk **memverifikasi** apakah sebuah binary tree adalah BST yang valid.
+| Struktur Data | Penerapan Big Data | Penerapan AI |
+|---------------|--------------------|--------------|
+| **Array** | Batch data processing | Dataset, feature vector |
+| **Linked List** | Stream processing | Sequence model |
+| **Stack** | Undo/redo pada data pipeline | Backtracking search |
+| **Queue** | Message queue (Kafka) | BFS, task scheduling |
+| **Tree/BST** | Database index (B-Tree) | Decision tree, parse tree |
+| **Graph** | Social network, web crawl | Knowledge graph, GNN |
+| **Hash Table** | Key-value store (Redis) | Feature hashing |
+| **Sorting** | Data preprocessing | Ranking algorithm |
+| **Searching** | Information retrieval | Nearest neighbor search |
 
 ---
 
-## 2. Operasi Search pada BST (15 menit)
+## 2. Trie — Prefix Tree (30 menit)
 
-### 2.1 Algoritma Search
+### 2.1 Apa itu Trie?
 
-Pencarian di BST mirip dengan **Binary Search** pada sorted array:
-1. Mulai dari root
-2. Jika target == node → **ditemukan**
-3. Jika target < node → cari di **subtree kiri**
-4. Jika target > node → cari di **subtree kanan**
-5. Jika mencapai None → **tidak ditemukan**
+**Trie** (dibaca "try") adalah struktur data tree khusus yang digunakan untuk **menyimpan dan mencari string secara efisien**. Setiap node mewakili satu karakter, dan path dari root ke node tertentu membentuk sebuah prefix (awalan).
 
-### 2.2 Flowchart Search
+> 💡 **Nama "Trie"** berasal dari kata re**TRIE**val — karena sangat efisien untuk operasi pencarian string.
+
+### 2.2 Kenapa Tidak Pakai Hash Table Saja?
+
+| Aspek | Hash Table | Trie |
+|-------|-----------|------|
+| Cari kata exact | O(L) — L = panjang kata | O(L) |
+| Cari semua kata berawalan "pre" | O(n) — harus cek semua | O(L + k) — L = prefix, k = hasil |
+| Autocomplete | Tidak efisien | Sangat efisien |
+| Penggunaan memori | Lebih hemat per kata | Lebih boros (banyak pointer) |
+| Urutan leksikografis | Tidak terurut | Otomatis terurut |
+
+> 📝 **Kesimpulan:** Trie unggul untuk operasi berbasis **prefix** seperti autocomplete, spell checker, dan IP routing.
+
+### 2.3 Visualisasi Trie
+
+**Contoh:** Menyimpan kata "cat", "car", "card", "care", "dog", "do"
 
 ```mermaid
 flowchart TD
-    START([🟢 START]) --> INPUT[/Input: node, target/]
-    INPUT --> CHECK1{node == None?}
-    CHECK1 -->|Ya| NOTFOUND[/Return None<br/>tidak ditemukan/]
-    CHECK1 -->|Tidak| CHECK2{target == node.data?}
-    CHECK2 -->|Ya| FOUND[/Return node<br/>ditemukan!/]
-    CHECK2 -->|Tidak| CHECK3{target < node.data?}
-    CHECK3 -->|Ya| GOLEFT[Search node.left, target]
-    CHECK3 -->|Tidak| GORIGHT[Search node.right, target]
-    GOLEFT --> END([🔴 END])
-    GORIGHT --> END
-    NOTFOUND --> END
+    ROOT((ROOT)) --> C((c))
+    ROOT --> D((d))
+    
+    C --> A((a))
+    A --> T((t ✓))
+    A --> R((r ✓))
+    R --> RD((d ✓))
+    R --> RE((e ✓))
+    
+    D --> O((o ✓))
+    O --> OG((g ✓))
+    
+    style ROOT fill:#4472C4,color:#fff
+    style T fill:#70AD47,color:#fff
+    style R fill:#70AD47,color:#fff
+    style RD fill:#70AD47,color:#fff
+    style RE fill:#70AD47,color:#fff
+    style O fill:#70AD47,color:#fff
+    style OG fill:#70AD47,color:#fff
+```
+
+> ✓ menandakan **end of word** — node tersebut merupakan akhir dari sebuah kata valid.
+
+### 2.4 Struktur Node Trie
+
+```mermaid
+flowchart LR
+    subgraph TrieNode
+        CH[children: dict]
+        EW[is_end_of_word: bool]
+    end
+    
+    CH --> A["'a' → TrieNode"]
+    CH --> B["'b' → TrieNode"]
+    CH --> C["'c' → TrieNode"]
+    
+    style TrieNode fill:#DEEBF7
+```
+
+Setiap node memiliki:
+1. **children** — dictionary yang menyimpan referensi ke node anak (key = karakter)
+2. **is_end_of_word** — penanda apakah node ini akhir dari kata yang valid
+
+### 2.5 Operasi pada Trie
+
+#### A. INSERT — Menambahkan Kata
+
+```mermaid
+flowchart TD
+    START([🟢 START]) --> INPUT[/Input: word/]
+    INPUT --> INIT[node = root]
+    INIT --> LOOP{Masih ada<br/>karakter di word?}
+    LOOP -->|Ya| CHECK{Karakter ada<br/>di children?}
+    CHECK -->|Tidak| CREATE[Buat TrieNode baru<br/>di children]
+    CHECK -->|Ya| SKIP[Langsung lanjut]
+    CREATE --> MOVE[node = children karakter]
+    SKIP --> MOVE
+    MOVE --> NEXT[Ambil karakter berikutnya]
+    NEXT --> LOOP
+    LOOP -->|Tidak| MARK[node.is_end_of_word = True]
+    MARK --> END([🔴 END])
+    
+    style START fill:#70AD47,color:#fff
+    style END fill:#C00000,color:#fff
+    style LOOP fill:#FFC000
+    style CHECK fill:#FFC000
+    style CREATE fill:#4472C4,color:#fff
+    style MARK fill:#70AD47,color:#fff
+```
+
+#### B. SEARCH — Mencari Kata
+
+```mermaid
+flowchart TD
+    START([🟢 START]) --> INPUT[/Input: word/]
+    INPUT --> INIT[node = root]
+    INIT --> LOOP{Masih ada<br/>karakter di word?}
+    LOOP -->|Ya| CHECK{Karakter ada<br/>di children?}
+    CHECK -->|Tidak| NOTFOUND[/Output: False<br/>Kata tidak ada/]
+    CHECK -->|Ya| MOVE[node = children karakter]
+    MOVE --> NEXT[Ambil karakter berikutnya]
+    NEXT --> LOOP
+    LOOP -->|Tidak| CHECKEND{node.is_end_of_word?}
+    CHECKEND -->|Ya| FOUND[/Output: True/]
+    CHECKEND -->|Tidak| PREFIX[/Output: False<br/>Hanya prefix, bukan kata/]
+    NOTFOUND --> END([🔴 END])
+    FOUND --> END
+    PREFIX --> END
+    
+    style START fill:#70AD47,color:#fff
+    style END fill:#C00000,color:#fff
+    style LOOP fill:#FFC000
+    style CHECK fill:#FFC000
+    style CHECKEND fill:#FFC000
+    style FOUND fill:#70AD47,color:#fff
+    style NOTFOUND fill:#FF6B6B
+    style PREFIX fill:#FF6B6B
+```
+
+#### C. STARTS_WITH — Mencari Kata dengan Prefix Tertentu
+
+```mermaid
+flowchart TD
+    START([🟢 START]) --> INPUT[/Input: prefix/]
+    INPUT --> INIT[node = root]
+    INIT --> LOOP{Masih ada<br/>karakter di prefix?}
+    LOOP -->|Ya| CHECK{Karakter ada<br/>di children?}
+    CHECK -->|Tidak| NOTFOUND[/Output: False/]
+    CHECK -->|Ya| MOVE[node = children karakter]
+    MOVE --> NEXT[Ambil karakter berikutnya]
+    NEXT --> LOOP
+    LOOP -->|Tidak| FOUND[/Output: True<br/>Prefix ditemukan/]
+    NOTFOUND --> END([🔴 END])
     FOUND --> END
     
     style START fill:#70AD47,color:#fff
     style END fill:#C00000,color:#fff
-    style CHECK1 fill:#FFC000
-    style CHECK2 fill:#FFC000
-    style CHECK3 fill:#FFC000
+    style LOOP fill:#FFC000
+    style CHECK fill:#FFC000
     style FOUND fill:#70AD47,color:#fff
     style NOTFOUND fill:#FF6B6B
 ```
 
-### 2.3 Kode Python
+### 2.6 Kode Python
 
 ```python
-def search(node, target):
-    """Mencari node dengan nilai target di BST - O(log n) average"""
-    if node is None:
-        return None              # Tidak ditemukan
+class TrieNode:
+    def __init__(self):
+        self.children = {}           # dict: karakter → TrieNode
+        self.is_end_of_word = False  # penanda akhir kata
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
     
-    if target == node.data:
-        return node              # Ditemukan!
-    elif target < node.data:
-        return search(node.left, target)   # Cari di kiri
-    else:
-        return search(node.right, target)  # Cari di kanan
+    def insert(self, word):
+        """Menambahkan kata ke Trie — O(L), L = panjang kata"""
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+        node.is_end_of_word = True
+    
+    def search(self, word):
+        """Mencari kata exact di Trie — O(L)"""
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return node.is_end_of_word
+    
+    def starts_with(self, prefix):
+        """Mengecek apakah ada kata dengan prefix tertentu — O(L)"""
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+        return True
+    
+    def get_all_words_with_prefix(self, prefix):
+        """Mengambil semua kata yang dimulai dengan prefix — O(L + k)"""
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return []
+            node = node.children[char]
+        
+        # DFS untuk mengumpulkan semua kata dari node ini
+        results = []
+        self._dfs_collect(node, prefix, results)
+        return results
+    
+    def _dfs_collect(self, node, current_word, results):
+        """Helper: DFS untuk mengumpulkan kata"""
+        if node.is_end_of_word:
+            results.append(current_word)
+        for char, child_node in sorted(node.children.items()):
+            self._dfs_collect(child_node, current_word + char, results)
+
+
+# === CONTOH PENGGUNAAN ===
+trie = Trie()
+words = ["cat", "car", "card", "care", "dog", "do"]
+for w in words:
+    trie.insert(w)
+
+print(trie.search("car"))       # True
+print(trie.search("ca"))        # False (hanya prefix, bukan kata)
+print(trie.starts_with("ca"))   # True
+print(trie.get_all_words_with_prefix("car"))  # ['car', 'card', 'care']
 ```
 
-### 2.4 Trace Pencarian
+### 2.7 Kompleksitas Trie
 
-**Cari nilai 40 pada BST:**
+| Operasi | Kompleksitas | Keterangan |
+|---------|-------------|------------|
+| Insert | O(L) | L = panjang kata |
+| Search | O(L) | L = panjang kata |
+| Starts With | O(L) | L = panjang prefix |
+| Get All with Prefix | O(L + k) | k = jumlah kata hasil |
+| Space | O(N × L × A) | N = jumlah kata, L = rata-rata panjang, A = ukuran alfabet |
 
-```mermaid
-flowchart TB
-    N50((50<br/>40<50 → kiri)) --> N30((30<br/>40>30 → kanan))
-    N50 --> N70((70))
-    N30 --> N20((20))
-    N30 --> N40((✅ 40<br/>Ditemukan!))
-    N70 --> N60((60))
-    N70 --> N80((80))
-    
-    style N50 fill:#FFC000,color:#000
-    style N30 fill:#FFC000,color:#000
-    style N40 fill:#70AD47,color:#fff
-    style N70 fill:#E7E6E6
-    style N20 fill:#E7E6E6
-    style N60 fill:#E7E6E6
-    style N80 fill:#E7E6E6
-```
+### 2.8 Penerapan Trie di Dunia Nyata
 
-| Langkah | Node | Perbandingan | Aksi |
-|---------|------|--------------|------|
-| 1 | 50 | 40 < 50 | Ke subtree kiri |
-| 2 | 30 | 40 > 30 | Ke subtree kanan |
-| 3 | 40 | 40 == 40 | **Ditemukan!** |
-
-> 📝 Hanya **3 perbandingan** untuk menemukan dari 7 node. Pada BST balanced, search hanya butuh **O(log n)** perbandingan.
+| Penerapan | Contoh |
+|-----------|--------|
+| **Autocomplete** | Google Search, IDE code completion |
+| **Spell Checker** | Microsoft Word, Grammarly |
+| **IP Routing** | Longest prefix match pada router |
+| **T9 Predictive Text** | Keyboard HP jadul |
+| **DNA Sequence** | Pencarian pola pada sequence genomik |
 
 ---
 
-## 3. Operasi Insert pada BST (20 menit)
+## 3. Tensor — Struktur Data untuk AI/ML (30 menit)
 
-### 3.1 Algoritma Insert
+### 3.1 Dari Scalar ke Tensor
 
-Insert pada BST selalu dilakukan di posisi **leaf** (node baru selalu menjadi daun):
-1. Mulai dari root
-2. Jika tree kosong → node baru menjadi root
-3. Jika data < node → insert ke **subtree kiri**
-4. Jika data > node → insert ke **subtree kanan**
-5. Jika mencapai posisi kosong (None) → **buat node baru di sini**
-
-### 3.2 Flowchart Insert
-
-```mermaid
-flowchart TD
-    START([🟢 START]) --> INPUT[/Input: node, data/]
-    INPUT --> CHECK1{node == None?}
-    CHECK1 -->|Ya| CREATE[Buat Node baru data<br/>Return node baru]
-    CHECK1 -->|Tidak| CHECK2{data < node.data?}
-    CHECK2 -->|Ya| GOLEFT[node.left = insert node.left, data]
-    CHECK2 -->|Tidak| CHECK3{data > node.data?}
-    CHECK3 -->|Ya| GORIGHT[node.right = insert node.right, data]
-    CHECK3 -->|Tidak| DUP[/Data duplikat<br/>abaikan atau error/]
-    GOLEFT --> RETURN[/Return node/]
-    GORIGHT --> RETURN
-    CREATE --> END([🔴 END])
-    DUP --> RETURN
-    RETURN --> END
-    
-    style START fill:#70AD47,color:#fff
-    style END fill:#C00000,color:#fff
-    style CHECK1 fill:#FFC000
-    style CHECK2 fill:#FFC000
-    style CHECK3 fill:#FFC000
-    style CREATE fill:#70AD47,color:#fff
-```
-
-### 3.3 Kode Python
-
-```python
-def insert(node, data):
-    """Insert data ke BST - O(log n) average"""
-    if node is None:
-        return Node(data)       # Buat node baru
-    
-    if data < node.data:
-        node.left = insert(node.left, data)    # Insert ke kiri
-    elif data > node.data:
-        node.right = insert(node.right, data)  # Insert ke kanan
-    # Jika data == node.data, abaikan (tidak ada duplikat)
-    
-    return node
-```
-
-### 3.4 Trace Membangun BST
-
-**Urutan insert: 50, 30, 70, 20, 40, 60, 80**
-
-| Langkah | Insert | Proses | Kondisi Tree |
-|---------|--------|--------|--------------|
-| 1 | 50 | Tree kosong → jadi root | `50` |
-| 2 | 30 | 30 < 50 → left child dari 50 | `50(L:30)` |
-| 3 | 70 | 70 > 50 → right child dari 50 | `50(L:30, R:70)` |
-| 4 | 20 | 20 < 50 → kiri, 20 < 30 → left child dari 30 | `30(L:20)` |
-| 5 | 40 | 40 < 50 → kiri, 40 > 30 → right child dari 30 | `30(R:40)` |
-| 6 | 60 | 60 > 50 → kanan, 60 < 70 → left child dari 70 | `70(L:60)` |
-| 7 | 80 | 80 > 50 → kanan, 80 > 70 → right child dari 70 | `70(R:80)` |
-
-**Hasil akhir:**
-
-```mermaid
-flowchart TB
-    N50((50)) --> N30((30))
-    N50 --> N70((70))
-    N30 --> N20((20))
-    N30 --> N40((40))
-    N70 --> N60((60))
-    N70 --> N80((80))
-    
-    style N50 fill:#4472C4,color:#fff
-```
-
-### 3.5 Pengaruh Urutan Insert
-
-> ⚠️ **Penting:** Urutan insert menentukan **bentuk** BST!
-
-**Urutan insert: 20, 30, 40, 50, 60, 70, 80** (data terurut ascending)
-
-```mermaid
-flowchart TB
-    N20((20)) --> NULL1[∅]
-    N20 --> N30((30))
-    N30 --> NULL2[∅]
-    N30 --> N40((40))
-    N40 --> NULL3[∅]
-    N40 --> N50((50))
-    N50 --> NULL4[∅]
-    N50 --> N60((60))
-    
-    style N20 fill:#FF6B6B,color:#fff
-    style N30 fill:#FF6B6B,color:#fff
-    style N40 fill:#FF6B6B,color:#fff
-    style N50 fill:#FF6B6B,color:#fff
-    style N60 fill:#FF6B6B,color:#fff
-    style NULL1 fill:#FFE6E6,stroke:#FF6B6B
-    style NULL2 fill:#FFE6E6,stroke:#FF6B6B
-    style NULL3 fill:#FFE6E6,stroke:#FF6B6B
-    style NULL4 fill:#FFE6E6,stroke:#FF6B6B
-```
-
-Hasilnya adalah **degenerate/skewed tree** — mirip linked list! Semua operasi menjadi **O(n)**.
-
----
-
-## 4. Operasi Delete pada BST (25 menit)
-
-### 4.1 Tiga Kasus Delete
-
-Menghapus node di BST lebih kompleks karena harus **menjaga properti BST** setelah penghapusan.
+Dalam konteks AI dan Machine Learning, **Tensor** adalah generalisasi dari array multidimensi. Tensor adalah struktur data utama yang digunakan dalam framework ML seperti TensorFlow dan PyTorch.
 
 ```mermaid
 flowchart LR
-    subgraph CASE1 [Kasus 1: Leaf Node]
-        C1[Hapus langsung]
-    end
+    S[Scalar<br/>0-D<br/>Contoh: 5] --> V[Vector<br/>1-D<br/>Contoh: 1 2 3]
+    V --> M[Matrix<br/>2-D<br/>Contoh: 3×3]
+    M --> T[Tensor<br/>N-D<br/>Contoh: 3×3×3]
     
-    subgraph CASE2 [Kasus 2: Satu Child]
-        C2[Ganti dengan child-nya]
-    end
-    
-    subgraph CASE3 [Kasus 3: Dua Child]
-        C3[Ganti dengan<br/>inorder successor<br/>atau predecessor]
-    end
-    
-    style CASE1 fill:#70AD47,color:#fff
-    style CASE2 fill:#FFC000,color:#000
-    style CASE3 fill:#FF6B6B,color:#fff
+    style S fill:#DEEBF7
+    style V fill:#BDD7EE
+    style M fill:#9DC3E6
+    style T fill:#4472C4,color:#fff
 ```
 
-### 4.2 Kasus 1: Hapus Leaf Node (Tidak Punya Child)
+### 3.2 Hierarki Tensor
 
-**Contoh: Hapus node 20**
+| Dimensi | Nama | Contoh di Python | Contoh di Dunia Nyata |
+|---------|------|-----------------|----------------------|
+| 0-D | **Scalar** | `x = 5` | Suhu: 36.5°C |
+| 1-D | **Vector** | `v = [1, 2, 3]` | Harga saham 3 hari |
+| 2-D | **Matrix** | `m = [[1,2],[3,4]]` | Gambar grayscale (baris × kolom) |
+| 3-D | **Tensor 3D** | `t = [[[1,2],[3,4]],[[5,6],[7,8]]]` | Gambar RGB (tinggi × lebar × channel) |
+| 4-D | **Tensor 4D** | `batch = [t1, t2, t3, ...]` | Batch gambar untuk training (batch × H × W × C) |
+
+### 3.3 Visualisasi Dimensi Tensor
 
 ```mermaid
 flowchart TB
-    subgraph BEFORE [Sebelum]
-        B50((50)) --> B30((30))
-        B50 --> B70((70))
-        B30 --> B20((❌ 20))
-        B30 --> B40((40))
+    subgraph SCALAR [0-D: Scalar]
+        S1[42]
     end
     
-    subgraph AFTER [Sesudah]
-        A50((50)) --> A30((30))
-        A50 --> A70((70))
-        A30 --> ANULL[∅]
-        A30 --> A40((40))
+    subgraph VECTOR [1-D: Vector]
+        V1[1] --- V2[2] --- V3[3] --- V4[4]
     end
     
-    BEFORE --> AFTER
+    subgraph MATRIX [2-D: Matrix]
+        M1[1 2 3] 
+        M2[4 5 6]
+        M3[7 8 9]
+    end
     
-    style B20 fill:#FF6B6B,color:#fff
-    style ANULL fill:#FFE6E6,stroke:#FF6B6B
+    subgraph TENSOR [3-D: Tensor]
+        T1[Layer 1<br/>1 2 3<br/>4 5 6]
+        T2[Layer 2<br/>7 8 9<br/>10 11 12]
+    end
+    
+    style SCALAR fill:#E2EFDA
+    style VECTOR fill:#DEEBF7
+    style MATRIX fill:#D9E2F3
+    style TENSOR fill:#B4C6E7
 ```
 
-> **Langkah:** Cukup set pointer parent menjadi None. Sederhana!
+### 3.4 Tensor dengan NumPy
 
-### 4.3 Kasus 2: Hapus Node dengan Satu Child
+```python
+import numpy as np
 
-**Contoh: Hapus node 30 (punya right child 40 saja)**
+# === Scalar (0-D) ===
+scalar = np.array(42)
+print(f"Scalar: {scalar}, shape: {scalar.shape}, ndim: {scalar.ndim}")
+# Scalar: 42, shape: (), ndim: 0
 
-Asumsikan tree awal di mana node 30 hanya punya right child 40:
+# === Vector (1-D) ===
+vector = np.array([1, 2, 3, 4])
+print(f"Vector: {vector}, shape: {vector.shape}, ndim: {vector.ndim}")
+# Vector: [1 2 3 4], shape: (4,), ndim: 1
+
+# === Matrix (2-D) ===
+matrix = np.array([[1, 2, 3],
+                   [4, 5, 6]])
+print(f"Matrix shape: {matrix.shape}, ndim: {matrix.ndim}")
+# Matrix shape: (2, 3), ndim: 2
+
+# === Tensor 3D ===
+tensor_3d = np.array([[[1, 2], [3, 4]],
+                      [[5, 6], [7, 8]],
+                      [[9, 10], [11, 12]]])
+print(f"Tensor 3D shape: {tensor_3d.shape}, ndim: {tensor_3d.ndim}")
+# Tensor 3D shape: (3, 2, 2), ndim: 3
+```
+
+### 3.5 Mengapa Tensor Penting untuk AI?
+
+```mermaid
+flowchart LR
+    subgraph INPUT [Input Data]
+        IMG[Gambar<br/>3-D Tensor<br/>H × W × C]
+        TXT[Teks<br/>2-D Tensor<br/>Seq × Embed]
+        TAB[Tabel<br/>2-D Tensor<br/>Rows × Cols]
+    end
+    
+    subgraph MODEL [Neural Network]
+        W[Weights<br/>2-D Tensor]
+        B[Bias<br/>1-D Tensor]
+        OP[Operasi Tensor<br/>Dot product, Reshape<br/>Transpose, dll.]
+    end
+    
+    subgraph OUTPUT [Output]
+        PRED[Prediksi<br/>1-D Tensor]
+    end
+    
+    INPUT --> MODEL --> OUTPUT
+    
+    style INPUT fill:#DEEBF7
+    style MODEL fill:#FFC000,color:#000
+    style OUTPUT fill:#70AD47,color:#fff
+```
+
+Alasan tensor adalah inti dari AI/ML:
+
+1. **Representasi Data** — Semua data (gambar, teks, audio) dikonversi ke tensor sebelum diproses
+2. **Operasi Paralel** — GPU sangat efisien memproses operasi tensor secara paralel
+3. **Gradient Computation** — Backpropagation pada neural network adalah operasi pada tensor
+4. **Batch Processing** — Tensor memungkinkan pemrosesan banyak data sekaligus
+
+### 3.6 Contoh: Gambar sebagai Tensor
+
+```python
+import numpy as np
+
+# Simulasi gambar RGB 4x4 piksel
+# Shape: (tinggi, lebar, channel) = (4, 4, 3)
+image = np.array([
+    [[255, 0, 0],   [255, 0, 0],   [0, 0, 255],   [0, 0, 255]],    # Baris 0
+    [[255, 0, 0],   [255, 0, 0],   [0, 0, 255],   [0, 0, 255]],    # Baris 1
+    [[0, 255, 0],   [0, 255, 0],   [255, 255, 0], [255, 255, 0]],   # Baris 2
+    [[0, 255, 0],   [0, 255, 0],   [255, 255, 0], [255, 255, 0]],   # Baris 3
+])
+
+print(f"Shape gambar: {image.shape}")       # (4, 4, 3)
+print(f"Dimensi: {image.ndim}")             # 3
+print(f"Total piksel: {image.shape[0] * image.shape[1]}")  # 16
+print(f"Piksel [0][0] (RGB): {image[0][0]}")  # [255, 0, 0] → Merah
+
+# Akses channel tertentu
+red_channel = image[:, :, 0]    # Semua piksel, channel merah
+print(f"Red channel shape: {red_channel.shape}")  # (4, 4)
+
+# Batch gambar untuk training: 32 gambar sekaligus
+batch_size = 32
+batch = np.random.randint(0, 256, size=(batch_size, 4, 4, 3))
+print(f"Batch shape: {batch.shape}")  # (32, 4, 4, 3)
+```
+
+### 3.7 Operasi Tensor Dasar
+
+| Operasi | Deskripsi | Contoh di NumPy |
+|---------|-----------|----------------|
+| **Reshape** | Mengubah bentuk tanpa ubah data | `arr.reshape(2, 3)` |
+| **Transpose** | Menukar sumbu | `arr.T` |
+| **Dot Product** | Perkalian matrix/vektor | `np.dot(a, b)` |
+| **Element-wise** | Operasi per elemen | `a + b`, `a * b` |
+| **Broadcasting** | Operasi antar tensor beda shape | `matrix + vector` |
+| **Slicing** | Mengambil subset | `tensor[0, :, 1:3]` |
+
+```python
+import numpy as np
+
+# Reshape: ubah vektor 6 elemen jadi matrix 2×3
+v = np.array([1, 2, 3, 4, 5, 6])
+m = v.reshape(2, 3)
+print(m)
+# [[1 2 3]
+#  [4 5 6]]
+
+# Dot product: inti operasi neural network
+weights = np.array([[0.1, 0.2],
+                    [0.3, 0.4],
+                    [0.5, 0.6]])
+inputs = np.array([1.0, 2.0, 3.0])
+output = np.dot(inputs, weights)   # (3,) dot (3,2) → (2,)
+print(f"Output: {output}")         # [2.2 2.8]
+```
+
+---
+
+## 4. Struktur Data untuk Big Data (20 menit)
+
+### 4.1 Tantangan Big Data
+
+Big Data memiliki karakteristik **5V**:
 
 ```mermaid
 flowchart TB
-    subgraph BEFORE [Sebelum]
-        B50((50)) --> B30((❌ 30))
-        B50 --> B70((70))
-        B30 --> BNULL[∅]
-        B30 --> B40((40))
-    end
+    BD[💾 BIG DATA] --> V1[Volume<br/>Data sangat besar<br/>TB / PB]
+    BD --> V2[Velocity<br/>Data masuk cepat<br/>Real-time stream]
+    BD --> V3[Variety<br/>Beragam format<br/>Structured & unstructured]
+    BD --> V4[Veracity<br/>Kualitas data<br/>bervariasi]
+    BD --> V5[Value<br/>Nilai bisnis<br/>dari data]
     
-    subgraph AFTER [Sesudah]
-        A50((50)) --> A40((40))
-        A50 --> A70((70))
-    end
-    
-    BEFORE --> AFTER
-    
-    style B30 fill:#FF6B6B,color:#fff
-    style A40 fill:#70AD47,color:#fff
-    style BNULL fill:#FFE6E6,stroke:#FF6B6B
+    style BD fill:#4472C4,color:#fff
+    style V1 fill:#DEEBF7
+    style V2 fill:#DEEBF7
+    style V3 fill:#DEEBF7
+    style V4 fill:#DEEBF7
+    style V5 fill:#DEEBF7
 ```
 
-> **Langkah:** Ganti node yang dihapus dengan child-nya. Node 40 "naik" menggantikan posisi 30.
+### 4.2 Struktur Data yang Relevan
 
-### 4.4 Kasus 3: Hapus Node dengan Dua Child
+#### A. Hash Map / Key-Value Store
 
-Ini adalah kasus yang paling kompleks. Kita perlu mencari **pengganti** yang menjaga properti BST.
+Digunakan oleh sistem seperti **Redis**, **DynamoDB**, dan **Cassandra** untuk menyimpan data dalam format key-value.
 
-**Dua pilihan pengganti:**
-- **Inorder Successor** = node terkecil di subtree kanan (paling kiri dari subtree kanan)
-- **Inorder Predecessor** = node terbesar di subtree kiri (paling kanan dari subtree kiri)
-
-**Contoh: Hapus node 50 (root) menggunakan Inorder Successor**
-
-```mermaid
-flowchart TB
-    subgraph BEFORE [Sebelum - Hapus 50]
-        B50((❌ 50)) --> B30((30))
-        B50 --> B70((70))
-        B30 --> B20((20))
-        B30 --> B40((40))
-        B70 --> B60((🔄 60<br/>Inorder Successor))
-        B70 --> B80((80))
-    end
+```python
+# Simulasi sederhana key-value store
+class SimpleKeyValueStore:
+    def __init__(self):
+        self.store = {}          # Hash map internal
     
-    subgraph AFTER [Sesudah]
-        A60((60)) --> A30((30))
-        A60 --> A70((70))
-        A30 --> A20((20))
-        A30 --> A40((40))
-        A70 --> ANULL[∅]
-        A70 --> A80((80))
-    end
+    def put(self, key, value):
+        """Menyimpan data — O(1)"""
+        self.store[key] = value
     
-    BEFORE --> AFTER
+    def get(self, key):
+        """Mengambil data — O(1)"""
+        return self.store.get(key, None)
     
-    style B50 fill:#FF6B6B,color:#fff
-    style B60 fill:#FFC000,color:#000
-    style A60 fill:#70AD47,color:#fff
-    style ANULL fill:#FFE6E6,stroke:#FF6B6B
+    def delete(self, key):
+        """Menghapus data — O(1)"""
+        if key in self.store:
+            del self.store[key]
+
+# Contoh: cache data user
+cache = SimpleKeyValueStore()
+cache.put("user:1001", {"name": "Andi", "email": "andi@email.com"})
+cache.put("user:1002", {"name": "Budi", "email": "budi@email.com"})
+print(cache.get("user:1001"))  # {'name': 'Andi', 'email': 'andi@email.com'}
 ```
 
-**Langkah-langkah:**
-1. Cari **inorder successor** dari 50 → node 60 (paling kiri dari subtree kanan)
-2. **Salin** data inorder successor (60) ke node yang akan dihapus (50)
-3. **Hapus** node inorder successor (60) dari posisi aslinya
+> 📝 Hash Map memberikan akses **O(1)** — sangat penting untuk Big Data yang membutuhkan response time rendah.
 
-### 4.5 Flowchart Delete
+#### B. B-Tree — Database Indexing
+
+**B-Tree** adalah tree yang digunakan oleh hampir semua database relasional (MySQL, PostgreSQL) untuk **indexing**.
 
 ```mermaid
 flowchart TD
-    START([🟢 START]) --> INPUT[/Input: node, target/]
-    INPUT --> CHECK1{node == None?}
-    CHECK1 -->|Ya| RETNONE[/Return None/]
-    CHECK1 -->|Tidak| CMP1{target < node.data?}
-    CMP1 -->|Ya| GOLEFT[node.left = delete node.left, target]
-    CMP1 -->|Tidak| CMP2{target > node.data?}
-    CMP2 -->|Ya| GORIGHT[node.right = delete node.right, target]
-    CMP2 -->|Tidak| FOUND[Node ditemukan!]
+    ROOT["[30 | 60]"] --> L["[10 | 20]"]
+    ROOT --> M["[40 | 50]"]
+    ROOT --> R["[70 | 80 | 90]"]
     
-    FOUND --> CASE1{Leaf node?<br/>left==None AND right==None}
-    CASE1 -->|Ya| RETLEAF[/Return None/]
-    CASE1 -->|Tidak| CASE2{Hanya punya<br/>1 child?}
-    CASE2 -->|left==None| RETRIGHT[/Return node.right/]
-    CASE2 -->|right==None| RETLEFT[/Return node.left/]
-    CASE2 -->|Punya 2 child| CASE3[Cari inorder successor<br/>min di subtree kanan]
-    CASE3 --> COPY[node.data = successor.data]
-    COPY --> DELSUC[node.right = delete<br/>node.right, successor.data]
+    L --> L1["[5 | 8]"]
+    L --> L2["[12 | 15]"]
+    L --> L3["[22 | 25]"]
     
-    GOLEFT --> RETURN[/Return node/]
-    GORIGHT --> RETURN
-    DELSUC --> RETURN
-    RETNONE --> END([🔴 END])
-    RETLEAF --> END
-    RETRIGHT --> END
-    RETLEFT --> END
-    RETURN --> END
-    
-    style START fill:#70AD47,color:#fff
-    style END fill:#C00000,color:#fff
-    style CHECK1 fill:#FFC000
-    style CMP1 fill:#FFC000
-    style CMP2 fill:#FFC000
-    style CASE1 fill:#FFC000
-    style CASE2 fill:#FFC000
-    style FOUND fill:#4472C4,color:#fff
+    style ROOT fill:#4472C4,color:#fff
+    style L fill:#FFC000,color:#000
+    style M fill:#FFC000,color:#000
+    style R fill:#FFC000,color:#000
 ```
 
-### 4.6 Kode Python
+Keunggulan B-Tree untuk Big Data:
 
-```python
-def find_min(node):
-    """Mencari node dengan nilai terkecil di BST (paling kiri)"""
-    current = node
-    while current.left is not None:
-        current = current.left
-    return current
+| Aspek | BST | B-Tree |
+|-------|-----|--------|
+| Tinggi untuk 1 juta data | ~20 level | ~3-4 level |
+| Disk access per search | ~20 | ~3-4 |
+| Cocok untuk disk storage | Tidak | Ya |
+| Digunakan di database | Jarang | Hampir semua |
 
+> 📝 B-Tree sangat efisien untuk data yang disimpan di **disk** (bukan RAM), karena setiap node menyimpan banyak key sekaligus, sehingga **mengurangi jumlah disk access**.
 
-def delete(node, target):
-    """Menghapus node dengan nilai target dari BST"""
-    if node is None:
-        return None
-    
-    # Langkah 1: Cari node yang akan dihapus
-    if target < node.data:
-        node.left = delete(node.left, target)
-    elif target > node.data:
-        node.right = delete(node.right, target)
-    else:
-        # Node ditemukan! Tentukan kasus:
-        
-        # Kasus 1: Leaf node (tidak punya child)
-        if node.left is None and node.right is None:
-            return None
-        
-        # Kasus 2: Hanya punya satu child
-        if node.left is None:
-            return node.right
-        if node.right is None:
-            return node.left
-        
-        # Kasus 3: Punya dua child
-        # Cari inorder successor (node terkecil di subtree kanan)
-        successor = find_min(node.right)
-        node.data = successor.data  # Salin data successor
-        # Hapus successor dari posisi aslinya
-        node.right = delete(node.right, successor.data)
-    
-    return node
-```
+#### C. Graph — Network Analysis
 
----
+Graph digunakan untuk menganalisis hubungan dalam Big Data:
 
-## 5. Analisis Kompleksitas BST (15 menit)
+| Penerapan | Node | Edge | Contoh Tools |
+|-----------|------|------|-------------|
+| Social Network | User | Pertemanan | Neo4j, Facebook TAO |
+| Knowledge Graph | Entitas | Relasi | Google Knowledge Graph |
+| Web Graph | Halaman | Hyperlink | PageRank Google |
+| Fraud Detection | Transaksi | Aliran uang | TigerGraph |
 
-### 5.1 Kompleksitas Berdasarkan Bentuk Tree
+#### D. Queue — Stream Processing
 
-| Operasi | Best Case (Balanced) | Worst Case (Skewed) | Average |
-|---------|----------------------|---------------------|---------|
-| Search | O(log n) | O(n) | O(log n) |
-| Insert | O(log n) | O(n) | O(log n) |
-| Delete | O(log n) | O(n) | O(log n) |
-| Inorder | O(n) | O(n) | O(n) |
-| Find Min/Max | O(log n) | O(n) | O(log n) |
-
-### 5.2 Visualisasi: Balanced vs Skewed
+**Message Queue** digunakan untuk memproses data stream secara real-time:
 
 ```mermaid
-flowchart TB
-    subgraph BALANCED [✅ Balanced BST - Height = log n]
-        B50((50)) --> B30((30))
-        B50 --> B70((70))
-        B30 --> B20((20))
-        B30 --> B40((40))
-        B70 --> B60((60))
-        B70 --> B80((80))
-    end
+flowchart LR
+    P1[Producer 1<br/>Sensor IoT] --> Q[📬 MESSAGE QUEUE<br/>Apache Kafka / RabbitMQ]
+    P2[Producer 2<br/>Web Server] --> Q
+    P3[Producer 3<br/>Mobile App] --> Q
     
-    subgraph SKEWED [❌ Skewed BST - Height = n]
-        S20((20)) --> SNULL1[∅]
-        S20 --> S30((30))
-        S30 --> SNULL2[∅]
-        S30 --> S40((40))
-        S40 --> SNULL3[∅]
-        S40 --> S50((50))
-    end
+    Q --> C1[Consumer 1<br/>Dashboard]
+    Q --> C2[Consumer 2<br/>Analytics]
+    Q --> C3[Consumer 3<br/>Alert System]
     
-    style B50 fill:#70AD47,color:#fff
-    style S20 fill:#FF6B6B,color:#fff
-    style SNULL1 fill:#FFE6E6,stroke:#FF6B6B
-    style SNULL2 fill:#FFE6E6,stroke:#FF6B6B
-    style SNULL3 fill:#FFE6E6,stroke:#FF6B6B
+    style Q fill:#4472C4,color:#fff
 ```
 
-| Aspek | Balanced BST | Skewed BST |
-|-------|--------------|------------|
-| Height | ~log₂(n) | n - 1 |
-| Search | O(log n) | O(n) |
-| Seperti... | Binary Search | Linear Search |
-| Contoh height (n=1000) | ~10 | 999 |
+> 📝 Ini adalah penerapan langsung dari konsep **Queue (FIFO)** yang sudah kita pelajari di Pertemuan 6!
 
-### 5.3 Konsep Self-Balancing BST
+### 4.3 Bloom Filter — Struktur Data Probabilistik
 
-Untuk menghindari kasus skewed, ada beberapa varian BST yang **otomatis menyeimbangkan diri**:
+**Bloom Filter** adalah struktur data berbasis hash yang menjawab pertanyaan: "Apakah elemen ini **mungkin** ada di set?" dengan sangat efisien.
 
-| Self-Balancing BST | Mekanisme | Keterangan |
-|--------------------|-----------|------------|
-| **AVL Tree** | Rotasi saat selisih height > 1 | Ketat, selalu balanced |
-| **Red-Black Tree** | Pewarnaan node + rotasi | Lebih relaxed, dipakai di Java TreeMap |
-| **B-Tree** | Multiple keys per node | Dipakai di database index |
-
-> 💡 Di mata kuliah ini, kita cukup memahami **konsep** balancing. Implementasi detail AVL/Red-Black akan dipelajari di mata kuliah lanjutan.
-
-### 5.4 Operasi Tambahan BST
-
-```python
-def find_min(node):
-    """Mencari nilai terkecil - paling kiri"""
-    current = node
-    while current.left is not None:
-        current = current.left
-    return current
-
-def find_max(node):
-    """Mencari nilai terbesar - paling kanan"""
-    current = node
-    while current.right is not None:
-        current = current.right
-    return current
+```mermaid
+flowchart LR
+    INPUT[Input: 'apple'] --> H1[Hash 1<br/>→ pos 2]
+    INPUT --> H2[Hash 2<br/>→ pos 5]
+    INPUT --> H3[Hash 3<br/>→ pos 9]
+    
+    subgraph BIT_ARRAY [Bit Array]
+        B0[0] --- B1[0] --- B2[1] --- B3[0] --- B4[0] --- B5[1] --- B6[0] --- B7[0] --- B8[0] --- B9[1]
+    end
+    
+    H1 --> B2
+    H2 --> B5
+    H3 --> B9
+    
+    style B2 fill:#70AD47,color:#fff
+    style B5 fill:#70AD47,color:#fff
+    style B9 fill:#70AD47,color:#fff
 ```
+
+Karakteristik Bloom Filter:
+
+| Aspek | Keterangan |
+|-------|-----------|
+| False Positive | Mungkin terjadi ("mungkin ada" padahal tidak) |
+| False Negative | **Tidak pernah terjadi** ("tidak ada" pasti tidak ada) |
+| Space | Sangat hemat (bit array) |
+| Digunakan di | Google Chrome (cek malicious URL), Database (cek key sebelum disk access) |
 
 ---
 
-## 6. Rangkuman Tatap Muka (10 menit — sisa waktu)
+## 5. Rangkuman dan Persiapan Review UAS (10 menit)
+
+### 5.1 Peta Seluruh Materi Kuliah
 
 ```mermaid
 mindmap
-  root((🌲 BST<br/>Pertemuan 10))
-    Properti
-      left < root < right
-      Inorder → data terurut
-      Tidak ada duplikat
-    Operasi
-      Search → O log n avg
-      Insert → selalu di leaf
-      Delete 3 kasus
-        Leaf → hapus langsung
-        1 child → ganti child
-        2 child → inorder successor
-    Kompleksitas
-      Balanced → O log n
-      Skewed → O n
-      Self-balancing → AVL, Red-Black
-    Aplikasi
-      Database indexing
-      Autocomplete
-      File system
+  root((📚 STRUKTUR DATA<br/>Semester 2))
+    Konsep Dasar
+      ADT
+      Big-O Notation
+      Kompleksitas Algoritma
+    Struktur Linear
+      Array
+      Linked List
+        Single LL
+        Double LL
+        Circular LL
+      Stack - LIFO
+      Queue - FIFO
+        Circular Queue
+        Priority Queue
+    Struktur Non-Linear
+      Tree
+        Binary Tree
+        BST
+      Graph
+        Adjacency Matrix
+        Adjacency List
+        BFS & DFS
+    Algoritma
+      Searching
+        Linear Search
+        Binary Search
+        Hash Table
+      Sorting Dasar
+        Bubble Sort
+        Selection Sort
+        Insertion Sort
+      Sorting Lanjutan
+        Merge Sort
+        Quick Sort
+        Heap Sort
+    Big Data dan AI
+      Trie
+      Tensor
+      Big Data Structures
 ```
 
-### Formula Penting
+### 5.2 Rangkuman Kompleksitas Seluruh Materi
 
-> **Properti BST:** Untuk setiap node N, semua nilai di subtree kiri < N < semua nilai di subtree kanan
+| Struktur Data / Algoritma | Access | Search | Insert | Delete |
+|---------------------------|--------|--------|--------|--------|
+| **Array** | O(1) | O(n) | O(n) | O(n) |
+| **Linked List** | O(n) | O(n) | O(1)* | O(1)* |
+| **Stack** | O(n) | O(n) | O(1) | O(1) |
+| **Queue** | O(n) | O(n) | O(1) | O(1) |
+| **BST** (avg) | O(log n) | O(log n) | O(log n) | O(log n) |
+| **Hash Table** (avg) | — | O(1) | O(1) | O(1) |
+| **Trie** | — | O(L) | O(L) | O(L) |
 
-> **Inorder Successor:** Node terkecil di subtree kanan = paling kiri dari subtree kanan
+> *Jika sudah di posisi yang tepat
 
-> **Height Balanced BST:** h ≈ log₂(n), sehingga semua operasi O(log n)
+| Algoritma Sorting | Best | Average | Worst | Stable? |
+|-------------------|------|---------|-------|---------|
+| **Bubble Sort** | O(n) | O(n²) | O(n²) | Ya |
+| **Selection Sort** | O(n²) | O(n²) | O(n²) | Tidak |
+| **Insertion Sort** | O(n) | O(n²) | O(n²) | Ya |
+| **Merge Sort** | O(n log n) | O(n log n) | O(n log n) | Ya |
+| **Quick Sort** | O(n log n) | O(n log n) | O(n²) | Tidak |
+| **Heap Sort** | O(n log n) | O(n log n) | O(n log n) | Tidak |
 
 ---
 
-# BAGIAN B: PRAKTIKUM DI LAB (100 Menit)
+# BAGIAN B: PRESENTASI PROYEK KELOMPOK (100 Menit)
 
-## Tujuan Praktikum
-Mengimplementasikan Binary Search Tree dengan operasi insert, search, delete, dan traversal menggunakan Python.
+## Tujuan Sesi Presentasi
+Mahasiswa mempresentasikan proyek kelompok yang mengimplementasikan struktur data untuk menyelesaikan permasalahan nyata.
 
-> ⚠️ **Catatan:** Kode yang dibuat di praktikum ini akan **dikembangkan lebih lanjut** di Tugas Terstruktur.
-
----
-
-## Praktikum 10.1: Implementasi BST Dasar (40 menit)
-
-### Spesifikasi
-
-```
-ADT BinarySearchTree (Dasar):
-    Data:
-        - Node berisi data, left child, right child
-        - Root node sebagai entry point
-    
-    Operasi Dasar:
-        - insert(data)       : Menyisipkan data ke BST
-        - search(target)     : Mencari data di BST
-        - find_min()         : Mencari nilai terkecil
-        - find_max()         : Mencari nilai terbesar
-        - inorder()          : Traversal inorder (data terurut)
-        - is_empty()         : Mengecek apakah BST kosong
-        - size()             : Mengembalikan jumlah node
-```
-
-### Kode Praktikum
-
-```python
-"""
-============================================================
-PRAKTIKUM 10.1: Implementasi BST (Dasar)
-============================================================
-Nama  : ____________________
-NIM   : ____________________
-Kelas : ____________________
-
-Instruksi: 
-1. Implementasikan setiap method berdasarkan flowchart di teori
-2. Jalankan test cases untuk memastikan implementasi benar
-3. SIMPAN FILE INI - akan dikembangkan di Tugas Terstruktur
-============================================================
-"""
-
-class Node:
-    """Node untuk Binary Search Tree"""
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-class BST:
-    def __init__(self):
-        """Inisialisasi BST kosong"""
-        # TODO: Implementasikan
-        pass
-    
-    def is_empty(self):
-        """Mengecek apakah BST kosong"""
-        # TODO: Implementasikan
-        pass
-    
-    def insert(self, data):
-        """
-        Menyisipkan data ke BST
-        Data duplikat diabaikan
-        """
-        # TODO: Implementasikan
-        # Gunakan helper _insert_recursive
-        pass
-    
-    def _insert_recursive(self, node, data):
-        """
-        Helper rekursif untuk insert
-        Berdasarkan flowchart INSERT
-        """
-        # TODO: Implementasikan
-        # Base case: node is None -> buat Node baru
-        # Jika data < node.data -> insert ke kiri
-        # Jika data > node.data -> insert ke kanan
-        # Return node
-        pass
-    
-    def search(self, target):
-        """
-        Mencari data di BST
-        Return: Node jika ditemukan, None jika tidak
-        """
-        # TODO: Implementasikan berdasarkan flowchart SEARCH
-        pass
-    
-    def _search_recursive(self, node, target):
-        """Helper rekursif untuk search"""
-        # TODO: Implementasikan
-        pass
-    
-    def find_min(self):
-        """
-        Mencari nilai terkecil di BST (node paling kiri)
-        Return: data terkecil, atau None jika tree kosong
-        """
-        # TODO: Implementasikan
-        pass
-    
-    def find_max(self):
-        """
-        Mencari nilai terbesar di BST (node paling kanan)
-        Return: data terbesar, atau None jika tree kosong
-        """
-        # TODO: Implementasikan
-        pass
-    
-    def inorder(self):
-        """
-        Inorder traversal (menghasilkan data terurut)
-        Return: list of values
-        """
-        # TODO: Implementasikan
-        pass
-    
-    def _inorder_recursive(self, node, result):
-        """Helper rekursif untuk inorder"""
-        # TODO: Implementasikan
-        pass
-    
-    def size(self):
-        """Mengembalikan jumlah node"""
-        # TODO: Implementasikan
-        pass
-    
-    def _size_recursive(self, node):
-        """Helper rekursif untuk size"""
-        # TODO: Implementasikan
-        pass
-
-
-# === TEST CASES ===
-if __name__ == "__main__":
-    print("=" * 50)
-    print("TEST BST (DASAR)")
-    print("=" * 50)
-    
-    bst = BST()
-    
-    # Test 1: BST kosong
-    assert bst.is_empty() == True, "GAGAL"
-    assert bst.size() == 0, "GAGAL"
-    print("✓ Test 1 PASSED: BST kosong")
-    
-    # Test 2: Insert
-    # Urutan insert: 50, 30, 70, 20, 40, 60, 80
-    for val in [50, 30, 70, 20, 40, 60, 80]:
-        bst.insert(val)
-    assert bst.size() == 7, f"GAGAL: size harus 7, dapat {bst.size()}"
-    assert bst.is_empty() == False, "GAGAL"
-    print("✓ Test 2 PASSED: Insert 7 elemen")
-    
-    # Test 3: Search
-    assert bst.search(40) is not None, "GAGAL: 40 harus ditemukan"
-    assert bst.search(40).data == 40, "GAGAL"
-    assert bst.search(99) is None, "GAGAL: 99 tidak ada"
-    assert bst.search(50) is not None, "GAGAL: 50 (root) harus ditemukan"
-    print("✓ Test 3 PASSED: Search benar")
-    
-    # Test 4: Find min dan max
-    assert bst.find_min() == 20, f"GAGAL: min harus 20, dapat {bst.find_min()}"
-    assert bst.find_max() == 80, f"GAGAL: max harus 80, dapat {bst.find_max()}"
-    print("✓ Test 4 PASSED: Min=20, Max=80")
-    
-    # Test 5: Inorder (harus terurut!)
-    result = bst.inorder()
-    assert result == [20, 30, 40, 50, 60, 70, 80], f"GAGAL Inorder: {result}"
-    print(f"✓ Test 5 PASSED: Inorder = {result}")
-    
-    # Test 6: Insert duplikat (harus diabaikan)
-    bst.insert(50)
-    assert bst.size() == 7, "GAGAL: duplikat harus diabaikan"
-    print("✓ Test 6 PASSED: Duplikat diabaikan")
-    
-    # Test 7: Find min/max pada tree kosong
-    empty_bst = BST()
-    assert empty_bst.find_min() is None, "GAGAL"
-    assert empty_bst.find_max() is None, "GAGAL"
-    print("✓ Test 7 PASSED: Min/Max tree kosong = None")
-    
-    print("=" * 50)
-    print("🎉 SEMUA TEST PASSED!")
-    print("=" * 50)
-```
+> ⚠️ **Catatan:** Sesi ini menggantikan sesi praktikum reguler. Setiap kelompok (3-4 mahasiswa) mempresentasikan proyek yang telah dikerjakan selama semester.
 
 ---
 
-## Praktikum 10.2: Operasi Delete pada BST (35 menit)
+## Format Presentasi
 
-### Kode Praktikum
-
-```python
-"""
-============================================================
-PRAKTIKUM 10.2: Operasi Delete pada BST
-============================================================
-Nama  : ____________________
-NIM   : ____________________
-Kelas : ____________________
-
-Instruksi: 
-1. Gunakan class BST dari Praktikum 10.1
-2. Tambahkan method delete
-3. Jalankan test cases
-============================================================
-"""
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-class BST:
-    def __init__(self):
-        self.root = None
-    
-    def insert(self, data):
-        self.root = self._insert_recursive(self.root, data)
-    
-    def _insert_recursive(self, node, data):
-        if node is None:
-            return Node(data)
-        if data < node.data:
-            node.left = self._insert_recursive(node.left, data)
-        elif data > node.data:
-            node.right = self._insert_recursive(node.right, data)
-        return node
-    
-    def inorder(self):
-        result = []
-        self._inorder_recursive(self.root, result)
-        return result
-    
-    def _inorder_recursive(self, node, result):
-        if node:
-            self._inorder_recursive(node.left, result)
-            result.append(node.data)
-            self._inorder_recursive(node.right, result)
-    
-    def search(self, target):
-        return self._search_recursive(self.root, target)
-    
-    def _search_recursive(self, node, target):
-        if node is None:
-            return None
-        if target == node.data:
-            return node
-        elif target < node.data:
-            return self._search_recursive(node.left, target)
-        else:
-            return self._search_recursive(node.right, target)
-    
-    # ============ DELETE METHODS ============
-    
-    def delete(self, target):
-        """
-        Menghapus node dengan nilai target dari BST
-        Berdasarkan flowchart DELETE (3 kasus)
-        """
-        # TODO: Implementasikan
-        pass
-    
-    def _delete_recursive(self, node, target):
-        """
-        Helper rekursif untuk delete
-        
-        Kasus 1 (Leaf): Return None
-        Kasus 2 (1 child): Return child yang ada
-        Kasus 3 (2 child): 
-            - Cari inorder successor (min di subtree kanan)
-            - Copy data successor ke node
-            - Hapus successor dari subtree kanan
-        """
-        # TODO: Implementasikan berdasarkan flowchart DELETE
-        pass
-    
-    def _find_min_node(self, node):
-        """Mencari node dengan nilai terkecil (paling kiri)"""
-        # TODO: Implementasikan
-        pass
-    
-    def display(self):
-        """Menampilkan BST secara visual"""
-        self._display_recursive(self.root, 0, "Root: ")
-    
-    def _display_recursive(self, node, level, prefix):
-        if node is not None:
-            print(" " * (level * 4) + prefix + str(node.data))
-            if node.left is not None or node.right is not None:
-                if node.left:
-                    self._display_recursive(node.left, level + 1, "L--- ")
-                else:
-                    print(" " * ((level + 1) * 4) + "L--- ∅")
-                if node.right:
-                    self._display_recursive(node.right, level + 1, "R--- ")
-                else:
-                    print(" " * ((level + 1) * 4) + "R--- ∅")
-
-
-# === TEST CASES ===
-if __name__ == "__main__":
-    print("=" * 50)
-    print("TEST DELETE BST")
-    print("=" * 50)
-    
-    bst = BST()
-    for val in [50, 30, 70, 20, 40, 60, 80]:
-        bst.insert(val)
-    
-    print("\nTree awal:")
-    bst.display()
-    print(f"Inorder: {bst.inorder()}")
-    
-    # Test 1: Delete leaf node (20)
-    print("\n--- Delete 20 (leaf) ---")
-    bst.delete(20)
-    result = bst.inorder()
-    assert result == [30, 40, 50, 60, 70, 80], f"GAGAL: {result}"
-    assert bst.search(20) is None, "GAGAL: 20 masih ada"
-    print(f"✓ Test 1 PASSED: Inorder = {result}")
-    
-    # Test 2: Delete node dengan 1 child (30, sekarang hanya punya right child 40)
-    print("\n--- Delete 30 (1 child) ---")
-    bst.delete(30)
-    result = bst.inorder()
-    assert result == [40, 50, 60, 70, 80], f"GAGAL: {result}"
-    print(f"✓ Test 2 PASSED: Inorder = {result}")
-    
-    # Test 3: Delete node dengan 2 children (70, punya 60 dan 80)
-    print("\n--- Delete 70 (2 children) ---")
-    bst.delete(70)
-    result = bst.inorder()
-    assert result == [40, 50, 60, 80], f"GAGAL: {result}"
-    print(f"✓ Test 3 PASSED: Inorder = {result}")
-    
-    # Test 4: Delete root (50)
-    print("\n--- Delete 50 (root) ---")
-    bst.delete(50)
-    result = bst.inorder()
-    assert result == [40, 60, 80], f"GAGAL: {result}"
-    print(f"✓ Test 4 PASSED: Inorder = {result}")
-    
-    # Test 5: Delete node yang tidak ada
-    print("\n--- Delete 99 (tidak ada) ---")
-    bst.delete(99)
-    result = bst.inorder()
-    assert result == [40, 60, 80], f"GAGAL: {result}"
-    print("✓ Test 5 PASSED: Delete node tidak ada → tidak berubah")
-    
-    print("\nTree akhir:")
-    bst.display()
-    
-    print("=" * 50)
-    print("🎉 SEMUA TEST PASSED!")
-    print("=" * 50)
-```
+| Item | Keterangan |
+|------|------------|
+| **Jumlah Kelompok** | Disesuaikan dengan jumlah mahasiswa (3-4 per kelompok) |
+| **Durasi per Kelompok** | 10 menit presentasi + 5 menit tanya jawab |
+| **Total Waktu** | ~100 menit (6-7 kelompok) |
+| **Format** | Slide presentasi + Demo program |
 
 ---
 
-## Praktikum 10.3: Visualisasi dan Validasi BST (25 menit)
+## Komponen Presentasi
 
-### Kode Praktikum
+Setiap kelompok wajib menyampaikan:
 
-```python
-"""
+### 1. Latar Belakang Masalah (2 menit)
+- Permasalahan apa yang dipecahkan?
+- Mengapa permasalahan ini relevan?
+
+### 2. Pemilihan Struktur Data (3 menit)
+- Struktur data apa yang digunakan dan **mengapa** dipilih?
+- Apa alternatif lain dan mengapa tidak dipilih?
+- Analisis kompleksitas waktu dan ruang
+
+### 3. Demo Program (3 menit)
+- Jalankan program dan tunjukkan hasilnya
+- Tunjukkan kode bagian yang paling krusial
+- Jelaskan bagaimana struktur data diimplementasikan
+
+### 4. Kesimpulan (2 menit)
+- Apa yang dipelajari dari proyek ini?
+- Apa limitasi dan potensi pengembangan?
+
+---
+
+## Rubrik Penilaian Presentasi
+
+| Komponen | Bobot | Sangat Baik (A) | Baik (B) | Cukup (C) | Kurang (D) |
+|----------|-------|-----------------|----------|-----------|------------|
+| **Pemahaman Konsep** | 25% | Menjelaskan pemilihan struktur data dengan analisis Big-O yang tepat | Menjelaskan pemilihan dengan benar tanpa analisis mendalam | Pemilihan benar tapi penjelasan kurang | Pemilihan struktur data tidak tepat |
+| **Implementasi** | 30% | Kode berjalan sempurna, bersih, dan efisien | Kode berjalan dengan minor issues | Kode berjalan tapi tidak efisien | Kode tidak berjalan |
+| **Presentasi** | 20% | Jelas, terstruktur, semua anggota berkontribusi | Cukup jelas, sebagian besar anggota aktif | Kurang terstruktur | Tidak terstruktur, hanya 1 orang presentasi |
+| **Tanya Jawab** | 15% | Menjawab semua pertanyaan dengan tepat dan percaya diri | Menjawab sebagian besar dengan benar | Menjawab tapi kurang tepat | Tidak bisa menjawab |
+| **Kreativitas** | 10% | Permasalahan unik dan solusi kreatif | Permasalahan cukup menarik | Permasalahan standar | Tidak ada kreativitas |
+
+---
+
+## Contoh Topik Proyek
+
+| No | Topik | Struktur Data Utama |
+|----|-------|---------------------|
+| 1 | Sistem Autocomplete untuk Search Engine | Trie |
+| 2 | Penjadwalan Task dengan Prioritas | Priority Queue, Heap |
+| 3 | Social Network Analysis (rekomendasi teman) | Graph, BFS/DFS |
+| 4 | Sistem Navigasi Rute Terpendek | Graph, Dijkstra |
+| 5 | File System Browser | Tree |
+| 6 | Undo/Redo pada Text Editor | Stack |
+| 7 | Kompresi Data Sederhana (Huffman Coding) | Binary Tree, Priority Queue |
+| 8 | Sistem Leaderboard Game | BST, Hash Table |
+
+---
+
+## Panduan Peer Review
+
+Setiap mahasiswa mengisi form penilaian untuk **kelompok lain** (bukan kelompok sendiri):
+
+```
+FORM PEER REVIEW PRESENTASI PROYEK
 ============================================================
-PRAKTIKUM 10.3: Visualisasi dan Validasi BST
+Nama Penilai    : ____________________
+NIM Penilai     : ____________________
+
+Kelompok Dinilai: ____________________
+Anggota         : ____________________
+
+Penilaian (skala 1-5):
+1. Kejelasan presentasi        : ___
+2. Pemahaman struktur data     : ___
+3. Kualitas demo program       : ___
+4. Kerjasama tim               : ___
+5. Kreativitas solusi           : ___
+
+Komentar/Masukan:
+_________________________________________________________
+_________________________________________________________
 ============================================================
-Nama  : ____________________
-NIM   : ____________________
-Kelas : ____________________
-
-Instruksi: 
-Implementasikan fungsi validasi dan visualisasi BST
-============================================================
-"""
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-def build_bst(values):
-    """Membangun BST dari list of values"""
-    root = None
-    for v in values:
-        root = insert(root, v)
-    return root
-
-
-def insert(node, data):
-    if node is None:
-        return Node(data)
-    if data < node.data:
-        node.left = insert(node.left, data)
-    elif data > node.data:
-        node.right = insert(node.right, data)
-    return node
-
-
-def inorder(node):
-    result = []
-    def _helper(n):
-        if n:
-            _helper(n.left)
-            result.append(n.data)
-            _helper(n.right)
-    _helper(node)
-    return result
-
-
-def is_valid_bst(node, min_val=float('-inf'), max_val=float('inf')):
-    """
-    Mengecek apakah binary tree adalah BST yang valid
-    Setiap node harus berada dalam range (min_val, max_val)
-    Return: True/False
-    """
-    # TODO: Implementasikan
-    # Base case: node is None -> return True
-    # Jika node.data <= min_val atau node.data >= max_val -> return False
-    # Rekursif: cek subtree kiri (max_val = node.data) 
-    #           AND cek subtree kanan (min_val = node.data)
-    pass
-
-
-def height(node):
-    if node is None:
-        return -1
-    return 1 + max(height(node.left), height(node.right))
-
-
-def is_balanced(node):
-    """
-    Mengecek apakah BST balanced
-    (selisih height subtree kiri dan kanan setiap node <= 1)
-    Return: True/False
-    """
-    # TODO: Implementasikan
-    # Base case: node is None -> return True
-    # Hitung height kiri dan kanan
-    # Jika selisih > 1 -> return False
-    # Rekursif: cek kiri AND kanan juga balanced
-    pass
-
-
-def count_in_range(node, low, high):
-    """
-    Menghitung jumlah node dengan nilai antara low dan high (inklusif)
-    Return: integer
-    """
-    # TODO: Implementasikan
-    # Manfaatkan properti BST untuk optimasi
-    # Jika node.data < low -> hanya perlu cek subtree kanan
-    # Jika node.data > high -> hanya perlu cek subtree kiri
-    pass
-
-
-# === TEST CASES ===
-if __name__ == "__main__":
-    print("=" * 50)
-    print("TEST VALIDASI DAN VISUALISASI BST")
-    print("=" * 50)
-    
-    # Bangun BST
-    bst = build_bst([50, 30, 70, 20, 40, 60, 80])
-    
-    # Test 1: is_valid_bst
-    assert is_valid_bst(bst) == True, "GAGAL: BST harus valid"
-    print("✓ Test 1 PASSED: BST valid")
-    
-    # Test 2: Buat tree BUKAN BST secara manual
-    fake = Node(50)
-    fake.left = Node(30)
-    fake.right = Node(70)
-    fake.left.left = Node(60)  # SALAH! 60 > 50 tapi di subtree kiri
-    assert is_valid_bst(fake) == False, "GAGAL: Harus invalid"
-    print("✓ Test 2 PASSED: Non-BST terdeteksi invalid")
-    
-    # Test 3: is_balanced
-    assert is_balanced(bst) == True, "GAGAL: BST [50,30,70,20,40,60,80] balanced"
-    print("✓ Test 3 PASSED: Balanced BST terdeteksi")
-    
-    # Test 4: Skewed tree is not balanced
-    skewed = build_bst([10, 20, 30, 40, 50])
-    assert is_balanced(skewed) == False, "GAGAL: Skewed tree tidak balanced"
-    print("✓ Test 4 PASSED: Skewed tree tidak balanced")
-    
-    # Test 5: Count in range
-    count = count_in_range(bst, 25, 65)
-    assert count == 4, f"GAGAL: harus 4 (30,40,50,60), dapat {count}"
-    print(f"✓ Test 5 PASSED: Nodes dalam range [25,65] = {count}")
-    
-    count2 = count_in_range(bst, 50, 80)
-    assert count2 == 4, f"GAGAL: harus 4 (50,60,70,80), dapat {count2}"
-    print(f"✓ Test 6 PASSED: Nodes dalam range [50,80] = {count2}")
-    
-    # Test 7: Edge cases
-    assert is_valid_bst(None) == True, "GAGAL"
-    assert is_balanced(None) == True, "GAGAL"
-    assert count_in_range(None, 0, 100) == 0, "GAGAL"
-    print("✓ Test 7 PASSED: Edge cases (None)")
-    
-    print("=" * 50)
-    print("🎉 SEMUA TEST PASSED!")
-    print("=" * 50)
 ```
 
 ---
 
 # BAGIAN C: TUGAS TERSTRUKTUR (120 Menit)
 
-> 📝 **Pengembangan dari Praktikum**
+> 📝 **Tugas Individu**
 > 
-> Tugas ini mengembangkan kode yang sudah dibuat di praktikum.
-> Kerjakan setelah praktikum selesai, kumpulkan pada pertemuan berikutnya.
+> Tugas ini dikerjakan secara individu sebagai pendalaman materi Big Data & AI.
+> Kumpulkan sebelum UAS.
 
 ---
 
@@ -1195,45 +855,39 @@ if __name__ == "__main__":
 
 | Item | Keterangan |
 |------|------------|
-| **Deadline** | Pertemuan 11 (sebelum kuliah dimulai) |
+| **Deadline** | Sebelum UAS (Pertemuan 16) |
 | **Format** | File Python (.py) |
-| **Nama File** | `Tugas10_NIM_Nama.py` |
+| **Nama File** | `Tugas15_NIM_Nama.py` |
 | **Pengumpulan** | Upload ke github |
 
 ---
 
-## Tugas 1: Pengembangan BST Class (40 menit)
+## Tugas 1: Implementasi Trie dengan Fitur Autocomplete (40 menit)
 
 ### Deskripsi
-Kembangkan class `BST` dari praktikum dengan menambahkan **method baru**:
+Implementasikan Trie lengkap dengan fitur autocomplete dan delete.
 
-| Method Baru | Deskripsi |
-|-------------|-----------|
-| `preorder()` | Traversal preorder |
-| `postorder()` | Traversal postorder |
-| `level_order()` | Traversal level-order |
-| `height()` | Menghitung tinggi BST |
-| `count_leaves()` | Menghitung jumlah leaf node |
-| `successor(target)` | Mencari inorder successor dari target |
-| `predecessor(target)` | Mencari inorder predecessor dari target |
-
-### Flowchart Inorder Successor (dari tree, bukan subtree)
+### Flowchart DELETE
 
 ```mermaid
 flowchart TD
-    START([🟢 START]) --> INPUT[/Input: root, target/]
-    INPUT --> FIND[Cari node dengan data = target]
-    FIND --> CHECKRIGHT{node.right<br/>!= None?}
-    CHECKRIGHT -->|Ya| MINRIGHT[Successor = find_min<br/>di subtree kanan]
-    CHECKRIGHT -->|Tidak| ANCESTOR[Traverse dari root<br/>cari ancestor terdekat<br/>yang target ada di<br/>subtree kiri-nya]
-    MINRIGHT --> RETURN[/Return successor/]
-    ANCESTOR --> RETURN2[/Return ancestor atau None/]
-    RETURN --> END([🔴 END])
-    RETURN2 --> END
+    START([🟢 START]) --> INPUT[/Input: word/]
+    INPUT --> CHECK1{Kata ada<br/>di Trie?}
+    CHECK1 -->|Tidak| DONE[Tidak ada yang dihapus]
+    CHECK1 -->|Ya| MARK[Set is_end_of_word = False<br/>pada node terakhir]
+    MARK --> CHECK2{Node punya<br/>children?}
+    CHECK2 -->|Ya| DONE2[Selesai - node masih diperlukan<br/>oleh kata lain]
+    CHECK2 -->|Tidak| CLEANUP[Hapus node yang tidak<br/>diperlukan ke atas]
+    CLEANUP --> DONE
+    DONE --> END([🔴 END])
+    DONE2 --> END
     
     style START fill:#70AD47,color:#fff
     style END fill:#C00000,color:#fff
-    style CHECKRIGHT fill:#FFC000
+    style CHECK1 fill:#FFC000
+    style CHECK2 fill:#FFC000
+    style MARK fill:#4472C4,color:#fff
+    style CLEANUP fill:#FF6B6B
 ```
 
 ### Template Kode
@@ -1241,7 +895,7 @@ flowchart TD
 ```python
 """
 ============================================================
-TUGAS TERSTRUKTUR 10.1: Pengembangan BST Class
+TUGAS TERSTRUKTUR 1: Trie dengan Autocomplete
 ============================================================
 Nama  : ____________________
 NIM   : ____________________
@@ -1249,139 +903,126 @@ Kelas : ____________________
 ============================================================
 """
 
-from collections import deque
-
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-class BST:
-    # ========== METHOD DARI PRAKTIKUM (COPY) ==========
+class TrieNode:
     def __init__(self):
-        self.root = None
+        self.children = {}
+        self.is_end_of_word = False
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
     
-    def insert(self, data):
-        # COPY dari praktikum
+    # ========== METHOD DARI TEORI ==========
+    def insert(self, word):
+        """Menambahkan kata ke Trie — O(L)"""
+        # COPY dari contoh di teori
         pass
     
-    def search(self, target):
-        # COPY dari praktikum
+    def search(self, word):
+        """Mencari kata exact — O(L)"""
+        # COPY dari contoh di teori
         pass
     
-    def delete(self, target):
-        # COPY dari praktikum
-        pass
-    
-    def inorder(self):
-        # COPY dari praktikum
-        pass
-    
-    def find_min(self):
-        # COPY dari praktikum
-        pass
-    
-    def find_max(self):
-        # COPY dari praktikum
+    def starts_with(self, prefix):
+        """Cek apakah ada kata dengan prefix tertentu — O(L)"""
+        # COPY dari contoh di teori
         pass
     
     # ========== METHOD BARU (TUGAS) ==========
-    
-    def preorder(self):
-        """Traversal preorder (Root -> Left -> Right)"""
-        # TODO: Implementasikan
-        pass
-    
-    def postorder(self):
-        """Traversal postorder (Left -> Right -> Root)"""
-        # TODO: Implementasikan
-        pass
-    
-    def level_order(self):
-        """Traversal level-order (BFS menggunakan Queue)"""
-        # TODO: Implementasikan
-        pass
-    
-    def height(self):
-        """Mengembalikan tinggi BST"""
-        # TODO: Implementasikan
-        pass
-    
-    def count_leaves(self):
-        """Menghitung jumlah leaf node"""
-        # TODO: Implementasikan
-        pass
-    
-    def successor(self, target):
+    def delete(self, word):
         """
-        Mencari inorder successor dari node dengan data = target
-        Return: data successor, atau None jika tidak ada
+        Menghapus kata dari Trie
+        Return True jika berhasil, False jika kata tidak ada
         
-        Dua kasus:
-        1. Jika node punya right subtree → min di subtree kanan
-        2. Jika tidak → ancestor terdekat di mana target berada di subtree kiri
+        Aturan:
+        - Jika kata tidak ada → return False
+        - Jika node masih diperlukan kata lain → hanya ubah is_end_of_word
+        - Jika node tidak diperlukan → hapus node
         """
-        # TODO: Implementasikan berdasarkan flowchart
+        # TODO: Implementasikan berdasarkan flowchart DELETE
         pass
     
-    def predecessor(self, target):
+    def autocomplete(self, prefix, max_results=5):
         """
-        Mencari inorder predecessor dari node dengan data = target
-        Return: data predecessor, atau None jika tidak ada
+        Mengembalikan daftar kata yang dimulai dengan prefix
+        Batasi jumlah hasil dengan max_results
         
-        Dua kasus:
-        1. Jika node punya left subtree → max di subtree kiri
-        2. Jika tidak → ancestor terdekat di mana target berada di subtree kanan
+        Contoh:
+            autocomplete("ca") → ["car", "card", "care", "cat"]
+            autocomplete("ca", 2) → ["car", "card"]
         """
-        # TODO: Implementasikan (kebalikan dari successor)
+        # TODO: Implementasikan
+        # Hint: Navigasi ke node prefix, lalu DFS untuk kumpulkan kata
+        pass
+    
+    def count_words(self):
+        """
+        Menghitung total kata yang tersimpan di Trie
+        """
+        # TODO: Implementasikan (gunakan DFS)
+        pass
+    
+    def count_prefixes(self, prefix):
+        """
+        Menghitung berapa kata yang memiliki prefix tertentu
+        
+        Contoh:
+            Trie berisi: ["car", "card", "care", "cat", "dog"]
+            count_prefixes("car") → 3 (car, card, care)
+            count_prefixes("d") → 1 (dog)
+        """
+        # TODO: Implementasikan
         pass
 
 
 # === TEST CASES ===
 if __name__ == "__main__":
     print("=" * 50)
-    print("TEST PENGEMBANGAN BST")
+    print("TEST TRIE DENGAN AUTOCOMPLETE")
     print("=" * 50)
     
-    bst = BST()
-    for val in [50, 30, 70, 20, 40, 60, 80]:
-        bst.insert(val)
+    trie = Trie()
+    words = ["apple", "app", "application", "apply", "banana", "band", "bandung"]
+    for w in words:
+        trie.insert(w)
     
-    # Test 1: Traversal
-    assert bst.preorder() == [50, 30, 20, 40, 70, 60, 80], "GAGAL Preorder"
-    print(f"✓ Test 1a PASSED: Preorder   = {bst.preorder()}")
+    # Test search
+    assert trie.search("apple") == True, "GAGAL: search apple"
+    assert trie.search("app") == True, "GAGAL: search app"
+    assert trie.search("ap") == False, "GAGAL: ap bukan kata"
+    print("✓ Test search PASSED")
     
-    assert bst.postorder() == [20, 40, 30, 60, 80, 70, 50], "GAGAL Postorder"
-    print(f"✓ Test 1b PASSED: Postorder  = {bst.postorder()}")
+    # Test autocomplete
+    results = trie.autocomplete("app")
+    assert "apple" in results, "GAGAL: autocomplete app"
+    assert "application" in results, "GAGAL: autocomplete app"
+    assert "apply" in results, "GAGAL: autocomplete app"
+    print(f"✓ Test autocomplete('app') = {results}")
     
-    assert bst.level_order() == [50, 30, 70, 20, 40, 60, 80], "GAGAL Level-order"
-    print(f"✓ Test 1c PASSED: Level-order = {bst.level_order()}")
+    # Test autocomplete dengan limit
+    results_limited = trie.autocomplete("app", 2)
+    assert len(results_limited) <= 2, "GAGAL: max_results"
+    print(f"✓ Test autocomplete('app', 2) = {results_limited}")
     
-    # Test 2: Height
-    assert bst.height() == 2, f"GAGAL: height harus 2, dapat {bst.height()}"
-    print(f"✓ Test 2 PASSED: Height = {bst.height()}")
+    # Test count_words
+    assert trie.count_words() == 7, "GAGAL: count_words"
+    print("✓ Test count_words PASSED")
     
-    # Test 3: Count leaves
-    assert bst.count_leaves() == 4, f"GAGAL: leaves harus 4"
-    print(f"✓ Test 3 PASSED: Leaves = {bst.count_leaves()}")
+    # Test count_prefixes
+    assert trie.count_prefixes("app") == 4, "GAGAL: count_prefixes app"
+    assert trie.count_prefixes("ban") == 2, "GAGAL: count_prefixes ban"
+    print("✓ Test count_prefixes PASSED")
     
-    # Test 4: Successor
-    # Inorder: 20, 30, 40, 50, 60, 70, 80
-    assert bst.successor(20) == 30, f"GAGAL: successor(20) harus 30"
-    assert bst.successor(40) == 50, f"GAGAL: successor(40) harus 50"
-    assert bst.successor(50) == 60, f"GAGAL: successor(50) harus 60"
-    assert bst.successor(80) is None, f"GAGAL: successor(80) harus None"
-    print("✓ Test 4 PASSED: Successor benar")
+    # Test delete
+    assert trie.delete("app") == True, "GAGAL: delete app"
+    assert trie.search("app") == False, "GAGAL: app harus terhapus"
+    assert trie.search("apple") == True, "GAGAL: apple harus tetap ada"
+    print("✓ Test delete PASSED")
     
-    # Test 5: Predecessor
-    assert bst.predecessor(30) == 20, f"GAGAL: predecessor(30) harus 20"
-    assert bst.predecessor(50) == 40, f"GAGAL: predecessor(50) harus 40"
-    assert bst.predecessor(60) == 50, f"GAGAL: predecessor(60) harus 50"
-    assert bst.predecessor(20) is None, f"GAGAL: predecessor(20) harus None"
-    print("✓ Test 5 PASSED: Predecessor benar")
+    # Test delete kata yang tidak ada
+    assert trie.delete("xyz") == False, "GAGAL: delete kata tidak ada"
+    print("✓ Test delete kata tidak ada PASSED")
     
     print("=" * 50)
     print("🎉 SEMUA TEST PASSED!")
@@ -1390,31 +1031,17 @@ if __name__ == "__main__":
 
 ---
 
-## Tugas 2: Studi Kasus — Sistem Phonebook (40 menit)
+## Tugas 2: Operasi Tensor Sederhana dengan Python Murni (40 menit)
 
 ### Deskripsi
-Implementasikan sistem **phonebook** (buku telepon) menggunakan BST. Kontak disimpan terurut berdasarkan nama.
-
-```mermaid
-flowchart TB
-    subgraph BST_Phone [Phonebook BST - urut berdasarkan nama]
-        DINA((Dina<br/>081234)) --> BUDI((Budi<br/>089876))
-        DINA --> FITRI((Fitri<br/>085555))
-        BUDI --> ANA((Ana<br/>082111))
-        BUDI --> CITRA((Citra<br/>087654))
-        FITRI --> EKO((Eko<br/>083333))
-        FITRI --> GITA((Gita<br/>086666))
-    end
-    
-    style DINA fill:#4472C4,color:#fff
-```
+Implementasikan operasi tensor dasar **tanpa NumPy** untuk memahami cara kerja tensor di level fundamental.
 
 ### Template Kode
 
 ```python
 """
 ============================================================
-TUGAS TERSTRUKTUR 10.2: Sistem Phonebook dengan BST
+TUGAS TERSTRUKTUR 2: Operasi Tensor Sederhana (Tanpa NumPy)
 ============================================================
 Nama  : ____________________
 NIM   : ____________________
@@ -1422,138 +1049,153 @@ Kelas : ____________________
 ============================================================
 """
 
-class Contact:
-    """Menyimpan informasi kontak"""
-    def __init__(self, name, phone):
-        self.name = name
-        self.phone = phone
+def get_shape(tensor):
+    """
+    Mengembalikan shape (dimensi) dari tensor
     
-    def __str__(self):
-        return f"{self.name}: {self.phone}"
+    Contoh:
+        get_shape(5) → ()
+        get_shape([1, 2, 3]) → (3,)
+        get_shape([[1, 2], [3, 4]]) → (2, 2)
+        get_shape([[[1,2],[3,4]],[[5,6],[7,8]]]) → (2, 2, 2)
+    """
+    # TODO: Implementasikan (gunakan rekursi)
+    pass
 
 
-class ContactNode:
-    """Node BST untuk menyimpan kontak (diurutkan berdasarkan nama)"""
-    def __init__(self, contact):
-        self.contact = contact
-        self.left = None
-        self.right = None
+def get_ndim(tensor):
+    """
+    Mengembalikan jumlah dimensi tensor
+    
+    Contoh:
+        get_ndim(5) → 0
+        get_ndim([1, 2, 3]) → 1
+        get_ndim([[1, 2], [3, 4]]) → 2
+    """
+    # TODO: Implementasikan
+    pass
 
 
-class Phonebook:
-    def __init__(self):
-        self.root = None
-        self._size = 0
+def tensor_add(a, b):
+    """
+    Menjumlahkan dua tensor dengan shape yang sama (element-wise)
     
-    def add_contact(self, name, phone):
-        """
-        Menambah kontak baru
-        Jika nama sudah ada, update nomor telepon
-        """
-        # TODO: Implementasikan
-        pass
+    Contoh:
+        tensor_add([1, 2, 3], [4, 5, 6]) → [5, 7, 9]
+        tensor_add([[1, 2], [3, 4]], [[5, 6], [7, 8]]) → [[6, 8], [10, 12]]
+    """
+    # TODO: Implementasikan (gunakan rekursi)
+    pass
+
+
+def tensor_scalar_multiply(tensor, scalar):
+    """
+    Mengalikan setiap elemen tensor dengan scalar
     
-    def search_contact(self, name):
-        """
-        Mencari kontak berdasarkan nama (exact match)
-        Return: Contact atau None
-        """
-        # TODO: Implementasikan
-        pass
+    Contoh:
+        tensor_scalar_multiply([1, 2, 3], 2) → [2, 4, 6]
+        tensor_scalar_multiply([[1, 2], [3, 4]], 3) → [[3, 6], [9, 12]]
+    """
+    # TODO: Implementasikan (gunakan rekursi)
+    pass
+
+
+def dot_product(a, b):
+    """
+    Menghitung dot product dua vektor (1-D tensor)
     
-    def delete_contact(self, name):
-        """
-        Menghapus kontak berdasarkan nama
-        Return: True jika berhasil, False jika tidak ditemukan
-        """
-        # TODO: Implementasikan
-        pass
+    Contoh:
+        dot_product([1, 2, 3], [4, 5, 6]) → 32  (1*4 + 2*5 + 3*6)
+    """
+    # TODO: Implementasikan
+    pass
+
+
+def matrix_multiply(a, b):
+    """
+    Perkalian dua matrix (2-D tensor)
     
-    def list_all(self):
-        """
-        Menampilkan semua kontak terurut berdasarkan nama (A-Z)
-        Return: list of Contact
-        """
-        # TODO: Implementasikan (gunakan inorder traversal)
-        pass
+    Contoh:
+        A = [[1, 2], [3, 4]]       (2×2)
+        B = [[5, 6], [7, 8]]       (2×2)
+        Result = [[19, 22], [43, 50]]
+    """
+    # TODO: Implementasikan
+    # Hint: result[i][j] = sum(a[i][k] * b[k][j] for k in range(cols_a))
+    pass
+
+
+def flatten(tensor):
+    """
+    Mengubah tensor multidimensi menjadi 1-D
     
-    def search_prefix(self, prefix):
-        """
-        Mencari semua kontak yang namanya dimulai dengan prefix
-        Return: list of Contact
-        Contoh: search_prefix("A") -> [Ana: 082111]
-        """
-        # TODO: Implementasikan
-        # Hint: Lakukan inorder traversal, filter yang startswith(prefix)
-        pass
+    Contoh:
+        flatten([[1, 2], [3, 4]]) → [1, 2, 3, 4]
+        flatten([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]) → [1, 2, 3, 4, 5, 6, 7, 8]
+    """
+    # TODO: Implementasikan (gunakan rekursi)
+    pass
+
+
+def reshape(flat_list, shape):
+    """
+    Mengubah list 1-D menjadi tensor dengan shape tertentu
     
-    def get_size(self):
-        """Return jumlah kontak"""
-        return self._size
-    
-    def display(self):
-        """Menampilkan semua kontak terurut"""
-        contacts = self.list_all()
-        print(f"\n📞 Phonebook ({self._size} kontak):")
-        print("-" * 30)
-        for c in contacts:
-            print(f"  {c}")
-        print("-" * 30)
+    Contoh:
+        reshape([1, 2, 3, 4, 5, 6], (2, 3)) → [[1, 2, 3], [4, 5, 6]]
+        reshape([1, 2, 3, 4], (2, 2)) → [[1, 2], [3, 4]]
+    """
+    # TODO: Implementasikan
+    pass
 
 
 # === TEST CASES ===
 if __name__ == "__main__":
     print("=" * 50)
-    print("TEST SISTEM PHONEBOOK")
+    print("TEST OPERASI TENSOR SEDERHANA")
     print("=" * 50)
     
-    pb = Phonebook()
+    # Test get_shape
+    assert get_shape(5) == (), "GAGAL: scalar shape"
+    assert get_shape([1, 2, 3]) == (3,), "GAGAL: vector shape"
+    assert get_shape([[1, 2], [3, 4]]) == (2, 2), "GAGAL: matrix shape"
+    assert get_shape([[[1,2],[3,4]],[[5,6],[7,8]]]) == (2, 2, 2), "GAGAL: 3D shape"
+    print("✓ Test get_shape PASSED")
     
-    # Test 1: Add contacts
-    pb.add_contact("Dina", "081234567890")
-    pb.add_contact("Budi", "089876543210")
-    pb.add_contact("Fitri", "085555555555")
-    pb.add_contact("Ana", "082111111111")
-    pb.add_contact("Citra", "087654321098")
-    pb.add_contact("Eko", "083333333333")
-    pb.add_contact("Gita", "086666666666")
-    assert pb.get_size() == 7, f"GAGAL: size harus 7"
-    print("✓ Test 1 PASSED: 7 kontak ditambahkan")
+    # Test get_ndim
+    assert get_ndim(5) == 0, "GAGAL: scalar ndim"
+    assert get_ndim([1, 2, 3]) == 1, "GAGAL: vector ndim"
+    assert get_ndim([[1, 2], [3, 4]]) == 2, "GAGAL: matrix ndim"
+    print("✓ Test get_ndim PASSED")
     
-    # Test 2: Display (harus terurut A-Z)
-    pb.display()
-    contacts = pb.list_all()
-    names = [c.name for c in contacts]
-    assert names == ["Ana", "Budi", "Citra", "Dina", "Eko", "Fitri", "Gita"], f"GAGAL: {names}"
-    print("✓ Test 2 PASSED: Kontak terurut A-Z")
+    # Test tensor_add
+    assert tensor_add([1, 2, 3], [4, 5, 6]) == [5, 7, 9], "GAGAL: vector add"
+    assert tensor_add([[1, 2], [3, 4]], [[5, 6], [7, 8]]) == [[6, 8], [10, 12]], "GAGAL: matrix add"
+    print("✓ Test tensor_add PASSED")
     
-    # Test 3: Search
-    result = pb.search_contact("Citra")
-    assert result is not None and result.phone == "087654321098", "GAGAL"
-    assert pb.search_contact("Zara") is None, "GAGAL"
-    print("✓ Test 3 PASSED: Search benar")
+    # Test tensor_scalar_multiply
+    assert tensor_scalar_multiply([1, 2, 3], 2) == [2, 4, 6], "GAGAL: scalar multiply"
+    assert tensor_scalar_multiply([[1, 2], [3, 4]], 3) == [[3, 6], [9, 12]], "GAGAL: matrix scalar multiply"
+    print("✓ Test tensor_scalar_multiply PASSED")
     
-    # Test 4: Update (add dengan nama sama)
-    pb.add_contact("Budi", "081111111111")
-    result = pb.search_contact("Budi")
-    assert result.phone == "081111111111", "GAGAL: nomor harus terupdate"
-    assert pb.get_size() == 7, "GAGAL: size tidak boleh bertambah"
-    print("✓ Test 4 PASSED: Update kontak benar")
+    # Test dot_product
+    assert dot_product([1, 2, 3], [4, 5, 6]) == 32, "GAGAL: dot product"
+    print("✓ Test dot_product PASSED")
     
-    # Test 5: Delete
-    assert pb.delete_contact("Citra") == True, "GAGAL"
-    assert pb.search_contact("Citra") is None, "GAGAL: Citra harus terhapus"
-    assert pb.get_size() == 6, "GAGAL: size harus 6"
-    print("✓ Test 5 PASSED: Delete benar")
+    # Test matrix_multiply
+    result = matrix_multiply([[1, 2], [3, 4]], [[5, 6], [7, 8]])
+    assert result == [[19, 22], [43, 50]], "GAGAL: matrix multiply"
+    print("✓ Test matrix_multiply PASSED")
     
-    # Test 6: Search prefix
-    result = pb.search_prefix("D")
-    assert len(result) == 1 and result[0].name == "Dina", f"GAGAL: {result}"
-    print("✓ Test 6 PASSED: Search prefix benar")
+    # Test flatten
+    assert flatten([[1, 2], [3, 4]]) == [1, 2, 3, 4], "GAGAL: flatten 2D"
+    assert flatten([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]) == [1, 2, 3, 4, 5, 6, 7, 8], "GAGAL: flatten 3D"
+    print("✓ Test flatten PASSED")
     
-    # Test 7: Delete kontak tidak ada
-    assert pb.delete_contact("Zara") == False, "GAGAL"
-    print("✓ Test 7 PASSED: Delete nonexistent = False")
+    # Test reshape
+    assert reshape([1, 2, 3, 4, 5, 6], (2, 3)) == [[1, 2, 3], [4, 5, 6]], "GAGAL: reshape"
+    assert reshape([1, 2, 3, 4], (2, 2)) == [[1, 2], [3, 4]], "GAGAL: reshape"
+    print("✓ Test reshape PASSED")
     
     print("=" * 50)
     print("🎉 SEMUA TEST PASSED!")
@@ -1562,184 +1204,110 @@ if __name__ == "__main__":
 
 ---
 
-## Tugas 3: Analisis Performa BST (40 menit)
+## Tugas 3: Analisis Penerapan Struktur Data — Studi Kasus (40 menit)
+
+### Deskripsi
+Jawab pertanyaan analisis berikut berdasarkan pemahaman materi seluruh semester.
 
 ### Template Kode
 
 ```python
 """
 ============================================================
-TUGAS TERSTRUKTUR 10.3: Analisis Performa BST
+TUGAS TERSTRUKTUR 3: Analisis Penerapan Struktur Data
 ============================================================
 Nama  : ____________________
 NIM   : ____________________
 Kelas : ____________________
 ============================================================
 """
-
-import time
-import random
-
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.left = None
-        self.right = None
-
-
-def insert(node, data):
-    if node is None:
-        return Node(data)
-    if data < node.data:
-        node.left = insert(node.left, data)
-    elif data > node.data:
-        node.right = insert(node.right, data)
-    return node
-
-
-def search(node, target):
-    if node is None:
-        return False
-    if target == node.data:
-        return True
-    elif target < node.data:
-        return search(node.left, target)
-    else:
-        return search(node.right, target)
-
-
-def height(node):
-    if node is None:
-        return -1
-    return 1 + max(height(node.left), height(node.right))
-
-
-def build_bst_from_list(values):
-    root = None
-    for v in values:
-        root = insert(root, v)
-    return root
-
-
-def measure_search_time(root, targets):
-    start = time.perf_counter()
-    for t in targets:
-        search(root, t)
-    end = time.perf_counter()
-    return end - start
-
-
-if __name__ == "__main__":
-    print("=" * 70)
-    print("ANALISIS PERFORMA BST: RANDOM vs SORTED vs BALANCED")
-    print("=" * 70)
-    
-    sizes = [100, 500, 1000, 5000, 10000]
-    
-    # ============ Perbandingan Height ============
-    print("\n--- Perbandingan Height ---")
-    print(f"{'n':>7} | {'Random':>10} | {'Sorted':>10} | {'Balanced':>10} | {'Ideal log2(n)':>14}")
-    print("-" * 60)
-    
-    for n in sizes:
-        # Random order
-        random_vals = random.sample(range(n * 10), n)
-        random_bst = build_bst_from_list(random_vals)
-        h_random = height(random_bst)
-        
-        # Sorted order (worst case)
-        sorted_vals = list(range(n))
-        # Catatan: untuk n besar, sorted BST akan melebihi recursion limit
-        # Gunakan sys.setrecursionlimit jika perlu, atau batasi n
-        try:
-            import sys
-            sys.setrecursionlimit(max(n + 100, 1000))
-            sorted_bst = build_bst_from_list(sorted_vals)
-            h_sorted = height(sorted_bst)
-        except RecursionError:
-            h_sorted = "RecErr"
-        
-        # Balanced (insert dari tengah)
-        def build_balanced(vals, start, end):
-            if start > end:
-                return None
-            mid = (start + end) // 2
-            node = Node(vals[mid])
-            node.left = build_balanced(vals, start, mid - 1)
-            node.right = build_balanced(vals, mid + 1, end)
-            return node
-        
-        sorted_for_balanced = sorted(random_vals)
-        balanced_bst = build_balanced(sorted_for_balanced, 0, n - 1)
-        h_balanced = height(balanced_bst)
-        
-        import math
-        ideal = int(math.log2(n))
-        
-        print(f"{n:>7} | {h_random:>10} | {str(h_sorted):>10} | {h_balanced:>10} | {ideal:>14}")
-    
-    # ============ Perbandingan Waktu Search ============
-    print("\n--- Perbandingan Waktu Search (1000 searches) ---")
-    print(f"{'n':>7} | {'Random BST':>12} | {'Balanced BST':>14}")
-    print("-" * 40)
-    
-    for n in [1000, 5000, 10000, 50000]:
-        random_vals = random.sample(range(n * 10), n)
-        
-        # Random BST
-        random_bst = build_bst_from_list(random_vals)
-        
-        # Balanced BST
-        sorted_vals = sorted(random_vals)
-        balanced_bst = build_balanced(sorted_vals, 0, n - 1)
-        
-        # Search 1000 random targets
-        targets = [random.randint(0, n * 10) for _ in range(1000)]
-        
-        t_random = measure_search_time(random_bst, targets)
-        t_balanced = measure_search_time(balanced_bst, targets)
-        
-        print(f"{n:>7} | {t_random:>10.6f}s | {t_balanced:>12.6f}s")
-    
-    print("=" * 70)
-
 
 # ============================================================
 # JAWABAN TUGAS (ISI DI BAWAH INI)
 # ============================================================
 """
-BAGIAN A: TABEL ANALISIS
+BAGIAN A: PILIH STRUKTUR DATA YANG TEPAT
 
-| Aspek | Random BST | Sorted BST | Balanced BST |
-|-------|------------|------------|--------------|
-| Height (n=10000) | | | |
-| Search time | | | |
-| Kemiripan dengan | | | |
+Untuk setiap skenario di bawah, tentukan struktur data yang paling tepat
+dan jelaskan alasannya beserta kompleksitas waktu operasi utamanya.
+
+1. Sistem autocomplete pada search bar e-commerce dengan 1 juta produk.
+   User mengetik prefix dan muncul saran produk.
+   
+   Struktur Data: 
+   Alasan:
+   Kompleksitas:
 
 
-BAGIAN B: PERTANYAAN
+2. Sistem GPS yang mencari rute terpendek dari titik A ke titik B
+   melalui jaringan jalan yang saling terhubung.
+   
+   Struktur Data:
+   Alasan:
+   Kompleksitas:
 
-1. Mengapa sorted BST memiliki height yang sangat besar?
+
+3. Browser history yang memungkinkan user kembali ke halaman
+   sebelumnya (back button) dan maju kembali (forward button).
+   
+   Struktur Data:
+   Alasan:
+   Kompleksitas:
+
+
+4. Sistem antrian pasien rumah sakit di mana pasien gawat darurat
+   harus dilayani lebih dulu dari pasien biasa.
+   
+   Struktur Data:
+   Alasan:
+   Kompleksitas:
+
+
+5. Cache server yang menyimpan 10.000 pasangan key-value dan
+   membutuhkan waktu lookup secepat mungkin.
+   
+   Struktur Data:
+   Alasan:
+   Kompleksitas:
+
+
+BAGIAN B: ANALISIS SKENARIO BIG DATA
+
+1. Sebuah platform media sosial memiliki 500 juta user.
+   Mengapa adjacency matrix TIDAK cocok untuk menyimpan relasi pertemanan?
+   Apa alternatifnya?
+   
    Jawab:
 
 
-2. Apa perbedaan height antara random BST dan balanced BST? 
-   Mengapa random BST tidak seburuk sorted BST?
+2. Sebuah e-commerce memproses 100.000 transaksi per detik.
+   Mengapa message queue (seperti Kafka) diperlukan?
+   Bagaimana konsep Queue (FIFO) diterapkan di sini?
+   
    Jawab:
 
 
-3. Bagaimana cara mencegah BST menjadi skewed dalam aplikasi nyata?
+3. Sebuah search engine perlu mengecek apakah URL sudah pernah
+   di-crawl dari miliaran URL yang sudah ada.
+   Mengapa Bloom Filter lebih cocok daripada Hash Set biasa?
+   
    Jawab:
 
 
-4. Jika Anda membuat database index untuk 1 juta data, 
-   apakah Anda akan menggunakan BST biasa? Jelaskan alasannya!
+BAGIAN C: REFLEKSI
+
+1. Dari semua struktur data yang dipelajari semester ini,
+   mana yang menurut Anda paling penting untuk bidang Sistem Informasi?
+   Jelaskan alasannya!
+   
    Jawab:
 
 
-5. Sebutkan 3 aplikasi nyata BST dan jelaskan mengapa BST tepat digunakan!
+2. Berikan 1 contoh penerapan struktur data dalam pekerjaan
+   sehari-hari seorang Sistem Informasi professional!
+   
    Jawab:
+
 
 """
 ```
@@ -1749,20 +1317,21 @@ BAGIAN B: PERTANYAAN
 # BAGIAN D: BELAJAR MANDIRI (190 Menit)
 
 > 📚 **Bagian ini dikerjakan mahasiswa secara mandiri di luar kelas**
-> **Tidak dikumpulkan**, tetapi penting untuk pemahaman materi.
+> **Tidak dikumpulkan**, tetapi penting untuk pemahaman materi dan persiapan UAS.
 
 ---
 
 ## D1. Membaca Referensi (60 menit)
 
 ### Bacaan Wajib:
-1. **Goodrich et al., Chapter 11.1-11.3** - Search Trees
-2. **Cormen et al. (CLRS), Chapter 12** - Binary Search Trees
+1. **Goodrich et al., Chapter 12.3** - Pattern Matching (Trie)
+2. **Sedgewick & Wayne, Chapter 5.2** - Tries
 
 ### Bacaan Tambahan:
-- [Visualgo - BST](https://visualgo.net/en/bst)
-- [GeeksforGeeks - Binary Search Tree](https://www.geeksforgeeks.org/binary-search-tree-data-structure/)
-- [GeeksforGeeks - BST Delete](https://www.geeksforgeeks.org/deletion-in-binary-search-tree/)
+- [GeeksforGeeks - Trie Data Structure](https://www.geeksforgeeks.org/trie-insert-and-search/)
+- [Visualgo - Trie](https://visualgo.net/en/dfsbfs) (lihat bagian Suffix Trie)
+- [NumPy Documentation - Array Basics](https://numpy.org/doc/stable/user/absolute_beginners.html)
+- [Towards Data Science - Tensors Explained](https://towardsdatascience.com/what-is-a-tensor-in-machine-learning/)
 
 ---
 
@@ -1770,14 +1339,14 @@ BAGIAN B: PERTANYAAN
 
 Tonton dan buat catatan:
 
-1. **BST Introduction - mycodeschool** (~15 menit)
-   - https://www.youtube.com/watch?v=pYT9F8_LFTM
+1. **Trie Data Structure — NeetCode** (~12 menit)
+   - https://www.youtube.com/watch?v=oobqoCJlHA0
+   
+2. **Tensors Explained — 3Blue1Brown** (~15 menit)
+   - https://www.youtube.com/watch?v=f5liqUk0ZTw
 
-2. **BST Insert and Search - CS Dojo** (~12 menit)
-   - https://www.youtube.com/watch?v=76dhtgZt38A
-
-3. **BST Delete - mycodeschool** (~13 menit)
-   - https://www.youtube.com/watch?v=gcULXE7ViZw
+3. **Data Structures Used in Big Data — Fireship** (~10 menit)
+   - https://www.youtube.com/watch?v=W_aFdkuBGCM
 
 ---
 
@@ -1785,54 +1354,88 @@ Tonton dan buat catatan:
 
 ### Soal Pilihan Ganda
 
-**1.** Properti utama Binary Search Tree adalah...
-- [ ] a. Setiap node memiliki tepat 2 child
-- [ ] b. Semua node di subtree kiri < root < semua node di subtree kanan
-- [ ] c. Tree selalu balanced
-- [ ] d. Tidak boleh ada leaf node
+**1.** Trie sangat efisien untuk operasi berikut KECUALI...
+- [ ] a. Autocomplete berdasarkan prefix
+- [ ] b. Pencarian kata exact
+- [ ] c. Mencari substring di tengah kata
+- [ ] d. Spell checking
 
-**2.** Diberikan urutan insert: 40, 20, 60, 10, 30. Node yang menjadi left child dari 20 adalah...
-- [ ] a. 10
-- [ ] b. 30
-- [ ] c. 40
-- [ ] d. 60
+**2.** Tensor 3-D memiliki berapa sumbu (axis)?
+- [ ] a. 1
+- [ ] b. 2
+- [ ] c. 3
+- [ ] d. 4
 
-**3.** Inorder traversal pada BST menghasilkan...
-- [ ] a. Data terurut descending
-- [ ] b. Data terurut ascending
-- [ ] c. Data sesuai urutan insert
-- [ ] d. Data secara level-order
+**3.** Gambar RGB berukuran 1920×1080 piksel direpresentasikan sebagai tensor dengan shape...
+- [ ] a. (1920, 1080)
+- [ ] b. (1080, 1920, 3)
+- [ ] c. (3, 1920, 1080)
+- [ ] d. (1920, 1080, 1)
 
-**4.** Saat menghapus node BST yang memiliki 2 child, kita bisa menggantinya dengan...
-- [ ] a. Left child langsung
-- [ ] b. Right child langsung
-- [ ] c. Inorder successor atau inorder predecessor
-- [ ] d. Root node
+**4.** Mengapa B-Tree lebih cocok untuk database indexing daripada BST biasa?
+- [ ] a. B-Tree lebih mudah diimplementasikan
+- [ ] b. B-Tree memiliki tinggi lebih rendah sehingga mengurangi disk access
+- [ ] c. B-Tree menggunakan lebih sedikit memori
+- [ ] d. B-Tree selalu lebih cepat dari BST
 
-**5.** Worst case kompleksitas search pada BST terjadi ketika...
-- [ ] a. Tree berbentuk balanced
-- [ ] b. Tree berbentuk skewed (degenerate)
-- [ ] c. Data diinsert secara random
-- [ ] d. Tree memiliki banyak leaf
+**5.** Bloom Filter memiliki karakteristik unik yaitu...
+- [ ] a. Tidak pernah menghasilkan false positive
+- [ ] b. Tidak pernah menghasilkan false negative
+- [ ] c. Tidak pernah menghasilkan error
+- [ ] d. Selalu memberikan jawaban pasti
 
 ### Latihan Coding (Opsional)
 
 Kerjakan di platform online:
-- **LeetCode Easy #700** - Search in a BST
-- **LeetCode Easy #701** - Insert into a BST
-- **LeetCode Medium #450** - Delete Node in a BST
-- **LeetCode Easy #98** - Validate Binary Search Tree
-- **LeetCode Easy #230** - Kth Smallest Element in a BST
+- **LeetCode Easy #208** - Implement Trie (Prefix Tree)
+- **LeetCode Easy #14** - Longest Common Prefix
+- **LeetCode Medium #211** - Design Add and Search Words Data Structure
+- **HackerRank** - Contacts (Trie)
 
 ---
 
-## D4. Persiapan Pertemuan Berikutnya (30 menit)
+## D4. Persiapan UAS (30 menit)
 
-Baca materi tentang **Graph**:
-- Apa itu graph? (vertex dan edge)
-- Perbedaan directed dan undirected graph
-- Representasi graph: adjacency matrix vs adjacency list
-- Apa itu BFS dan DFS?
+### Materi UAS (Pertemuan 9-15)
+
+| Pertemuan | Materi | Topik Penting |
+|-----------|--------|---------------|
+| 9 | Tree & Binary Tree | Traversal (Pre/In/Post/Level order) |
+| 10 | Binary Search Tree | Insert, Search, Delete, Balancing |
+| 11 | Graph | Adjacency Matrix/List, BFS, DFS |
+| 12 | Searching | Linear Search, Binary Search, Hash Table |
+| 13 | Sorting Dasar | Bubble, Selection, Insertion Sort |
+| 14 | Sorting Lanjutan | Merge Sort, Quick Sort, Heap Sort |
+| 15 | Big Data & AI | Trie, Tensor, Penerapan |
+
+### Tips Persiapan UAS
+
+1. **Kuasai Trace Algoritma** — UAS sering meminta trace langkah-langkah sorting, traversal tree, BFS/DFS secara manual
+2. **Hafalkan Kompleksitas** — Tabel Big-O untuk semua struktur data dan algoritma
+3. **Latihan Coding** — Pastikan bisa implementasi BST, Graph traversal, dan sorting tanpa melihat catatan
+4. **Pahami Trade-off** — Kapan pakai array vs linked list, BST vs hash table, merge sort vs quick sort
+5. **Review Contoh Soal UAS di RPS** — Kerjakan tanpa melihat jawaban terlebih dahulu
+
+### Checklist Persiapan UAS
+
+```
+CHECKLIST PERSIAPAN UAS STRUKTUR DATA
+============================================================
+[ ] Bisa menggambar BST dari urutan insert tertentu
+[ ] Bisa melakukan traversal Inorder/Preorder/Postorder
+[ ] Bisa menghapus node dari BST (3 kasus)
+[ ] Bisa menggambar adjacency matrix & list dari graph
+[ ] Bisa melakukan BFS dan DFS secara manual
+[ ] Bisa implementasi Binary Search (iteratif & rekursif)
+[ ] Bisa menjelaskan Hash Table dan collision handling
+[ ] Bisa men-trace Bubble, Selection, Insertion Sort
+[ ] Bisa men-trace Merge Sort dan Quick Sort
+[ ] Bisa membandingkan kompleksitas semua sorting
+[ ] Bisa menjelaskan konsep Trie dan operasinya
+[ ] Bisa menjelaskan konsep Tensor dan dimensinya
+[ ] Bisa memilih struktur data yang tepat untuk skenario tertentu
+============================================================
+```
 
 ---
 

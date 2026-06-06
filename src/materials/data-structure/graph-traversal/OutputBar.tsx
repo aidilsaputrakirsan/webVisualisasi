@@ -1,29 +1,22 @@
 import { AnimatePresence, motion } from 'framer-motion'
 
-/** The running traversal result — values slide in as they are emitted. */
-export default function OutputBar({ output }: { output: number[] }) {
+/** Running visit order (letters slide in as vertices are visited). */
+export default function OutputBar({ output }: { output: string[] }) {
   return (
     <div className="flex items-center justify-center gap-4" style={{ minHeight: 80 }}>
       <span className="font-mono text-stone-500" style={{ fontSize: 24 }}>
-        Output
+        Hasil
       </span>
       <div className="flex items-center gap-3">
         <AnimatePresence initial={false}>
           {output.length === 0 && (
-            <motion.span
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="font-mono text-stone-400"
-              style={{ fontSize: 24 }}
-            >
+            <motion.span key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="font-mono text-stone-400" style={{ fontSize: 24 }}>
               —
             </motion.span>
           )}
           {output.map((v, i) => (
             <motion.div
-              key={`${i}-${v}`}
+              key={`${v}-${i}`}
               layout
               initial={{ opacity: 0, scale: 0.6, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

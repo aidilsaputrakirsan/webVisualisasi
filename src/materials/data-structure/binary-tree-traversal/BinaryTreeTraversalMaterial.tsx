@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import MaterialStage from '../../../shared/MaterialStage'
 import TitleBlock from '../../../shared/TitleBlock'
 import CodeBlock from '../../../shared/CodeBlock'
+import { useChrome } from '../../../shared/chrome'
 import TreeView from './TreeView'
 import OutputBar from './OutputBar'
 import QueueView from './QueueView'
@@ -33,6 +34,7 @@ export default function BinaryTreeTraversalMaterial() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
   const [soundOn, setSoundOn] = useState(true)
+  const { hidden } = useChrome()
 
   const steps = useMemo(() => buildTraversalSteps(kind), [kind])
   const atEnd = index >= steps.length - 1
@@ -165,8 +167,8 @@ export default function BinaryTreeTraversalMaterial() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="rounded-full border border-neutral-800 bg-neutral-900/60 font-mono text-neutral-300"
-                style={{ fontSize: 23, padding: '9px 24px' }}
+                className="rounded-full border font-mono"
+                style={{ fontSize: 23, padding: '9px 24px', borderColor: '#E4DCCF', background: '#FFFFFF', color: '#4A4338' }}
               >
                 {step.status}
               </motion.div>
@@ -175,14 +177,14 @@ export default function BinaryTreeTraversalMaterial() {
 
           <CodeBlock filename={`${kind}.py`} source={def.code} activeLine={step.line} />
 
-          <div className="font-mono text-neutral-600" style={{ fontSize: 22 }}>
+          <div className="font-mono text-stone-400" style={{ fontSize: 22 }}>
             step {Math.min(index + 1, steps.length)} / {steps.length}
           </div>
         </div>
       </MaterialStage>
 
       {/* Controls live OUTSIDE the recording canvas. */}
-      <div className="fixed bottom-4 left-4 z-50 w-[340px] max-w-[90vw]">
+      <div className={`fixed bottom-4 left-4 z-50 w-[340px] max-w-[90vw] ${hidden ? 'hidden' : ''}`}>
         <Controls
           isPlaying={isPlaying}
           atEnd={atEnd}
