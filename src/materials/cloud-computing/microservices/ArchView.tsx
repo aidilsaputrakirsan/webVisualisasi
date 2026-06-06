@@ -65,7 +65,7 @@ export default function ArchView({ step, stepKey }: { step: FlowStep; stepKey: n
       {/* Inter-service hint label on the dashed verify edge */}
       <div
         className="absolute font-mono"
-        style={{ left: 318, top: 286, width: 184, textAlign: 'center', fontSize: 13, color: '#9C8F7B' }}
+        style={{ left: 314, top: 286, width: 192, textAlign: 'center', fontSize: 15, color: '#9C8F7B' }}
       >
         inter-service (HTTP)
       </div>
@@ -97,13 +97,13 @@ export default function ArchView({ step, stepKey }: { step: FlowStep; stepKey: n
             }}
           >
             <motion.span animate={{ color: st.border }} style={{ display: 'flex', flexShrink: 0 }}>
-              <Icon size={isDb ? 24 : 28} />
+              <Icon size={isDb ? 26 : 30} />
             </motion.span>
-            <div className="flex flex-col" style={{ gap: 1, minWidth: 0 }}>
-              <span className="font-semibold" style={{ fontSize: isDb ? 19 : 21, color: '#211C16', whiteSpace: 'nowrap' }}>
+            <div className="flex flex-col" style={{ gap: 2, minWidth: 0 }}>
+              <span className="font-semibold" style={{ fontSize: isDb ? 20 : 22, color: '#211C16', whiteSpace: 'nowrap' }}>
                 {n.label}
               </span>
-              <span className="font-mono" style={{ fontSize: 14, color: '#9C8F7B' }}>
+              <span className="font-mono" style={{ fontSize: 16, color: '#9C8F7B' }}>
                 {n.sub}
               </span>
             </div>
@@ -123,8 +123,8 @@ export default function ArchView({ step, stepKey }: { step: FlowStep; stepKey: n
             transition={{ type: 'spring', stiffness: 120, damping: 18 }}
             style={{
               gap: 7,
-              padding: '5px 13px',
-              fontSize: 16,
+              padding: '6px 15px',
+              fontSize: 18,
               whiteSpace: 'nowrap',
               borderColor: tone.stroke,
               background: tone.bg,
@@ -136,7 +136,7 @@ export default function ArchView({ step, stepKey }: { step: FlowStep; stepKey: n
             {step.hasToken && (step.packet.tone === 'request' || step.packet.tone === 'verify') && (
               <span
                 className="rounded-full"
-                style={{ fontSize: 12, padding: '1px 7px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
+                style={{ fontSize: 13, padding: '1px 8px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
               >
                 JWT
               </span>

@@ -33,21 +33,21 @@ function ServiceChip({ service, pulsing }: { service: ServiceView; pulsing: bool
       }}
       transition={{ scale: { repeat: pulsing ? Infinity : 0, duration: 1 } }}
       className="flex flex-col items-center rounded-xl border-2"
-      style={{ width: 168, padding: '14px 10px', gap: 6 }}
+      style={{ width: 182, padding: '16px 12px', gap: 7 }}
     >
       <motion.span animate={{ color: st.border }} style={{ display: 'flex' }}>
-        <Icon size={30} />
+        <Icon size={32} />
       </motion.span>
-      <span className="font-semibold" style={{ fontSize: 19, color: '#211C16' }}>
+      <span className="font-semibold" style={{ fontSize: 21, color: '#211C16' }}>
         {service.label}
       </span>
-      <span className="font-mono" style={{ fontSize: 14, color: '#9C8F7B' }}>
+      <span className="font-mono" style={{ fontSize: 16, color: '#9C8F7B' }}>
         {service.host}
       </span>
       <motion.span
         animate={{ color: st.text, borderColor: st.border, background: st.bg }}
         className="flex items-center rounded-full border font-mono"
-        style={{ fontSize: 14, padding: '2px 10px', gap: 6 }}
+        style={{ fontSize: 16, padding: '3px 12px', gap: 6 }}
       >
         <span style={{ width: 6, height: 6, borderRadius: '50%', background: st.border }} />
         {label(service.status)}
@@ -67,9 +67,9 @@ export default function ProductionPanel({ step }: { step: CdStep }) {
     >
       <div className="flex items-center" style={{ gap: 10 }}>
         <span style={{ color: NODE.info.border, display: 'flex' }}>
-          <CloudIcon size={26} />
+          <CloudIcon size={28} />
         </span>
-        <span className="font-semibold" style={{ fontSize: 22, color: NODE.info.text }}>
+        <span className="font-semibold" style={{ fontSize: 24, color: NODE.info.text }}>
           Railway Cloud
         </span>
       </div>
@@ -91,19 +91,19 @@ export default function ProductionPanel({ step }: { step: CdStep }) {
             className="flex items-center rounded-full border-2 font-mono"
             style={{
               gap: 10,
-              padding: '9px 22px',
-              fontSize: 19,
+              padding: '10px 24px',
+              fontSize: 21,
               borderColor: NODE.done.border,
               background: NODE.done.bg,
               color: NODE.done.text,
             }}
           >
             <span style={{ display: 'flex' }}>
-              <LockIcon size={17} />
+              <LockIcon size={18} />
             </span>
             https://{step.url}
             <span style={{ display: 'flex', color: NODE.done.border }}>
-              <GlobeIcon size={17} />
+              <GlobeIcon size={18} />
             </span>
           </motion.div>
         )}

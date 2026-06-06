@@ -164,7 +164,7 @@ export default function MicroservicesMaterial() {
             </AnimatePresence>
           </div>
 
-          <CodeBlock filename={def.filename} source={def.code} activeLine={step.line} width={760} fontSize={18} />
+          <CodeBlock filename={def.filename} source={def.code} activeLine={step.line} width={812} fontSize={20} />
 
           <div className="font-mono text-stone-400" style={{ fontSize: 22 }}>
             step {Math.min(index + 1, steps.length)} / {steps.length}

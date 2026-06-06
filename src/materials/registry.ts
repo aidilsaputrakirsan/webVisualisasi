@@ -12,6 +12,9 @@ import CiPipelineMaterial from './cloud-computing/ci-pipeline/CiPipelineMaterial
 import CdPipelineMaterial from './cloud-computing/cd-pipeline/CdPipelineMaterial'
 import MonolithMaterial from './cloud-computing/monolith/MonolithMaterial'
 import MicroservicesMaterial from './cloud-computing/microservices/MicroservicesMaterial'
+import ReliabilityMaterial from './cloud-computing/reliability/ReliabilityMaterial'
+import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
+import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -149,6 +152,27 @@ export const COURSES: Course[] = [
         subtitle: 'Dekomposisi · request flow via API Gateway',
         status: 'ready',
         component: MicroservicesMaterial,
+      },
+      {
+        id: 'reliability',
+        title: 'Reliability',
+        subtitle: 'Retry & Circuit Breaker · tahan saat service gagal',
+        status: 'ready',
+        component: ReliabilityMaterial,
+      },
+      {
+        id: 'observability',
+        title: 'Observability',
+        subtitle: 'Logging · Correlation ID tracing lintas service',
+        status: 'ready',
+        component: ObservabilityMaterial,
+      },
+      {
+        id: 'rate-limiting',
+        title: 'Rate Limiting',
+        subtitle: 'Security · token bucket di Gateway (429 saat flood)',
+        status: 'ready',
+        component: RateLimitingMaterial,
       },
       {
         id: 'load-balancing',

@@ -69,21 +69,21 @@ function StageRow({ stage, focused, gateBlocked }: { stage: StageView; focused: 
       transition={{ type: 'spring', stiffness: 320, damping: 30 }}
       className="flex items-center rounded-xl border-2"
       style={{
-        width: 640,
+        width: 680,
         background: stage.status === 'idle' ? '#FFFFFF' : st.bg,
-        padding: '12px 18px',
+        padding: '13px 20px',
         gap: 14,
         borderStyle: dashed ? 'dashed' : 'solid',
       }}
     >
-      <motion.span animate={{ color: st.border }} style={{ display: 'flex' }}>
-        <Icon size={26} />
+      <motion.span animate={{ color: st.border }} style={{ display: 'flex', flexShrink: 0 }}>
+        <Icon size={28} />
       </motion.span>
-      <div className="flex flex-col" style={{ gap: 2 }}>
-        <span className="font-semibold" style={{ fontSize: 22, color: stage.status === 'skip' ? '#9C8F7B' : '#211C16' }}>
+      <div className="flex flex-col" style={{ gap: 2, minWidth: 0 }}>
+        <span className="font-semibold" style={{ fontSize: 23, color: stage.status === 'skip' ? '#9C8F7B' : '#211C16', whiteSpace: 'nowrap' }}>
           {stage.label}
         </span>
-        <span className="font-mono" style={{ fontSize: 15, color: '#9C8F7B' }}>
+        <span className="font-mono" style={{ fontSize: 16, color: '#9C8F7B' }}>
           {stage.sub}
         </span>
       </div>
@@ -92,7 +92,7 @@ function StageRow({ stage, focused, gateBlocked }: { stage: StageView; focused: 
         {verdict && (
           <span
             className="rounded-full border font-mono"
-            style={{ fontSize: 15, padding: '3px 11px', background: verdict.bg, color: verdict.text, borderColor: verdict.border }}
+            style={{ fontSize: 16, padding: '4px 12px', background: verdict.bg, color: verdict.text, borderColor: verdict.border }}
           >
             {verdict.tag}
           </span>

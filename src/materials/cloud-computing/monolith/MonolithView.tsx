@@ -57,7 +57,7 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
       >
         <span
           className="absolute font-mono font-semibold"
-          style={{ top: -26, left: 4, fontSize: 14, color: '#9A7B43', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}
+          style={{ top: -28, left: 4, fontSize: 15, color: '#9A7B43', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}
         >
           MONOLITH BACKEND · satu proses, satu deployment
         </span>
@@ -85,7 +85,7 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
       {/* Internal-call hint between the two modules */}
       <div
         className="absolute font-mono"
-        style={{ left: 372, top: 308, width: 86, textAlign: 'center', fontSize: 12, color: '#9C8F7B' }}
+        style={{ left: 365, top: 306, width: 100, textAlign: 'center', fontSize: 14, color: '#9C8F7B' }}
       >
         in-process
       </div>
@@ -117,13 +117,13 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
             }}
           >
             <motion.span animate={{ color: st.border }} style={{ display: 'flex', flexShrink: 0 }}>
-              <Icon size={isDb ? 24 : 26} />
+              <Icon size={isDb ? 26 : 29} />
             </motion.span>
-            <div className="flex flex-col" style={{ gap: 1, minWidth: 0 }}>
-              <span className="font-semibold" style={{ fontSize: isDb ? 20 : 19, color: '#211C16', whiteSpace: 'nowrap' }}>
+            <div className="flex flex-col" style={{ gap: 2, minWidth: 0 }}>
+              <span className="font-semibold" style={{ fontSize: 22, color: '#211C16', whiteSpace: 'nowrap' }}>
                 {n.label}
               </span>
-              <span className="font-mono" style={{ fontSize: 14, color: '#9C8F7B' }}>
+              <span className="font-mono" style={{ fontSize: 16, color: '#9C8F7B' }}>
                 {n.sub}
               </span>
             </div>
@@ -143,8 +143,8 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
             transition={{ type: 'spring', stiffness: 120, damping: 18 }}
             style={{
               gap: 7,
-              padding: '5px 13px',
-              fontSize: 16,
+              padding: '6px 15px',
+              fontSize: 18,
               whiteSpace: 'nowrap',
               borderColor: tone.stroke,
               background: tone.bg,
@@ -156,7 +156,7 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
             {step.hasToken && (step.packet.tone === 'request' || step.packet.tone === 'internal') && (
               <span
                 className="rounded-full"
-                style={{ fontSize: 12, padding: '1px 7px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
+                style={{ fontSize: 13, padding: '1px 8px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
               >
                 JWT
               </span>

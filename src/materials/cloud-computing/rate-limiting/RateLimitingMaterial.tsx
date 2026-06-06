@@ -4,29 +4,27 @@ import MaterialStage from '../../../shared/MaterialStage'
 import TitleBlock from '../../../shared/TitleBlock'
 import CodeBlock from '../../../shared/CodeBlock'
 import { useChrome } from '../../../shared/chrome'
-import MonolithView from './MonolithView'
+import RateView from './RateView'
 import Controls from './Controls'
-import { buildSteps, MODES, type Mode } from './arch'
+import { buildSteps, CODE_SOURCE, MODES, type Mode } from './arch'
 import {
   ensureAudio,
   setMuted,
   playVisit,
-  playCompare,
-  playEnqueue,
-  playShift,
   playReturn,
+  playShift,
   playDone,
 } from '../../../audio/sounds'
 
 const BASE_DELAY_MS = 900
 
 const BADGES = [
-  { label: 'ARSITEKTUR', value: '1 deploy', color: '#a855f7' },
-  { label: 'DB', value: 'shared', color: '#3b82f6' },
+  { label: 'SECURITY', value: 'rate limit', color: '#a855f7' },
+  { label: 'NGINX', value: 'token bucket', color: '#3b82f6' },
 ]
 
-export default function MonolithMaterial() {
-  const [mode, setMode] = useState<Mode>('login')
+export default function RateLimitingMaterial() {
+  const [mode, setMode] = useState<Mode>('flood')
   const [index, setIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
@@ -47,20 +45,14 @@ export default function MonolithMaterial() {
     lastSounded.current = key
     if (index === 0) return
     switch (step.sound) {
-      case 'send':
-        playEnqueue(70)
+      case 'allow':
+        playVisit(64)
         break
-      case 'route':
-        playCompare(60)
-        break
-      case 'db':
-        playShift(56)
-        break
-      case 'internal':
+      case 'reject':
         playReturn()
         break
-      case 'back':
-        playVisit(64)
+      case 'refill':
+        playShift(58)
         break
       case 'done':
         playDone()
@@ -136,9 +128,9 @@ export default function MonolithMaterial() {
     <>
       <MaterialStage>
         <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 84, paddingBottom: 120, gap: 24 }}>
-          <TitleBlock title="MONOLITH" subtitle={def.desc} badges={BADGES} />
+          <TitleBlock title="RATE LIMITING" subtitle={def.desc} badges={BADGES} />
 
-          <MonolithView step={step} stepKey={index} />
+          <RateView step={step} stepKey={index} />
 
           <div className="flex items-center justify-center" style={{ height: 50 }}>
             <AnimatePresence mode="wait">
@@ -155,7 +147,7 @@ export default function MonolithMaterial() {
                   borderColor: '#E4DCCF',
                   background: '#FFFFFF',
                   color: '#4A4338',
-                  maxWidth: 920,
+                  maxWidth: 940,
                   textAlign: 'center',
                 }}
               >
@@ -164,7 +156,7 @@ export default function MonolithMaterial() {
             </AnimatePresence>
           </div>
 
-          <CodeBlock filename={def.filename} source={def.code} activeLine={step.line} width={792} fontSize={21} />
+          <CodeBlock filename="nginx.conf" source={CODE_SOURCE} activeLine={step.line} width={812} fontSize={20} />
 
           <div className="font-mono text-stone-400" style={{ fontSize: 22 }}>
             step {Math.min(index + 1, steps.length)} / {steps.length}

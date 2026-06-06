@@ -1,23 +1,24 @@
-# MODUL 12: MICROSERVICES — KONSEP & DEKOMPOSISI
+# MODUL 15: FINAL POLISH — SECURITY, CLEANUP & DOKUMENTASI
 
 ---
 
 **Mata Kuliah:** Komputasi Awan  
 **Program Studi:** Sistem Informasi - Institut Teknologi Kalimantan  
 **SKS:** 3 (1 Kuliah + 2 Project)  
-**Pertemuan:** 12 dari 16  
-**Fase:** 🔵 Microservices & Production (Minggu 12-14)  
+**Pertemuan:** 15 dari 16  
+**Fase:** 🟣 Final & UAS (Minggu 15-16) — **Pertemuan Terakhir Sebelum UAS**  
 
 ---
 
 ## Prasyarat
 
 Sebelum memulai pertemuan ini, pastikan:
-- [x] Modul 11 selesai: aplikasi full-stack live di Railway, CD pipeline berjalan
-- [x] Sudah membaca artikel Martin Fowler tentang Microservices (Modul 11 Bagian D4)
-- [x] Sudah menonton video Microservices (Modul 11 Bagian D2)
-- [x] Familiar dengan Docker Compose (multi-container) dari Modul 5-7
+- [x] Modul 14 selesai: monitoring, structured logging, dan metrics berfungsi
+- [x] Semua fitur dari Modul 12-14 stabil dan terintegrasi
+- [x] CI/CD pipeline passing di GitHub Actions
+- [x] Sudah membaca OWASP Top 10 (Modul 14 Bagian D4)
 
+> ⚠️ **Pertemuan ini adalah kesempatan TERAKHIR** untuk memperbaiki proyek sebelum UAS minggu depan. Fokus: security, kerapian kode, dokumentasi lengkap, dan persiapan presentasi. **Tidak ada fitur baru** — hanya perbaikan dan polish.
 
 ---
 
@@ -25,18 +26,19 @@ Sebelum memulai pertemuan ini, pastikan:
 
 ### Sub-CPMK
 Setelah menyelesaikan pertemuan ini, mahasiswa mampu:
-1. Menjelaskan konsep microservices dan perbedaannya dengan arsitektur monolith
-2. Mengidentifikasi bounded context dan memecah monolith menjadi service-service independen
-3. Merancang arsitektur microservices untuk aplikasi yang sudah dibangun
-4. Mengimplementasikan Auth Service sebagai service terpisah
-5. Mengkonfigurasi Docker Compose untuk menjalankan multiple services
+1. Mengidentifikasi dan memperbaiki kerentanan keamanan dasar di aplikasi web
+2. Menerapkan security best practices (rate limiting, input validation, HTTPS, secret management)
+3. Melakukan code cleanup dan memastikan konsistensi kode
+4. Menyusun dokumentasi proyek yang lengkap dan profesional
+5. Menyiapkan presentasi teknis untuk demo UAS
 
 ### Indikator Pencapaian
-- Arsitektur microservices terdokumentasi (diagram + API contract)
-- Auth Service berjalan sebagai container terpisah dengan database sendiri
-- Auth Service memiliki endpoint: `POST /register`, `POST /login`, `GET /verify`
-- Docker Compose menjalankan minimal 4 services: auth-service, item-service, auth-db, item-db
-- Services berkomunikasi via HTTP REST
+- Tidak ada secret/password yang hardcoded di repository
+- Rate limiting aktif di API Gateway
+- Input validation terpasang di semua endpoint
+- README lengkap mencakup arsitektur, setup, dan deployment
+- Slide presentasi UAS siap (5-7 slide)
+- Semua anggota tim memahami arsitektur dan bisa menjawab pertanyaan teknis
 
 ---
 
@@ -44,339 +46,338 @@ Setelah menyelesaikan pertemuan ini, mahasiswa mampu:
 
 | Peran | Fokus Utama | Juga Membantu |
 |-------|-------------|---------------|
-| **Lead Backend** | Memisahkan Auth Service dari monolith | Endpoint auth |
-| **Lead Frontend** | Update frontend untuk multi-service API | Update API URL config |
-| **Lead DevOps** | Docker Compose multi-service, networking | Debug container networking |
-| **Lead QA & Docs** | Dokumentasi arsitektur, API contract | Testing antar service |
-| **Lead CI/CD** *(5 orang)* | Update CI pipeline untuk multi-service | Bantu Docker Compose |
+| **Lead Backend** | Security audit backend, input validation, error handling | Code review |
+| **Lead Frontend** | UI polish, error boundaries, accessibility check | Slide presentasi |
+| **Lead DevOps** | Rate limiting gateway, secret audit, production config | Deployment verify |
+| **Lead QA & Docs** | Dokumentasi lengkap, README final, operations guide | Testing final |
+| **Lead CI/CD** *(5 orang)* | CI pipeline final check, release tagging | Bantu dokumentasi |
 
 ---
 
 # BAGIAN A: PEMBEKALAN TEORI (50 Menit)
 
-## 1. Monolith vs Microservices (20 menit)
+## 1. Security di Cloud-Native Applications (20 menit)
 
-### 1.1 Review: Arsitektur Monolith Kita Saat Ini
+### 1.1 Mengapa Security Penting?
 
-Dari Modul 1 sampai 11, kita membangun **monolith** — satu aplikasi backend yang menangani semuanya:
+Aplikasi yang di-deploy ke cloud bisa diakses oleh siapa saja di internet. Satu kerentanan bisa berarti:
+- Data pengguna bocor (nama, email, password)
+- Aplikasi diambil alih oleh attacker
+- Biaya cloud membengkak (cryptomining, abuse)
 
-```mermaid
-flowchart TD
-    subgraph MONOLITH ["🟦 Monolith Backend (Saat Ini)"]
-        AUTH["🔐 Auth Module<br/>(register, login, JWT)"]
-        ITEMS["📦 Items Module<br/>(CRUD operations)"]
-        HEALTH["❤️ Health Module"]
-        DB_CONN["🔌 Database Connection"]
-        
-        AUTH --> DB_CONN
-        ITEMS --> DB_CONN
-        HEALTH --> DB_CONN
-    end
+> 💡 **Realita industri:**  
+> Banyak kasus kebocoran data terjadi bukan karena serangan canggih, tapi karena hal sederhana: API key yang ter-commit ke GitHub, database tanpa password, atau endpoint tanpa autentikasi. Security bukan tentang menangkal hacker elite — tapi tentang tidak meninggalkan pintu terbuka.
 
-    DB_CONN --> DB[("🗄️ PostgreSQL<br/>1 database, semua tabel")]
-    FE["⚛️ React Frontend"] -->|HTTP| MONOLITH
+### 1.2 OWASP Top 10 yang Relevan
 
-    style MONOLITH fill:#DEEBF7,stroke:#2E75B6
-    style DB fill:#FFF2CC,stroke:#BF8F00
-```
-
-**Kelebihan monolith (yang sudah kita rasakan):**
-- Simple — semua di satu tempat
-- Mudah develop dan debug
-- Satu deployment, satu database
-
-**Kelemahan monolith (yang mulai terasa saat aplikasi bertumbuh):**
-- Satu bug di auth bisa crash seluruh aplikasi
-- Tidak bisa scale auth dan items secara independen
-- Tim bertambah → semua edit di repo yang sama → conflict makin sering
-- Deployment monolith = deploy semuanya, meskipun yang berubah hanya 1 fitur kecil
-
-### 1.2 Apa itu Microservices?
-
-**Microservices** adalah arsitektur dimana aplikasi dipecah menjadi **service-service kecil yang independen**, masing-masing:
-- Punya **tanggung jawab tunggal** (single responsibility)
-- Punya **database sendiri** (database per service)
-- Bisa **di-deploy secara independen**
-- Berkomunikasi via **network** (HTTP/REST, message queue)
+Dari OWASP Top 10 Web Application Security Risks, berikut yang paling relevan untuk proyek kita:
 
 ```mermaid
 flowchart TD
-    subgraph MS ["🟢 Microservices Architecture (Target)"]
-        subgraph AUTH_SVC ["🔐 Auth Service"]
-            A_API["POST /register<br/>POST /login<br/>GET /verify"]
-            A_DB[("auth_db")]
-            A_API --> A_DB
-        end
-
-        subgraph ITEM_SVC ["📦 Item Service"]
-            I_API["GET /items<br/>POST /items<br/>PUT /items/:id<br/>DELETE /items/:id"]
-            I_DB[("item_db")]
-            I_API --> I_DB
-        end
+    subgraph OWASP ["🛡️ OWASP Top 10 — Yang Relevan"]
+        A01["A01: Broken Access Control<br/>User bisa akses data orang lain"]
+        A02["A02: Cryptographic Failures<br/>Password tersimpan plain text"]
+        A03["A03: Injection<br/>SQL Injection, XSS"]
+        A07["A07: Auth Failures<br/>Token tidak expire, brute force"]
+        A09["A09: Security Logging<br/>Tidak ada log siapa melakukan apa"]
     end
 
-    FE["⚛️ React Frontend"] -->|"HTTP"| A_API
-    FE -->|"HTTP"| I_API
-    I_API -.->|"Verify token<br/>HTTP call"| A_API
+    A01 --> FIX1["✅ Filter items by owner_id"]
+    A02 --> FIX2["✅ bcrypt hashing + env vars"]
+    A03 --> FIX3["✅ SQLAlchemy ORM + Pydantic"]
+    A07 --> FIX4["✅ JWT expiry + rate limiting"]
+    A09 --> FIX5["✅ Structured logging (Modul 14)"]
 
-    style AUTH_SVC fill:#E2EFDA,stroke:#548235
-    style ITEM_SVC fill:#DEEBF7,stroke:#2E75B6
-    style A_DB fill:#FFF2CC,stroke:#BF8F00
-    style I_DB fill:#FFF2CC,stroke:#BF8F00
+    style OWASP fill:#FBE5D6,stroke:#C00000
 ```
 
-> 💡 **Analogi:**  
-> Monolith seperti **satu restoran besar** dimana dapur, kasir, dan gudang semua di satu bangunan. Jika dapur kebakaran, seluruh restoran tutup. Microservices seperti **food court** — setiap tenant punya dapur sendiri, kasir sendiri, bahan sendiri. Jika satu tenant bermasalah, tenant lain tetap beroperasi.
+| OWASP Risk | Status di Proyek Kita | Perlu Diperbaiki? |
+|------------|----------------------|-------------------|
+| **A01: Broken Access Control** | Items sudah difilter by `owner_id` | ✅ Sudah aman |
+| **A02: Cryptographic Failures** | Password di-hash dengan bcrypt | ⚠️ Cek SECRET_KEY tidak hardcoded |
+| **A03: Injection** | SQLAlchemy ORM mencegah SQL injection | ⚠️ Cek input validation lengkap |
+| **A07: Auth Failures** | JWT dengan expiry | ⚠️ Tambah rate limiting login |
+| **A09: Security Logging** | Structured logging sudah ada | ✅ Sudah aman |
 
-### 1.3 Perbandingan Lengkap
+### 1.3 Security Checklist
 
-| Aspek | Monolith | Microservices |
-|-------|----------|---------------|
-| **Struktur** | Satu codebase, satu deploy | Banyak codebase/folder, deploy independen |
-| **Database** | Satu database shared | Database per service |
-| **Scaling** | Scale seluruh app | Scale per service sesuai kebutuhan |
-| **Deployment** | Deploy ulang seluruh app | Deploy hanya service yang berubah |
-| **Failure** | Satu bug bisa crash semua | Satu service down, lainnya tetap jalan |
-| **Complexity** | Simple di awal | Lebih kompleks (networking, konsistensi) |
-| **Tim** | Cocok untuk tim kecil (1-5 orang) | Cocok untuk tim besar (banyak tim) |
-| **Testing** | Simple (satu app) | Perlu integration test antar service |
-| **Contoh** | Aplikasi kita Modul 1-11 | Netflix, Spotify, Grab, Gojek, Tokopedia |
+Gunakan checklist ini untuk audit proyek:
 
-> 📝 **Kapan microservices cocok?** Tidak selalu! Untuk startup kecil atau proyek sederhana, monolith lebih efisien. Microservices cocok saat aplikasi sudah besar, tim bertambah, atau ada kebutuhan scaling yang berbeda per fitur. Dalam mata kuliah ini, kita memecah monolith untuk **belajar konsepnya** — bukan karena app kita sudah terlalu besar.
+```
+SECRETS & CREDENTIALS
+□ Tidak ada password/API key yang hardcoded di kode
+□ .env tidak ter-commit ke Git (.gitignore)
+□ .env.example hanya berisi placeholder, bukan nilai asli
+□ SECRET_KEY menggunakan random string yang kuat
+□ Database password berbeda antara dev dan production
+
+AUTHENTICATION & AUTHORIZATION
+□ JWT token memiliki expiry time
+□ Password di-hash (bcrypt), tidak plain text
+□ Login endpoint memiliki rate limiting
+□ User hanya bisa akses data miliknya (owner_id check)
+
+INPUT VALIDATION
+□ Semua input divalidasi (Pydantic schemas)
+□ Email divalidasi formatnya (EmailStr)
+□ Price/quantity tidak boleh negatif
+□ String length dibatasi (name max 200 char)
+
+NETWORK & DEPLOYMENT
+□ CORS hanya mengizinkan domain yang dikenal
+□ Health dan metrics endpoint tidak mengexpose data sensitif
+□ Docker images menggunakan versi spesifik (bukan :latest)
+□ Production tidak menggunakan debug mode
+```
 
 ---
 
-## 2. Konsep Kunci Microservices (15 menit)
+## 2. Code Quality & Cleanup (15 menit)
 
-### 2.1 Bounded Context
+### 2.1 Code Smells yang Umum
 
-**Bounded Context** (dari Domain-Driven Design) adalah batasan logis yang menentukan scope suatu service. Setiap service bertanggung jawab atas satu "domain" bisnis.
+| Code Smell | Contoh | Solusi |
+|------------|--------|--------|
+| **Hardcoded values** | `SECRET_KEY = "abc123"` | Pindah ke environment variable |
+| **Dead code** | Fungsi yang tidak dipanggil | Hapus atau komentari alasannya |
+| **Inconsistent naming** | Mix `camelCase` dan `snake_case` | Pilih satu konvensi |
+| **Missing error handling** | `response.json()` tanpa try/catch | Wrap dengan proper error handling |
+| **Copy-paste code** | Logika sama di auth dan item service | Extract ke shared module |
+| **TODO comments** | `# TODO: fix this later` | Selesaikan atau buat GitHub Issue |
 
-```mermaid
-flowchart LR
-    subgraph BC_AUTH ["🔐 Bounded Context: Authentication"]
-        U_MODEL["User Model<br/>(id, email, hashed_password, name)"]
-        U_LOGIC["Register, Login,<br/>Token Generation, Verification"]
-    end
+### 2.2 Prinsip Clean Code untuk Project Akhir
 
-    subgraph BC_ITEM ["📦 Bounded Context: Inventory"]
-        I_MODEL["Item Model<br/>(id, name, price, quantity, owner_id)"]
-        I_LOGIC["CRUD Items,<br/>Search, Stats, Categories"]
-    end
-
-    BC_AUTH -.->|"owner_id reference<br/>(NOT foreign key!)"| BC_ITEM
-
-    style BC_AUTH fill:#E2EFDA,stroke:#548235
-    style BC_ITEM fill:#DEEBF7,stroke:#2E75B6
-```
-
-**Cara menentukan bounded context:** Tanya diri sendiri — "Jika fitur ini down, fitur lain mana yang tetap bisa jalan?"
-- Auth down → items tidak bisa dibuat (butuh login), tapi item list mungkin tetap bisa di-read
-- Items down → user tetap bisa login/register
-
-### 2.2 Database per Service
-
-Setiap service memiliki database sendiri. Service **tidak boleh** mengakses database service lain secara langsung.
-
-```mermaid
-flowchart TD
-    subgraph BENAR ["✅ Benar — Database per Service"]
-        A1["Auth Service"] --> A1_DB[("auth_db")]
-        I1["Item Service"] --> I1_DB[("item_db")]
-        I1 -.->|"HTTP call"| A1
-    end
-
-    subgraph SALAH ["❌ Salah — Shared Database"]
-        A2["Auth Service"] --> SHARED[("shared_db")]
-        I2["Item Service"] --> SHARED
-    end
-
-    style BENAR fill:#E2EFDA,stroke:#548235
-    style SALAH fill:#FBE5D6,stroke:#C00000
-```
-
-Mengapa? Jika service berbagi database:
-- Perubahan schema di satu service bisa break service lain
-- Tidak bisa scale database secara independen
-- Tight coupling — kebalikan dari tujuan microservices
-
-### 2.3 Inter-Service Communication
-
-Bagaimana service berkomunikasi? Ada dua pola utama:
-
-| Pola | Mekanisme | Kapan Digunakan | Contoh |
-|------|-----------|-----------------|--------|
-| **Synchronous** | HTTP/REST call | Butuh response langsung | Item Service memanggil Auth Service untuk verify token |
-| **Asynchronous** | Message Queue (RabbitMQ, Kafka) | Tidak butuh response langsung, event-driven | Setelah order dibuat, kirim notifikasi email |
-
-> 📝 **Untuk mata kuliah ini:** Kita menggunakan **synchronous HTTP/REST** karena lebih sederhana. Message queue adalah topik lanjutan yang bisa Anda eksplorasi sendiri.
-
-### 2.4 API Gateway (Konsep)
-
-Di production, biasanya ada **API Gateway** di depan semua services — sebagai pintu masuk tunggal.
-
-```mermaid
-flowchart LR
-    FE["⚛️ Frontend"] --> GW["🚪 API Gateway<br/>(Nginx / Traefik)"]
-    GW -->|"/auth/*"| AUTH["🔐 Auth Service"]
-    GW -->|"/items/*"| ITEMS["📦 Item Service"]
-    GW -->|"/health"| HEALTH["❤️ Health Aggregator"]
-
-    style GW fill:#FFF2CC,stroke:#BF8F00
-    style AUTH fill:#E2EFDA,stroke:#548235
-    style ITEMS fill:#DEEBF7,stroke:#2E75B6
-```
-
-API Gateway berfungsi sebagai:
-- **Router** — mengarahkan request ke service yang tepat
-- **Load balancer** — membagi traffic antar instance
-- **SSL termination** — handle HTTPS di satu tempat
-- **Rate limiting** — melindungi services dari overload
-
-> 📝 **Di workshop ini:** Kita menggunakan **Nginx sebagai API Gateway** sederhana di Docker Compose. Frontend hanya perlu tahu satu URL (gateway), bukan URL setiap service.
+1. **Consistency** — konvensi penamaan, format, dan struktur yang sama di semua services
+2. **Documentation** — setiap file punya docstring yang menjelaskan fungsinya
+3. **Error handling** — semua operasi yang bisa gagal memiliki error handling
+4. **No secrets** — semua credential di environment variables
+5. **Working tests** — semua test passing di CI
 
 ---
 
-## 3. Rencana Dekomposisi (15 menit)
+## 3. Dokumentasi Profesional (15 menit)
 
-### 3.1 Service Map
-
-Berikut rencana pemecahan monolith kita:
-
-| Service | Tanggung Jawab | Endpoints | Database |
-|---------|---------------|-----------|----------|
-| **Auth Service** | Registrasi, login, JWT token management, verifikasi | `POST /register`, `POST /login`, `GET /verify` | `auth_db` (tabel: users) |
-| **Item Service** | CRUD items, search, stats | `GET /items`, `POST /items`, `PUT /items/:id`, `DELETE /items/:id`, `GET /items/stats` | `item_db` (tabel: items) |
-| **API Gateway** | Routing, reverse proxy | Proxy semua request ke service yang tepat | — (tanpa database) |
-
-### 3.2 Alur Request
+### 3.1 Apa yang Dinilai di UAS
 
 ```mermaid
-sequenceDiagram
-    participant FE as ⚛️ Frontend
-    participant GW as 🚪 Gateway (Nginx)
-    participant AUTH as 🔐 Auth Service
-    participant ITEM as 📦 Item Service
+flowchart LR
+    subgraph UAS ["🎓 Komponen Penilaian UAS"]
+        DEMO["🖥️ Live Demo<br/>25%"]
+        ARCH["🏗️ Arsitektur & Kode<br/>20%"]
+        CICD["🔄 CI/CD Pipeline<br/>15%"]
+        VIVA["🎤 Individual Viva<br/>25%"]
+        DOCS["📝 Dokumentasi & Reflection<br/>15%"]
+    end
 
-    Note over FE,ITEM: 1. User Login
-    FE->>GW: POST /auth/login
-    GW->>AUTH: POST /login
-    AUTH-->>GW: {access_token: "eyJ..."}
-    GW-->>FE: {access_token: "eyJ..."}
+    DEMO --> D1["Aplikasi berjalan end-to-end"]
+    ARCH --> D2["Microservices, CI/CD, monitoring"]
+    DOCS --> D3["README, API docs, architecture diagram"]
+    PRESENT --> D4["Jelaskan keputusan teknis, jawab pertanyaan"]
 
-    Note over FE,ITEM: 2. Create Item (with token)
-    FE->>GW: POST /items (Header: Bearer eyJ...)
-    GW->>ITEM: POST /items (Header: Bearer eyJ...)
-    ITEM->>AUTH: GET /verify (Header: Bearer eyJ...)
-    AUTH-->>ITEM: {user_id: 1, email: "..."}
-    ITEM-->>GW: {id: 1, name: "Laptop", ...}
-    GW-->>FE: {id: 1, name: "Laptop", ...}
+    style UAS fill:#DEEBF7,stroke:#2E75B6
 ```
 
-Perhatikan: Item Service **tidak mengakses auth_db** untuk verifikasi token. Ia melakukan **HTTP call ke Auth Service** — ini adalah inter-service communication.
+### 3.2 README yang Lengkap
 
-### 3.3 Folder Structure Target
+README harus mencakup:
 
-```
-cloud-team-XX/
-├── services/
-│   ├── auth-service/             ← Service baru (dari auth.py)
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── database.py
-│   │   ├── requirements.txt
-│   │   ├── Dockerfile
-│   │   └── tests/
-│   ├── item-service/             ← Service baru (dari crud.py)
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── database.py
-│   │   ├── auth_client.py        ← HTTP client ke Auth Service
-│   │   ├── requirements.txt
-│   │   ├── Dockerfile
-│   │   └── tests/
-│   └── gateway/                  ← Nginx reverse proxy
-│       └── nginx.conf
-├── frontend/
-│   └── ... (tetap sama)
-├── docker-compose.yml            ← Updated: multi-service
-├── docker-compose.dev.yml        ← Development overrides
-└── README.md
-```
+1. **Project Overview** — apa aplikasinya, untuk siapa
+2. **Architecture** — diagram microservices (mermaid/gambar)
+3. **Tech Stack** — semua teknologi dan versinya
+4. **Getting Started** — cara menjalankan dari nol (clone → up)
+5. **API Documentation** — daftar semua endpoints
+6. **Deployment** — cara deploy ke Railway/cloud
+7. **Team** — anggota dan kontribusi masing-masing
+8. **Project Journey** — evolusi dari monolith ke microservices
+
+### 3.3 Slide Presentasi UAS (5-7 Slide)
+
+| Slide | Isi | Waktu |
+|-------|-----|-------|
+| 1 | **Judul** — nama proyek, nama tim, logo | 30 detik |
+| 2 | **Problem & Solution** — masalah yang diselesaikan | 1 menit |
+| 3 | **Architecture Journey** — monolith → microservices | 2 menit |
+| 4 | **Tech Stack & Infrastructure** — Docker, CI/CD, Railway, monitoring | 2 menit |
+| 5 | **Live Demo** — register → login → CRUD → status page | 3 menit |
+| 6 | **Challenges & Lessons Learned** — masalah yang dihadapi dan solusinya | 2 menit |
+| 7 | **Kontribusi Tim** — siapa mengerjakan apa, metrics (commits, PRs) | 1 menit |
 
 ---
 
 # BAGIAN B: WORKSHOP LAB (170 Menit)
 
-## Workshop 12.1: Buat Auth Service (50 menit)
+## Workshop 15.1: Security Audit & Hardening (40 menit)
 
-### Langkah 1: Setup Folder Structure
+### Langkah 1: Secret Audit
 
 ```bash
-mkdir -p services/auth-service/tests
-touch services/auth-service/__init__.py
-touch services/auth-service/tests/__init__.py
+# Cek apakah ada secret yang bocor di repository
+# Cari hardcoded passwords, API keys, tokens
+grep -rn "password\|secret\|token\|api_key" \
+  --include="*.py" --include="*.yml" --include="*.yaml" \
+  --include="*.js" --include="*.jsx" --include="*.env" \
+  services/ frontend/ docker-compose.yml \
+  | grep -v ".env.example" \
+  | grep -v "node_modules" \
+  | grep -v "__pycache__"
 ```
 
-### Langkah 2: Auth Service — database.py
+**Yang HARUS ditemukan dan diperbaiki:**
+- `SECRET_KEY = "dev-secret-key..."` → ganti menjadi `os.getenv("SECRET_KEY")`
+- Password default di docker-compose → gunakan `.env` file
+- Token hardcoded di frontend test → hapus
 
-File: `services/auth-service/database.py`
+### Langkah 2: Environment Variable Audit
 
-```python
-"""Database connection for Auth Service."""
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+Buat `.env.example` yang lengkap di root proyek:
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5433/auth_db"
-)
+File: `.env.example`
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+```bash
+# ============================================
+# Cloud App — Environment Variables
+# ============================================
+# Copy file ini ke .env dan isi dengan nilai yang sesuai
+# JANGAN commit file .env ke repository!
 
+# ---- GENERAL ----
+ENVIRONMENT=development          # development | production
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# ---- AUTH SERVICE ----
+AUTH_DB_URL=postgresql://postgres:CHANGE_ME@auth-db:5432/auth_db
+SECRET_KEY=CHANGE_ME_USE_RANDOM_STRING_MIN_32_CHARS
+TOKEN_EXPIRE_MINUTES=30
+
+# ---- ITEM SERVICE ----
+ITEM_DB_URL=postgresql://postgres:CHANGE_ME@item-db:5432/item_db
+AUTH_SERVICE_URL=http://auth-service:8001
+
+# ---- DATABASE ----
+POSTGRES_PASSWORD=CHANGE_ME
+
+# ---- FRONTEND ----
+VITE_API_URL=http://localhost
+
+# ---- LOGGING ----
+LOG_LEVEL=INFO                   # DEBUG | INFO | WARNING | ERROR
 ```
 
-### Langkah 3: Auth Service — models.py
+Verifikasi `.gitignore`:
 
-File: `services/auth-service/models.py`
+```bash
+# Pastikan .env ada di .gitignore
+grep "\.env" .gitignore || echo ".env" >> .gitignore
 
-```python
-"""User model for Auth Service."""
-from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.sql import func
-from database import Base
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+# Cek apakah .env pernah ter-commit
+git log --all --full-history -- "*.env" | head -5
 ```
 
-### Langkah 4: Auth Service — schemas.py
+### Langkah 3: Rate Limiting di Gateway
 
-File: `services/auth-service/schemas.py`
+Update `services/gateway/nginx.conf` — tambahkan rate limiting:
+
+```nginx
+# Rate limiting zones (tambahkan di ATAS block server)
+limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=5r/s;
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=20r/s;
+limit_req_zone $binary_remote_addr zone=general_limit:10m rate=30r/s;
+
+server {
+    listen 80;
+    server_name localhost;
+
+    # Auth routes — ketat (5 request/detik, burst 10)
+    location /auth/login {
+        limit_req zone=auth_limit burst=10 nodelay;
+        limit_req_status 429;
+        proxy_pass http://auth_service/login;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization $http_authorization;
+    }
+
+    location /auth/register {
+        limit_req zone=auth_limit burst=5 nodelay;
+        limit_req_status 429;
+        proxy_pass http://auth_service/register;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    # Auth routes lainnya
+    location /auth/ {
+        limit_req zone=general_limit burst=20 nodelay;
+        proxy_pass http://auth_service/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization $http_authorization;
+    }
+
+    # Item routes — sedang (20 request/detik, burst 30)
+    location /items {
+        limit_req zone=api_limit burst=30 nodelay;
+        limit_req_status 429;
+        proxy_pass http://item_service/items;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Authorization $http_authorization;
+    }
+
+    # Health & metrics (no rate limit)
+    location /auth/health {
+        proxy_pass http://auth_service/health;
+    }
+    location /auth/metrics {
+        proxy_pass http://auth_service/metrics;
+    }
+    location /items/health {
+        proxy_pass http://item_service/health;
+    }
+    location /items/metrics {
+        proxy_pass http://item_service/metrics;
+    }
+    location /health {
+        default_type application/json;
+        return 200 '{"status": "healthy", "service": "gateway"}';
+    }
+
+    # Frontend
+    location / {
+        limit_req zone=general_limit burst=50 nodelay;
+        proxy_pass http://frontend:3000;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Custom error page untuk rate limit
+    error_page 429 = @rate_limited;
+    location @rate_limited {
+        default_type application/json;
+        return 429 '{"error": "Too many requests. Please try again later."}';
+    }
+}
+```
+
+**Penjelasan rate limiting:**
+
+| Zone | Rate | Burst | Target |
+|------|------|-------|--------|
+| `auth_limit` | 5 req/s | 10 | Login/register — mencegah brute force |
+| `api_limit` | 20 req/s | 30 | CRUD operations — penggunaan normal |
+| `general_limit` | 30 req/s | 50 | Frontend dan route lainnya |
+
+### Langkah 4: Input Validation Strengthening
+
+Update `services/auth-service/schemas.py` — perkuat validasi:
 
 ```python
-"""Pydantic schemas for Auth Service."""
-from pydantic import BaseModel, EmailStr
+"""Pydantic schemas with strict validation."""
+from pydantic import BaseModel, EmailStr, field_validator
 
 
 class UserCreate(BaseModel):
@@ -384,330 +385,34 @@ class UserCreate(BaseModel):
     password: str
     name: str
 
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v):
+        if len(v) < 8:
+            raise ValueError("Password minimal 8 karakter")
+        if len(v) > 128:
+            raise ValueError("Password maksimal 128 karakter")
+        if not any(c.isupper() for c in v):
+            raise ValueError("Password harus mengandung minimal 1 huruf besar")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password harus mengandung minimal 1 angka")
+        return v
 
-class UserResponse(BaseModel):
-    id: int
-    email: str
-    name: str
-
-    class Config:
-        from_attributes = True
-
-
-class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-class TokenVerifyResponse(BaseModel):
-    user_id: int
-    email: str
-    name: str
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v):
+        if len(v.strip()) < 2:
+            raise ValueError("Nama minimal 2 karakter")
+        if len(v) > 200:
+            raise ValueError("Nama maksimal 200 karakter")
+        return v.strip()
 ```
 
-### Langkah 5: Auth Service — main.py
-
-File: `services/auth-service/main.py`
+Update `services/item-service/schemas.py` — perkuat validasi:
 
 ```python
-"""
-Auth Service — Handles authentication and user management.
-Microservice yang bertanggung jawab untuk:
-- User registration
-- User login (JWT token generation)
-- Token verification (dipanggil oleh service lain)
-"""
-import os
-from datetime import datetime, timedelta, timezone
-from fastapi import FastAPI, Depends, HTTPException, Header
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from passlib.context import CryptContext
-import jwt
-
-from database import engine, get_db, Base
-from models import User
-from schemas import (
-    UserCreate, UserResponse, LoginRequest,
-    TokenResponse, TokenVerifyResponse
-)
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(
-    title="Auth Service",
-    description="Authentication microservice — register, login, verify tokens",
-    version="2.0.0",
-)
-
-# CORS
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# JWT config
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-ALGORITHM = "HS256"
-TOKEN_EXPIRE_MINUTES = int(os.getenv("TOKEN_EXPIRE_MINUTES", "30"))
-
-
-def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-
-def decode_token(token: str) -> dict:
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-
-# =====================
-# ENDPOINTS
-# =====================
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy",
-        "service": "auth-service",
-        "version": "2.0.0",
-    }
-
-
-@app.post("/register", response_model=UserResponse, status_code=201)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    """Register user baru."""
-    # Check duplicate email
-    existing = db.query(User).filter(User.email == user_data.email).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    user = User(
-        email=user_data.email,
-        name=user_data.name,
-        hashed_password=pwd_context.hash(user_data.password),
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
-
-
-@app.post("/login", response_model=TokenResponse)
-def login(login_data: LoginRequest, db: Session = Depends(get_db)):
-    """Login dan dapatkan JWT token."""
-    user = db.query(User).filter(User.email == login_data.email).first()
-    if not user or not pwd_context.verify(login_data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-
-    token = create_access_token({
-        "sub": str(user.id),
-        "email": user.email,
-        "name": user.name,
-    })
-    return TokenResponse(access_token=token)
-
-
-@app.get("/verify", response_model=TokenVerifyResponse)
-def verify_token(authorization: str = Header(...)):
-    """
-    Verifikasi JWT token — dipanggil oleh service lain.
-    Service lain mengirim header: Authorization: Bearer <token>
-    """
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid authorization header")
-
-    token = authorization.split("Bearer ")[1]
-    payload = decode_token(token)
-
-    return TokenVerifyResponse(
-        user_id=int(payload["sub"]),
-        email=payload["email"],
-        name=payload["name"],
-    )
-```
-
-### Langkah 6: Auth Service — requirements.txt & Dockerfile
-
-File: `services/auth-service/requirements.txt`
-
-```
-fastapi==0.115.6
-uvicorn==0.34.0
-sqlalchemy==2.0.36
-psycopg2-binary==2.9.10
-passlib[bcrypt]==1.7.4
-pyjwt==2.10.1
-pydantic[email]==2.10.4
-```
-
-File: `services/auth-service/Dockerfile`
-
-```dockerfile
-FROM python:3.12-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8001
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
-```
-
-> 📝 Perhatikan port **8001** — berbeda dari monolith (8000). Setiap service punya port sendiri di dalam Docker network.
-
-> ✅ **Checkpoint:** Folder `services/auth-service/` lengkap dengan semua file.
-
----
-
-## Workshop 12.2: Buat Item Service (40 menit)
-
-### Langkah 1: Setup Folder
-
-```bash
-mkdir -p services/item-service/tests
-touch services/item-service/__init__.py
-touch services/item-service/tests/__init__.py
-```
-
-### Langkah 2: Item Service — auth_client.py (Inter-Service Communication)
-
-Ini adalah **kunci microservices**: Item Service memverifikasi token dengan **memanggil Auth Service via HTTP**.
-
-File: `services/item-service/auth_client.py`
-
-```python
-"""
-HTTP client untuk berkomunikasi dengan Auth Service.
-Item Service TIDAK memiliki akses ke auth_db — ia memanggil
-Auth Service via HTTP untuk memverifikasi token.
-"""
-import os
-import httpx
-from fastapi import HTTPException, Header
-
-AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8001")
-
-
-async def verify_token_with_auth_service(authorization: str = Header(...)) -> dict:
-    """
-    Dependency: Verifikasi token dengan memanggil Auth Service.
-    Digunakan sebagai Depends() di endpoints yang butuh autentikasi.
-    """
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(
-                f"{AUTH_SERVICE_URL}/verify",
-                headers={"Authorization": authorization},
-                timeout=5.0,
-            )
-
-        if response.status_code == 200:
-            return response.json()  # {user_id, email, name}
-        elif response.status_code == 401:
-            raise HTTPException(status_code=401, detail="Invalid or expired token")
-        else:
-            raise HTTPException(status_code=503, detail="Auth service unavailable")
-
-    except httpx.ConnectError:
-        raise HTTPException(
-            status_code=503,
-            detail="Cannot connect to Auth Service. Is it running?"
-        )
-    except httpx.TimeoutException:
-        raise HTTPException(
-            status_code=504,
-            detail="Auth Service timeout"
-        )
-```
-
-> 📝 **Key Insight:** Perhatikan URL `http://auth-service:8001`. Di Docker Compose, container bisa saling panggil menggunakan **service name** sebagai hostname. Kita sudah pelajari ini di Modul 6.
-
-### Langkah 3: Item Service — database.py & models.py
-
-File: `services/item-service/database.py`
-
-```python
-"""Database connection for Item Service — SEPARATE database from Auth."""
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5434/item_db"
-)
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-```
-
-File: `services/item-service/models.py`
-
-```python
-"""Item model — di item_db, BUKAN di auth_db."""
-from sqlalchemy import Column, Integer, String, Float, DateTime
-from sqlalchemy.sql import func
-from database import Base
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, index=True)
-    description = Column(String, default="")
-    price = Column(Float, nullable=False)
-    quantity = Column(Integer, default=0)
-    owner_id = Column(Integer, nullable=False)  # Reference ke user di auth_db (bukan FK!)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-```
-
-> ⚠️ **Perhatikan `owner_id`**: Ini bukan foreign key ke tabel users (karena users ada di database yang berbeda). Ini hanya integer reference — konsistensi dijaga di level aplikasi, bukan database.
-
-### Langkah 4: Item Service — schemas.py
-
-File: `services/item-service/schemas.py`
-
-```python
-"""Pydantic schemas for Item Service."""
-from pydantic import BaseModel
+"""Pydantic schemas with strict validation."""
+from pydantic import BaseModel, field_validator
 from typing import Optional
 
 
@@ -717,616 +422,807 @@ class ItemCreate(BaseModel):
     price: float
     quantity: Optional[int] = 0
 
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v):
+        if len(v.strip()) < 1:
+            raise ValueError("Nama item tidak boleh kosong")
+        if len(v) > 300:
+            raise ValueError("Nama item maksimal 300 karakter")
+        return v.strip()
 
-class ItemUpdate(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
-    quantity: Optional[int] = None
+    @field_validator("description")
+    @classmethod
+    def validate_description(cls, v):
+        if v and len(v) > 2000:
+            raise ValueError("Deskripsi maksimal 2000 karakter")
+        return v
 
+    @field_validator("price")
+    @classmethod
+    def validate_price(cls, v):
+        if v < 0:
+            raise ValueError("Harga tidak boleh negatif")
+        if v > 999_999_999:
+            raise ValueError("Harga terlalu besar")
+        return round(v, 2)
 
-class ItemResponse(BaseModel):
-    id: int
-    name: str
-    description: str
-    price: float
-    quantity: int
-    owner_id: int
-
-    class Config:
-        from_attributes = True
-
-
-class ItemListResponse(BaseModel):
-    total: int
-    items: list[ItemResponse]
+    @field_validator("quantity")
+    @classmethod
+    def validate_quantity(cls, v):
+        if v is not None and v < 0:
+            raise ValueError("Quantity tidak boleh negatif")
+        if v is not None and v > 999_999:
+            raise ValueError("Quantity terlalu besar")
+        return v
 ```
 
-### Langkah 5: Item Service — main.py
-
-File: `services/item-service/main.py`
-
-```python
-"""
-Item Service — Handles inventory management.
-Berkomunikasi dengan Auth Service untuk verifikasi token.
-"""
-import os
-from fastapi import FastAPI, Depends, HTTPException, Query
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-
-from database import engine, get_db, Base
-from models import Item
-from schemas import ItemCreate, ItemUpdate, ItemResponse, ItemListResponse
-from auth_client import verify_token_with_auth_service
-
-# Create tables
-Base.metadata.create_all(bind=engine)
-
-app = FastAPI(
-    title="Item Service",
-    description="Inventory microservice — CRUD items with auth via Auth Service",
-    version="2.0.0",
-)
-
-# CORS
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-# =====================
-# ENDPOINTS
-# =====================
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy",
-        "service": "item-service",
-        "version": "2.0.0",
-    }
-
-
-@app.post("/items", response_model=ItemResponse, status_code=201)
-async def create_item(
-    item_data: ItemCreate,
-    user: dict = Depends(verify_token_with_auth_service),
-    db: Session = Depends(get_db),
-):
-    """Buat item baru — requires authentication."""
-    item = Item(
-        **item_data.model_dump(),
-        owner_id=user["user_id"],
-    )
-    db.add(item)
-    db.commit()
-    db.refresh(item)
-    return item
-
-
-@app.get("/items", response_model=ItemListResponse)
-async def get_items(
-    search: str = Query(default=None),
-    skip: int = Query(default=0, ge=0),
-    limit: int = Query(default=20, ge=1, le=100),
-    user: dict = Depends(verify_token_with_auth_service),
-    db: Session = Depends(get_db),
-):
-    """Ambil daftar items milik user yang login."""
-    query = db.query(Item).filter(Item.owner_id == user["user_id"])
-    if search:
-        query = query.filter(Item.name.ilike(f"%{search}%"))
-    total = query.count()
-    items = query.offset(skip).limit(limit).all()
-    return ItemListResponse(total=total, items=items)
-
-
-@app.get("/items/{item_id}", response_model=ItemResponse)
-async def get_item(
-    item_id: int,
-    user: dict = Depends(verify_token_with_auth_service),
-    db: Session = Depends(get_db),
-):
-    """Ambil item by ID."""
-    item = db.query(Item).filter(
-        Item.id == item_id, Item.owner_id == user["user_id"]
-    ).first()
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return item
-
-
-@app.put("/items/{item_id}", response_model=ItemResponse)
-async def update_item(
-    item_id: int,
-    update_data: ItemUpdate,
-    user: dict = Depends(verify_token_with_auth_service),
-    db: Session = Depends(get_db),
-):
-    """Update item."""
-    item = db.query(Item).filter(
-        Item.id == item_id, Item.owner_id == user["user_id"]
-    ).first()
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-
-    for field, value in update_data.model_dump(exclude_unset=True).items():
-        setattr(item, field, value)
-    db.commit()
-    db.refresh(item)
-    return item
-
-
-@app.delete("/items/{item_id}", status_code=204)
-async def delete_item(
-    item_id: int,
-    user: dict = Depends(verify_token_with_auth_service),
-    db: Session = Depends(get_db),
-):
-    """Hapus item."""
-    item = db.query(Item).filter(
-        Item.id == item_id, Item.owner_id == user["user_id"]
-    ).first()
-    if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-    db.delete(item)
-    db.commit()
-```
-
-### Langkah 6: Item Service — requirements.txt & Dockerfile
-
-File: `services/item-service/requirements.txt`
-
-```
-fastapi==0.115.6
-uvicorn==0.34.0
-sqlalchemy==2.0.36
-psycopg2-binary==2.9.10
-httpx==0.28.1
-pydantic==2.10.4
-```
-
-File: `services/item-service/Dockerfile`
-
-```dockerfile
-FROM python:3.12-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8002
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002"]
-```
-
-> ✅ **Checkpoint:** Folder `services/item-service/` lengkap. Perhatikan `auth_client.py` — ini yang membedakan microservices dari monolith.
-
----
-
-## Workshop 12.3: API Gateway dengan Nginx (20 menit)
-
-### Langkah 1: Buat Nginx Config
+### Langkah 5: Test Rate Limiting
 
 ```bash
-mkdir -p services/gateway
+# Rebuild gateway
+docker compose up -d --build gateway
+
+# Test rate limiting login (>5 request/detik harus ditolak)
+for i in $(seq 1 20); do
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+    -X POST http://localhost/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"email":"test@example.com","password":"wrong"}')
+  echo "Request $i: HTTP $STATUS"
+done
+# → Setelah beberapa request, harus muncul HTTP 429
 ```
 
-File: `services/gateway/nginx.conf`
-
-```nginx
-upstream auth_service {
-    server auth-service:8001;
-}
-
-upstream item_service {
-    server item-service:8002;
-}
-
-server {
-    listen 80;
-    server_name localhost;
-
-    # Auth Service routes
-    location /auth/ {
-        proxy_pass http://auth_service/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Authorization $http_authorization;
-    }
-
-    # Item Service routes
-    location /items {
-        proxy_pass http://item_service/items;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header Authorization $http_authorization;
-    }
-
-    # Health check aggregator
-    location /health {
-        default_type application/json;
-        return 200 '{"status": "healthy", "service": "gateway"}';
-    }
-
-    # Frontend (static files)
-    location / {
-        proxy_pass http://frontend:3000;
-        proxy_set_header Host $host;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}
-```
-
-**Alur routing:**
-
-| Request URL | Gateway mengarahkan ke | Service |
-|-------------|----------------------|---------|
-| `POST /auth/register` | `http://auth-service:8001/register` | Auth Service |
-| `POST /auth/login` | `http://auth-service:8001/login` | Auth Service |
-| `GET /items` | `http://item-service:8002/items` | Item Service |
-| `POST /items` | `http://item-service:8002/items` | Item Service |
-| `/` (root) | `http://frontend:3000` | Frontend |
-
-> ✅ **Checkpoint:** `services/gateway/nginx.conf` lengkap dengan routing ke semua services.
+> ✅ **Checkpoint:** Rate limiting aktif (429 muncul saat request berlebihan). Input validation menolak password lemah dan input negatif.
 
 ---
 
-## Workshop 12.4: Docker Compose Multi-Service (30 menit)
+## Workshop 15.2: Code Cleanup (30 menit)
 
-### Langkah 1: Tulis docker-compose.yml Baru
+### Langkah 1: Hapus Dead Code dan TODO
 
-File: `docker-compose.yml`
+```bash
+# Cari semua TODO di codebase
+grep -rn "TODO\|FIXME\|HACK\|XXX" \
+  --include="*.py" --include="*.js" --include="*.jsx" \
+  services/ frontend/src/
 
-```yaml
-# ==============================================
-# Docker Compose — Microservices Architecture
-# Cloud Team XX
-# ==============================================
-# Services:
-# 1. auth-db: PostgreSQL untuk Auth Service
-# 2. item-db: PostgreSQL untuk Item Service
-# 3. auth-service: Authentication (port 8001)
-# 4. item-service: Inventory CRUD (port 8002)
-# 5. frontend: React app (port 3000)
-# 6. gateway: Nginx reverse proxy (port 80)
+# Cari print() statements (harusnya pakai logger)
+grep -rn "print(" --include="*.py" services/
 
-services:
-  # ================================
-  # DATABASES (Database per Service)
-  # ================================
-  auth-db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: auth_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - auth_db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
-  item-db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: item_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - item_db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
-  # ================================
-  # BACKEND SERVICES
-  # ================================
-  auth-service:
-    build: ./services/auth-service
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@auth-db:5432/auth_db
-      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
-      CORS_ORIGINS: "http://localhost,http://localhost:5173"
-    depends_on:
-      auth-db:
-        condition: service_healthy
-    restart: unless-stopped
-
-  item-service:
-    build: ./services/item-service
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@item-db:5432/item_db
-      AUTH_SERVICE_URL: http://auth-service:8001
-      CORS_ORIGINS: "http://localhost,http://localhost:5173"
-    depends_on:
-      item-db:
-        condition: service_healthy
-      auth-service:
-        condition: service_started
-    restart: unless-stopped
-
-  # ================================
-  # FRONTEND
-  # ================================
-  frontend:
-    build: ./frontend
-    environment:
-      VITE_API_URL: http://localhost
-    restart: unless-stopped
-
-  # ================================
-  # API GATEWAY
-  # ================================
-  gateway:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./services/gateway/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    depends_on:
-      - auth-service
-      - item-service
-      - frontend
-    restart: unless-stopped
-
-volumes:
-  auth_db_data:
-  item_db_data:
+# Cari console.log (harusnya dihapus di production)
+grep -rn "console.log" --include="*.js" --include="*.jsx" frontend/src/
 ```
 
-### Langkah 2: Visualisasi Arsitektur
+**Untuk setiap item yang ditemukan:**
+- TODO → selesaikan sekarang, atau buat GitHub Issue jika out of scope
+- `print()` → ganti dengan `logger.info()` atau `logger.debug()`
+- `console.log` → hapus, atau ganti dengan conditional logging
+
+### Langkah 2: Konsistensi Kode
+
+Tambahkan konfigurasi formatter. 
+
+File: `services/auth-service/pyproject.toml`
+
+```toml
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+```
+
+File: `services/item-service/pyproject.toml`
+
+```toml
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.isort]
+profile = "black"
+```
+
+```bash
+# Install formatter (optional, untuk yang sudah familiar)
+pip install black isort --break-system-packages
+
+# Format kode
+cd services/auth-service && black . && isort .
+cd ../item-service && black . && isort .
+```
+
+### Langkah 3: Docstrings Audit
+
+Pastikan setiap file Python memiliki module-level docstring:
+
+```bash
+# Cari file Python tanpa docstring di baris pertama
+for f in $(find services/ -name "*.py" -not -path "*/test*" -not -name "__init__.py"); do
+  FIRST=$(head -1 "$f" | tr -d '[:space:]')
+  if [[ "$FIRST" != '"""' && "$FIRST" != "'''" ]]; then
+    echo "⚠️  Missing docstring: $f"
+  fi
+done
+```
+
+> ✅ **Checkpoint:** Tidak ada TODO yang tidak terselesaikan, tidak ada `print()`/`console.log`, semua file memiliki docstring.
+
+---
+
+## Workshop 15.3: Dokumentasi Final (35 menit)
+
+### Langkah 1: Update README.md
+
+File: `README.md` (di root repository)
+
+```markdown
+# ☁️ Cloud App — [Nama Proyek Tim]
+
+> Aplikasi cloud-native untuk manajemen inventory, dibangun dengan arsitektur
+> microservices sebagai proyek mata kuliah Komputasi Awan — Institut Teknologi
+> Kalimantan.
+
+![CI](https://github.com/[org]/[repo]/actions/workflows/ci.yml/badge.svg)
+![CD](https://github.com/[org]/[repo]/actions/workflows/ci.yml/badge.svg?branch=main)
+
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TD
-    subgraph DOCKER ["🐳 Docker Compose Network"]
-        GW["🚪 Gateway<br/>Nginx :80"]
-        
-        subgraph AUTH ["🔐 Auth Domain"]
-            AS["Auth Service<br/>:8001"]
-            ADB[("auth_db<br/>PostgreSQL")]
-            AS --> ADB
-        end
-        
-        subgraph ITEM ["📦 Item Domain"]
-            IS["Item Service<br/>:8002"]
-            IDB[("item_db<br/>PostgreSQL")]
-            IS --> IDB
-        end
-        
-        FE["⚛️ Frontend<br/>:3000"]
-        
-        GW -->|"/auth/*"| AS
-        GW -->|"/items/*"| IS
-        GW -->|"/"| FE
-        IS -.->|"GET /verify"| AS
-    end
-
-    USER["👤 Browser"] -->|"http://localhost"| GW
-
-    style AUTH fill:#E2EFDA,stroke:#548235
-    style ITEM fill:#DEEBF7,stroke:#2E75B6
-    style GW fill:#FFF2CC,stroke:#BF8F00
+    USER["👤 User"] --> GW["🚪 API Gateway<br/>Nginx"]
+    GW -->|"/auth/*"| AUTH["🔐 Auth Service<br/>FastAPI :8001"]
+    GW -->|"/items/*"| ITEM["📦 Item Service<br/>FastAPI :8002"]
+    GW -->|"/"| FE["⚛️ Frontend<br/>React :3000"]
+    AUTH --> ADB[("auth_db<br/>PostgreSQL")]
+    ITEM --> IDB[("item_db<br/>PostgreSQL")]
+    ITEM -.->|"HTTP /verify"| AUTH
 ```
 
-### Langkah 3: Jalankan!
+### Architecture Evolution
+
+| Phase | Weeks | Architecture |
+|-------|-------|-------------|
+| Foundation | 1-4 | Monolith (FastAPI + React + PostgreSQL) |
+| Containerization | 5-7 | Docker Compose (3 containers) |
+| CI/CD | 9-11 | GitHub Actions + Railway deployment |
+| Microservices | 12-14 | 2 services + gateway + monitoring |
+| Final | 15-16 | Security hardened + production ready |
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Frontend | React + Vite | Single Page Application |
+| Backend | FastAPI (Python) | REST API microservices |
+| Database | PostgreSQL 16 | Relational database (per service) |
+| Gateway | Nginx | Reverse proxy + rate limiting |
+| Container | Docker + Docker Compose | Containerization |
+| CI/CD | GitHub Actions | Automated test + deploy |
+| Cloud | Railway | PaaS deployment |
+| Monitoring | Custom metrics + dashboard | Observability |
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker & Docker Compose
+- Git
+
+### Run Locally
 
 ```bash
-# Build dan jalankan semua services
-docker compose up --build -d
+# Clone repository
+git clone https://github.com/[org]/[repo].git
+cd [repo]
 
-# Lihat status semua containers
+# Copy environment file
+cp .env.example .env
+# Edit .env with your values
+
+# Start all services
+docker compose up -d
+
+# Verify
+docker compose ps
+curl http://localhost/health
+```
+
+Open http://localhost in your browser.
+
+### Run Without Docker
+
+```bash
+# Backend (Auth Service)
+cd services/auth-service
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8001
+
+# Backend (Item Service)  
+cd services/item-service
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8002
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+## 📡 API Documentation
+
+### Auth Service (port 8001)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/register` | Register user baru | ❌ |
+| POST | `/login` | Login, return JWT token | ❌ |
+| GET | `/verify` | Verify JWT token (internal) | ✅ |
+| GET | `/health` | Health check | ❌ |
+| GET | `/metrics` | Service metrics | ❌ |
+
+### Item Service (port 8002)
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/items` | List items (with search) | ✅ |
+| POST | `/items` | Create item | ✅ |
+| GET | `/items/{id}` | Get item by ID | ✅ |
+| PUT | `/items/{id}` | Update item | ✅ |
+| DELETE | `/items/{id}` | Delete item | ✅ |
+| GET | `/items/stats` | Item statistics | ✅ |
+| GET | `/health` | Health check | ❌ |
+| GET | `/metrics` | Service metrics | ❌ |
+
+### Via Gateway (port 80)
+
+All requests go through the gateway with prefix:
+- Auth: `http://localhost/auth/...`
+- Items: `http://localhost/items/...`
+- Status: `http://localhost/status`
+
+## 🔐 Security
+
+- JWT authentication with expiry
+- bcrypt password hashing
+- Rate limiting (Nginx): 5 req/s auth, 20 req/s API
+- Input validation (Pydantic)
+- CORS configured per environment
+- Secrets via environment variables (never hardcoded)
+- Database per service (no shared DB)
+
+## 📊 Monitoring
+
+- **Structured Logging**: JSON format with correlation ID
+- **Metrics**: `/metrics` endpoint per service (request count, error rate, latency p50/p95/p99)
+- **Health Dashboard**: `/status` page with auto-refresh
+- **Circuit Breaker**: Item Service → Auth Service with retry + backoff
+
+## 👥 Tim
+
+| Nama | NIM | Peran | Kontribusi Utama |
+|------|-----|-------|-----------------|
+| [Nama] | [NIM] | Lead Backend | Auth Service, Item Service, API design |
+| [Nama] | [NIM] | Lead Frontend | React UI, Status Page, UX |
+| [Nama] | [NIM] | Lead DevOps | Docker, Nginx Gateway, Railway deploy |
+| [Nama] | [NIM] | Lead QA & Docs | Testing, CI pipeline, documentation |
+
+## 📄 Documentation
+
+- [Architecture Guide](docs/architecture.md)
+- [Deployment Guide](docs/deployment-guide.md)
+- [Operations Guide](docs/operations-guide.md)
+- [API Contract](docs/api-contract.md)
+- [Release Notes](docs/release-notes-m3.md)
+
+## 📅 Roadmap
+
+| Week | Target | Status |
+|------|--------|--------|
+| 1 | Setup & Hello World | ✅ |
+| 2 | REST API + Database | ✅ |
+| 3 | React Frontend | ✅ |
+| 4 | Full-Stack Integration + Auth | ✅ |
+| 5-7 | Docker & Compose | ✅ |
+| 8 | UTS Demo (Milestone 1) | ✅ |
+| 9-11 | CI/CD & Cloud Deployment | ✅ |
+| 12-14 | Microservices & Monitoring | ✅ |
+| 15 | Final Polish & Security | ✅ |
+| 16 | UAS Demo (Milestone 3) | ⬜ |
+```
+
+### Langkah 2: Buat Release Notes Milestone 3
+
+File: `docs/release-notes-m3.md`
+
+```markdown
+# Release Notes — Milestone 3 (Final)
+
+## Version: 3.0.0
+**Release Date:** [Tanggal UAS]  
+**Tag:** v3.0.0
+
+## 🆕 Fitur Baru (dari Milestone 2)
+
+### Microservices Architecture
+- Monolith decomposed menjadi Auth Service + Item Service
+- Database per service (auth_db, item_db)
+- API Gateway (Nginx) sebagai entry point
+- Inter-service communication via HTTP REST
+
+### Reliability
+- Retry logic dengan exponential backoff (3 retries)
+- Circuit breaker pattern (5 failures → open, 30s cooldown)
+- Graceful degradation saat Auth Service down
+
+### Monitoring & Observability
+- Structured JSON logging dengan correlation ID
+- In-memory metrics (request count, error rate, latency percentiles)
+- Health dashboard (/status) dengan auto-refresh
+- Aggregated health check dengan dependency status
+
+### Security Hardening
+- Rate limiting di API Gateway (5 req/s auth, 20 req/s API)
+- Input validation diperkuat (password strength, field limits)
+- Secret audit — semua credentials di environment variables
+- CORS dikonfigurasi per environment
+
+## 📊 Statistik Proyek
+
+| Metric | Nilai |
+|--------|-------|
+| Total Services | 6 (2 APIs, 2 DBs, frontend, gateway) |
+| Total Endpoints | 12 |
+| Unit Tests | [X] tests |
+| Integration Tests | 8 tests |
+| CI Pipeline Jobs | [X] jobs |
+| Total Commits | [X] |
+| Total PRs Merged | [X] |
+
+## 🐛 Known Issues
+- [List known issues jika ada]
+
+## 👥 Kontribusi
+| Nama | Commits | PRs | Areas |
+|------|---------|-----|-------|
+| [Nama] | [X] | [X] | Backend, Auth Service |
+| [Nama] | [X] | [X] | Frontend, Dashboard |
+| [Nama] | [X] | [X] | DevOps, Gateway, CI/CD |
+| [Nama] | [X] | [X] | QA, Testing, Docs |
+```
+
+### Langkah 3: Buat API Contract
+
+File: `docs/api-contract.md`
+
+```markdown
+# API Contract — Cloud App Microservices
+
+## Base URLs
+
+| Environment | Gateway URL |
+|-------------|-------------|
+| Local Development | http://localhost |
+| Production | https://[your-app].up.railway.app |
+
+## Authentication
+
+All protected endpoints require JWT token in header:
+```
+Authorization: Bearer <access_token>
+```
+
+Token diperoleh dari `POST /auth/login`.  
+Token expire setelah 30 menit (configurable via TOKEN_EXPIRE_MINUTES).
+
+## Error Response Format
+
+Semua error menggunakan format yang konsisten:
+```json
+{
+    "detail": "Error message description"
+}
+```
+
+| Status Code | Meaning |
+|-------------|---------|
+| 200 | Success |
+| 201 | Created |
+| 204 | Deleted (no content) |
+| 400 | Bad request / validation error |
+| 401 | Unauthorized / invalid token |
+| 404 | Resource not found |
+| 422 | Validation error (Pydantic) |
+| 429 | Rate limited |
+| 503 | Service unavailable |
+
+## Auth Service Endpoints
+
+### POST /auth/register
+- **Rate limit**: 5 req/s
+- **Body**: `{"email": "str", "password": "str (min 8, 1 uppercase, 1 digit)", "name": "str"}`
+- **Response 201**: `{"id": int, "email": "str", "name": "str"}`
+
+### POST /auth/login
+- **Rate limit**: 5 req/s
+- **Body**: `{"email": "str", "password": "str"}`
+- **Response 200**: `{"access_token": "str", "token_type": "bearer"}`
+
+### GET /auth/verify
+- **Internal**: Dipanggil oleh service lain, bukan frontend
+- **Header**: `Authorization: Bearer <token>`
+- **Response 200**: `{"user_id": int, "email": "str", "name": "str"}`
+
+## Item Service Endpoints
+
+### GET /items?search=&skip=0&limit=20
+- **Auth**: Required
+- **Response 200**: `{"total": int, "items": [ItemResponse]}`
+
+### POST /items
+- **Auth**: Required
+- **Body**: `{"name": "str", "description": "str?", "price": float, "quantity": int?}`
+- **Response 201**: ItemResponse
+
+### GET /items/{id}
+- **Auth**: Required
+- **Response 200**: ItemResponse
+
+### PUT /items/{id}
+- **Auth**: Required
+- **Body**: Partial update (any field from ItemCreate)
+- **Response 200**: ItemResponse
+
+### DELETE /items/{id}
+- **Auth**: Required
+- **Response 204**: No content
+```
+
+> ✅ **Checkpoint:** README lengkap, release notes ditulis, API contract terdokumentasi.
+
+---
+
+## Workshop 15.4: Persiapan Presentasi UAS (35 menit)
+
+### Langkah 1: Buat Outline Presentasi
+
+Diskusikan dengan tim dan isi outline ini:
+
+File: `docs/uas-presentation-outline.md`
+
+```markdown
+# UAS Presentation Outline
+
+## Slide 1: Title
+- Nama proyek: ___
+- Nama tim: ___
+- Anggota: ___
+
+## Slide 2: Problem & Solution
+- Masalah yang diselesaikan: ___
+- Target pengguna: ___
+- Solusi: ___
+
+## Slide 3: Architecture Journey
+- Week 1-4: Monolith (1 backend, 1 DB) → [screenshot/diagram]
+- Week 5-7: Containerized (Docker Compose) → [diagram]
+- Week 9-11: CI/CD (GitHub Actions + Railway) → [screenshot]
+- Week 12-14: Microservices (2 services + gateway) → [diagram]
+
+## Slide 4: Tech Stack & Infrastructure
+- Diagram arsitektur final
+- Jumlah containers, services, endpoints
+- CI/CD pipeline flow
+- Monitoring & observability
+
+## Slide 5: Live Demo
+- Flow: Open app → register → login → create items → view items
+  → update → delete → check /status page → show CI/CD badge
+- Backup: recorded video jika internet bermasalah
+
+## Slide 6: Challenges & Lessons Learned
+- Challenge 1: ___  → Solution: ___
+- Challenge 2: ___  → Solution: ___
+- Challenge 3: ___  → Solution: ___
+- Biggest learning: ___
+
+## Slide 7: Team Contributions
+- [Nama] — [Role] — [Key contributions] — [X commits, X PRs]
+- [Nama] — ...
+- [Nama] — ...
+- [Nama] — ...
+
+## Demo Script (urutan langkah)
+1. Buka http://localhost (atau production URL)
+2. Register user baru
+3. Login
+4. Create 2-3 items
+5. Show item list
+6. Update item
+7. Delete item
+8. Buka /status — show health + metrics
+9. Show GitHub → CI/CD pipeline green
+10. Show structured logs (docker compose logs)
+```
+
+### Langkah 2: Persiapan Demo Backup
+
+```bash
+# Rekam demo sebagai backup (jika internet bermasalah saat UAS)
+# Gunakan screen recording tool (OBS, Loom, atau built-in screen recorder)
+
+# Pastikan semua services running
+docker compose up -d
 docker compose ps
 
-# Lihat log semua services
-docker compose logs -f
-```
-
-Output `docker compose ps` yang diharapkan:
-
-```
-NAME               SERVICE         STATUS
-auth-db            auth-db         running (healthy)
-item-db            item-db         running (healthy)
-auth-service       auth-service    running
-item-service       item-service    running
-frontend           frontend        running
-gateway            gateway         running
-```
-
-### Langkah 4: Test via Gateway
-
-```bash
-# Health check
-curl http://localhost/health
-
-# Register via gateway
+# Test full flow
+# 1. Register
 curl -X POST http://localhost/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"Pass123","name":"Test User"}'
+  -d '{"email":"demo@example.com","password":"DemoPass123","name":"Demo User"}'
 
-# Login via gateway
+# 2. Login
 curl -X POST http://localhost/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"Pass123"}'
-# → Copy access_token dari response
+  -d '{"email":"demo@example.com","password":"DemoPass123"}'
 
-# Create item via gateway (ganti TOKEN)
-curl -X POST http://localhost/items \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer TOKEN" \
-  -d '{"name":"Laptop","price":15000000,"quantity":5}'
+# 3. Gunakan token untuk CRUD
+# ... (jalankan full CRUD cycle)
 
-# Get items via gateway
-curl http://localhost/items \
-  -H "Authorization: Bearer TOKEN"
+# 4. Check health & metrics
+curl http://localhost/health
+curl http://localhost/auth/metrics
+curl http://localhost/items/metrics
 ```
 
-> ⚠️ **Jika ada error**, cek log per service:
-> ```bash
-> docker compose logs auth-service
-> docker compose logs item-service
-> docker compose logs gateway
-> ```
+### Langkah 3: Latihan Presentasi
 
-> ✅ **Checkpoint:** Semua 6 containers running. Register, login, dan CRUD items berfungsi melalui gateway (http://localhost).
+**Pembagian presenter:**
+
+| Slide | Presenter | Durasi |
+|-------|-----------|--------|
+| 1-2 | Lead QA & Docs | 1.5 menit |
+| 3 | Lead DevOps | 2 menit |
+| 4 | Lead CI/CD atau Lead DevOps | 2 menit |
+| 5 (Demo) | Lead Backend + Lead Frontend | 3 menit |
+| 6-7 | Semua (round-robin) | 3 menit |
+
+> 📝 **Tips presentasi:**
+> - Setiap anggota harus bisa menjelaskan **keseluruhan arsitektur**, bukan hanya bagiannya
+> - Siapkan jawaban untuk pertanyaan umum dosen: "Mengapa pakai microservices?", "Apa kelebihan/kekurangan?", "Jika user 10x lipat, service mana yang di-scale?"
+> - Demo live lebih impresif dari screenshot — tapi selalu siapkan backup video
+
+> ✅ **Checkpoint:** Outline presentasi lengkap, pembagian presenter ditentukan.
 
 ---
 
-## Workshop 12.5: Update Frontend (15 menit)
+## Workshop 15.5: Final Verification (20 menit)
 
-### Update API Configuration
+### Full System Test
 
-Frontend sekarang hanya perlu mengarah ke **gateway** (satu URL), bukan langsung ke services.
-
-File: `frontend/.env`
-```
-VITE_API_URL=http://localhost
-```
-
-### Update API Calls
-
-Jika sebelumnya frontend memanggil `http://localhost:8000/auth/login`, sekarang menjadi:
-
-| Sebelum (Monolith) | Sesudah (Microservices via Gateway) |
-|--------------------|------------------------------------|
-| `${API_URL}/auth/register` | `${API_URL}/auth/register` ← sama! |
-| `${API_URL}/auth/login` | `${API_URL}/auth/login` ← sama! |
-| `${API_URL}/items` | `${API_URL}/items` ← sama! |
-
-> 💡 **Keuntungan API Gateway:** Frontend tidak perlu tahu ada berapa service di belakang. URL tetap sama — gateway yang mengarahkan ke service yang tepat. Ini adalah prinsip **encapsulation** di level arsitektur.
-
-> ✅ **Checkpoint:** Frontend berkomunikasi melalui gateway, semua CRUD berfungsi di browser.
-
----
-
-## Workshop 12.6: Commit & Verify (15 menit)
-
-### Commit
+Jalankan checklist ini dan pastikan semua hijau:
 
 ```bash
-git checkout -b feature/microservices-decomposition
+echo "============================================"
+echo "  FINAL VERIFICATION CHECKLIST"
+echo "============================================"
 
-git add services/
-git add docker-compose.yml
-git add services/gateway/
+# 1. Docker Compose
+echo ""
+echo "1. Docker Compose..."
+docker compose up -d
+sleep 10
+RUNNING=$(docker compose ps --format json | grep -c '"running"')
+echo "   Containers running: $RUNNING/6"
 
-git commit -m "feat: decompose monolith into Auth Service + Item Service
+# 2. Health checks
+echo ""
+echo "2. Health checks..."
+GW=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/health)
+AUTH=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/auth/health)
+echo "   Gateway: $GW"
+echo "   Auth Service: $AUTH"
 
-- Extract Auth Service (register, login, verify) with own database
-- Extract Item Service (CRUD items) with own database
-- Add auth_client.py for inter-service communication (HTTP)
-- Add Nginx gateway for API routing
-- Docker Compose: 6 services (2 DBs, 2 APIs, frontend, gateway)
-- Database per service pattern: auth_db + item_db"
+# 3. Register + Login
+echo ""
+echo "3. Auth flow..."
+REG=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost/auth/register \
+  -H "Content-Type: application/json" \
+  -d "{\"email\":\"final-$(date +%s)@test.com\",\"password\":\"FinalTest123\",\"name\":\"Final\"}")
+echo "   Register: $REG"
 
-git push origin feature/microservices-decomposition
+# 4. Metrics
+echo ""
+echo "4. Metrics..."
+METRICS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/auth/metrics)
+echo "   Auth Metrics: $METRICS"
+
+# 5. Frontend
+echo ""
+echo "5. Frontend..."
+FE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost)
+echo "   Frontend: $FE"
+
+# 6. CI Status
+echo ""
+echo "6. CI/CD..."
+echo "   Check: https://github.com/[org]/[repo]/actions"
+
+echo ""
+echo "============================================"
+echo "  VERIFICATION COMPLETE"
+echo "============================================"
 ```
 
-Buat PR → review → merge.
+### Git Tag Release
 
-> ✅ **Checkpoint Akhir Workshop:** Arsitektur microservices berjalan lokal dengan 6 containers. Inter-service communication berfungsi.
+```bash
+# Pastikan semua changes sudah di-commit dan merged ke main
+git checkout main
+git pull origin main
+
+# Tag release final
+git tag -a v3.0.0 -m "Release v3.0.0 — Final Project (UAS)
+
+Features:
+- Microservices architecture (Auth + Item Service)
+- API Gateway (Nginx) with rate limiting
+- CI/CD pipeline (GitHub Actions)
+- Cloud deployment (Railway)
+- Monitoring & observability (structured logging, metrics, dashboard)
+- Security hardened (rate limiting, input validation, secret management)"
+
+git push origin v3.0.0
+```
+
+> ✅ **Checkpoint Akhir Workshop:** Semua verifikasi passing, tag v3.0.0 dibuat.
+
+---
+
+## Workshop 15.6: Commit Final (10 menit)
+
+```bash
+git checkout -b feature/final-polish
+
+git add .env.example
+git add services/gateway/nginx.conf
+git add services/auth-service/schemas.py
+git add services/item-service/schemas.py
+git add services/auth-service/pyproject.toml
+git add services/item-service/pyproject.toml
+git add README.md
+git add docs/release-notes-m3.md
+git add docs/api-contract.md
+git add docs/uas-presentation-outline.md
+
+git commit -m "chore: final polish — security, docs, UAS preparation
+
+- Add rate limiting to Nginx gateway (5 req/s auth, 20 req/s API)
+- Strengthen input validation (password, price, quantity limits)
+- Complete .env.example with all variables
+- Update README with full architecture, API docs, team info
+- Add release notes v3.0.0 (Milestone 3)
+- Add API contract documentation
+- Add UAS presentation outline
+- Add pyproject.toml for code formatting config"
+
+git push origin feature/final-polish
+```
+
+PR → review → merge → `git tag v3.0.0`.
+
+> ✅ **Semua selesai!** Proyek siap untuk UAS.
 
 ---
 
 # BAGIAN C: TUGAS TERSTRUKTUR (60 Menit)
 
-> 📝 **Kumpulkan sebelum pertemuan 13** via Pull Request.
+> 📝 **Tugas terakhir!** Kumpulkan sebelum UAS (pertemuan 16).
 
 ---
 
-## Tugas 12: Lengkapi Microservices
+## Tugas 15: UAS Preparation
 
 ### Pembagian Tugas
 
-| Anggota | Branch Name | Tugas | Detail |
-|---------|-------------|-------|--------|
-| **Lead Backend** | `feature/item-stats-service` | Tambah endpoint stats di Item Service | Implementasi `GET /items/stats` di Item Service (total items, total value, termahal, termurah). Tambah test untuk endpoint ini. |
-| **Lead Frontend** | `feature/frontend-gateway` | Sesuaikan semua API calls ke gateway | Pastikan semua fetch mengarah ke gateway URL. Handle error saat service unavailable (tampilkan "Service temporarily unavailable"). Test register → login → CRUD via browser. |
-| **Lead DevOps** | `feature/compose-healthcheck` | Tambah health checks di Docker Compose | Tambahkan healthcheck untuk auth-service dan item-service. Gateway hanya start setelah semua service healthy. Buat `Makefile` target: `up`, `down`, `logs`, `restart`. |
-| **Lead QA & Docs** | `docs/microservices-architecture` | Dokumentasi arsitektur microservices | Buat `docs/architecture.md`: diagram arsitektur (mermaid), daftar services + ports, API contract setiap service, cara menjalankan lokal, cara debug per service. |
-| **Lead CI/CD** *(5 orang)* | `feature/ci-multi-service` | Update CI pipeline untuk multi-service | Update `.github/workflows/ci.yml`: build semua services, run tests per service, build Docker images per service. |
+| Anggota | Tugas | Detail |
+|---------|-------|--------|
+| **Lead Backend** | Finalisasi backend + siap jawab pertanyaan | Pastikan semua endpoint berfungsi. Siapkan jawaban: "Mengapa FastAPI?", "Bagaimana auth antar service?", "Apa yang terjadi jika Auth Service down?" |
+| **Lead Frontend** | Finalisasi frontend + slide presentasi | Buat 5-7 slide (Google Slides/PowerPoint). Pastikan UI bersih dan responsive. Siapkan demo script. |
+| **Lead DevOps** | Pastikan deployment production running | Verify Railway deployment. Test production URL berfungsi. Siapkan jawaban: "Bagaimana CI/CD flow?", "Bagaimana scaling?" |
+| **Lead QA & Docs** | Review semua dokumentasi + final testing | Proofread README, API docs, release notes. Run full integration test. Buat `docs/final-checklist.md`. |
+| **Lead CI/CD** *(5 orang)* | CI pipeline hijau + backup demo | Pastikan CI passing. Rekam video backup demo (3 menit). Upload ke Google Drive sebagai backup. |
 
-### Contoh: Health Check di Docker Compose
+### Final Checklist
 
-```yaml
-  auth-service:
-    build: ./services/auth-service
-    # ...
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+Setiap tim harus memastikan semua item berikut selesai:
+
+```
+REPOSITORY
+☐ README.md lengkap dan up-to-date
+☐ .env.example mencakup semua environment variables
+☐ .gitignore mencakup .env, __pycache__, node_modules
+☐ Tidak ada secret/password hardcoded di kode
+☐ Tag v3.0.0 sudah dibuat
+
+CODE
+☐ Semua services berjalan di Docker Compose
+☐ Auth Service: register, login, verify berfungsi
+☐ Item Service: CRUD + stats berfungsi
+☐ Gateway: routing + rate limiting aktif
+☐ Frontend: semua halaman berfungsi
+☐ Health check + metrics endpoint tersedia
+☐ Structured logging aktif (JSON format)
+☐ Correlation ID diteruskan antar service
+
+CI/CD
+☐ GitHub Actions CI pipeline passing
+☐ CD auto-deploy berfungsi (atau manual deploy working)
+☐ Production URL accessible
+
+DOKUMENTASI
+☐ docs/architecture.md
+☐ docs/deployment-guide.md
+☐ docs/api-contract.md
+☐ docs/release-notes-m3.md
+
+PRESENTASI
+☐ Slide 5-7 slide siap
+☐ Demo script tertulis
+☐ Backup video demo (jika internet bermasalah)
+☐ Setiap anggota tahu perannya di presentasi
+☐ Setiap anggota bisa menjelaskan arsitektur keseluruhan
 ```
 
 ### Informasi Pengumpulan
 
 | Item | Keterangan |
 |------|------------|
-| **Deadline** | Sebelum pertemuan 13 dimulai |
-| **Format** | Pull Request ke repository tim — HARUS lulus CI |
-| **Yang dinilai** | Stats endpoint, frontend terintegrasi, healthchecks, docs, semua anggota ≥1 PR |
-| **Bonus** | Tim yang menambahkan `docker-compose.dev.yml` dengan hot-reload untuk development |
+| **Deadline** | Sebelum UAS (pertemuan 16) dimulai |
+| **Format** | Repository GitHub final + slide presentasi (link di README) |
+| **Yang dinilai** | Kelengkapan, kerapian, profesionalisme, kesiapan demo |
 
 ---
 
 # BAGIAN D: BELAJAR MANDIRI (230 Menit)
 
-> 📚 **Tidak dikumpulkan**, tetapi sangat penting untuk pemahaman.
+> 📚 **Fokus: persiapan UAS dan review seluruh materi semester.**
 
 ---
 
-## D1. Membaca Referensi (60 menit)
+## D1. Review Materi Semester (90 menit)
 
-### Bacaan Wajib
-1. **Microservices.io — Patterns**  
-   https://microservices.io/patterns/index.html  
-   (Database per service, API Gateway, Circuit Breaker)
+Review semua konsep kunci yang bisa ditanyakan dosen saat UAS:
 
-2. **Docker Compose Networking**  
-   https://docs.docker.com/compose/how-tos/networking/  
-   (Bagaimana containers berkomunikasi di Docker Compose)
+| Minggu | Konsep | Pertanyaan yang Mungkin Muncul |
+|--------|--------|-------------------------------|
+| 1 | Cloud Computing, IaaS/PaaS/SaaS | "Railway termasuk model layanan apa? Mengapa?" |
+| 2-4 | REST API, CRUD, Auth | "Jelaskan alur autentikasi JWT di aplikasi Anda" |
+| 5-7 | Docker, Compose | "Apa bedanya Docker image dan container?" |
+| 9-11 | CI/CD, GitHub Actions | "Apa yang terjadi saat Anda merge PR ke main?" |
+| 12-13 | Microservices | "Mengapa memisahkan Auth dan Item Service?" |
+| 14 | Monitoring | "Bagaimana Anda men-debug error di production?" |
 
-3. **Nginx Reverse Proxy Guide**  
-   https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/  
-   (Konfigurasi reverse proxy dengan Nginx)
+### Pertanyaan Teknis yang Harus Bisa Dijawab Semua Anggota
 
-### Bacaan Tambahan
-- Martin Fowler — Microservices Prerequisites — https://martinfowler.com/bliki/MicroservicePrerequisites.html
-- httpx Documentation (Python HTTP client) — https://www.python-httpx.org/
-- FastAPI — Testing — https://fastapi.tiangolo.com/tutorial/testing/
+1. Jelaskan arsitektur aplikasi Anda dari frontend sampai database
+2. Apa perbedaan monolith dan microservices? Pro dan kontra masing-masing?
+3. Bagaimana CI/CD pipeline bekerja di proyek ini?
+4. Apa yang terjadi jika Auth Service down? Bagaimana Item Service menangani?
+5. Apa itu 12-Factor App dan faktor mana yang sudah diterapkan?
+6. Bagaimana secret/credential dikelola di proyek ini?
+7. Jelaskan alur request: user klik "Create Item" → apa saja yang terjadi di balik layar?
+8. Jika traffic meningkat 10x, service mana yang perlu di-scale dan mengapa?
 
 ---
 
-## D2. Video Tutorial (60 menit)
+## D2. Latihan Presentasi (60 menit)
 
-1. **"Microservices with FastAPI"** — cari di YouTube (~20 min)
-   - Tutorial membangun microservices dengan FastAPI
-
-2. **"Nginx as API Gateway"** — cari di YouTube (~15 min)
-   - Konfigurasi Nginx untuk reverse proxy ke multiple services
-
-3. **"Docker Compose Multi-Service"** — TechWorld with Nana (YouTube, ~25 min)
-   - Cara mengelola multiple services dengan Docker Compose
+1. **Dry run presentasi** — setiap anggota presentasi sesuai pembagian (timer 12 menit total)
+2. **Q&A session** — saling tanya pertanyaan teknis
+3. **Demo rehearsal** — jalankan demo dari awal sampai akhir, perhatikan timing
 
 ---
 
@@ -1334,49 +1230,63 @@ Buat PR → review → merge.
 
 ### Soal Pilihan Ganda
 
-**1.** Prinsip "database per service" dalam microservices artinya:
-- [ ] a. Semua service berbagi satu database besar
-- [ ] b. Setiap service menggunakan database engine yang berbeda
-- [ ] c. Database hanya boleh diakses oleh satu developer
-- [ ] d. Setiap service memiliki database sendiri yang tidak diakses langsung oleh service lain
+**1.** Rate limiting di API Gateway berfungsi untuk:
+- [ ] a. Mempercepat response time
+- [ ] b. Menghapus request yang tidak valid
+- [ ] c. Mengenkripsi data yang dikirim ke backend
+- [ ] d. Melindungi backend services dari request berlebihan dan brute force attack
 
-**2.** Jika Item Service ingin memverifikasi JWT token, ia harus:
-- [ ] a. Melakukan HTTP call ke endpoint /verify di Auth Service
-- [ ] b. Mengakses tabel users di auth_db secara langsung
-- [ ] c. Mendekripsi token sendiri tanpa Auth Service
-- [ ] d. Menghubungi frontend untuk verifikasi
+**2.** Dalam 12-Factor App, konfigurasi (database URL, API key) harus disimpan di:
+- [ ] a. Hardcoded di source code
+- [ ] b. File konfigurasi yang di-commit ke Git
+- [ ] c. Environment variables
+- [ ] d. Database
 
-**3.** API Gateway berfungsi untuk:
-- [ ] a. Menyimpan data semua service
-- [ ] b. Menjalankan business logic aplikasi
-- [ ] c. Mengarahkan request ke service yang tepat berdasarkan URL path
-- [ ] d. Menggantikan semua backend services
+**3.** OWASP Top 10 A01: Broken Access Control bisa terjadi jika:
+- [ ] a. Password di-hash dengan bcrypt
+- [ ] b. User bisa mengakses data user lain tanpa izin
+- [ ] c. API menggunakan HTTPS
+- [ ] d. Frontend menggunakan React
 
-**4.** Keuntungan utama microservices dibanding monolith adalah:
-- [ ] a. Selalu lebih murah untuk dijalankan
-- [ ] b. Setiap service bisa di-deploy dan di-scale secara independen
-- [ ] c. Lebih mudah untuk dibangun dari awal
-- [ ] d. Tidak membutuhkan Docker
+**4.** Git tag v3.0.0 digunakan untuk:
+- [ ] a. Menandai titik rilis spesifik dalam riwayat commit agar bisa dirujuk kembali
+- [ ] b. Menghapus versi lama dari repository
+- [ ] c. Membuat branch baru
+- [ ] d. Melakukan rollback otomatis
 
-**5.** Di Docker Compose, container `item-service` bisa memanggil `auth-service` menggunakan:
-- [ ] a. IP address yang di-hardcode
-- [ ] b. localhost:8001
-- [ ] c. Nama service sebagai hostname (http://auth-service:8001)
-- [ ] d. Hanya bisa melalui port yang di-expose ke host
+**5.** Saat presentasi UAS, jika ditanya "Jika traffic meningkat 10x, apa yang Anda lakukan?", jawaban terbaik adalah:
+- [ ] a. Upgrade seluruh server ke hardware yang lebih kuat
+- [ ] b. Tambah lebih banyak database
+- [ ] c. Scale horizontal service yang paling banyak menerima traffic menggunakan container orchestration
+- [ ] d. Ubah arsitektur kembali ke monolith
 
 ---
 
-## D4. Persiapan Pertemuan Berikutnya (50 menit)
+## D4. Persiapan UAS (20 menit)
 
-Pertemuan 13 akan melanjutkan **Microservices Implementation** — menambah fitur baru dan memastikan reliability. Persiapkan:
+### Checklist Sebelum UAS
 
-- Apa itu **Circuit Breaker pattern** dan mengapa penting di microservices?
-- Apa itu **retry logic** dan **timeout** dalam inter-service communication?
-- Bagaimana mengelola **data consistency** antar service (eventual consistency)?
-- Bagaimana menulis **integration test** untuk microservices?
-- Baca: https://microservices.io/patterns/reliability/circuit-breaker.html
+```
+TEKNIS
+□ Production URL bisa diakses
+□ Demo script sudah ditulis dan dipraktikkan
+□ Backup video demo tersedia
+□ Semua anggota sudah pull kode terbaru
 
-> 💡 **Preview:** Minggu depan kita akan menambahkan: retry mechanism di auth_client.py, data migration dari monolith ke microservices, dan integration test yang memverifikasi komunikasi antar service.
+PRESENTASI
+□ Slide selesai dan tersedia (Google Slides/USB)
+□ Pembagian presenter sudah ditentukan
+□ Timer dipasang (max 12 menit presentasi + 8 menit Q&A)
+□ Setiap anggota bisa menjelaskan arsitektur
+
+MENTAL
+□ Tidur cukup malam sebelumnya
+□ Datang 15 menit lebih awal
+□ Test internet/WiFi di ruang UAS
+□ Laptop terisi penuh (bawa charger)
+```
+
+> 💡 **Minggu depan adalah UAS!** Anda sudah membangun aplikasi cloud-native dari nol — dari Hello World sampai production-ready microservices. Bangga dengan perjalanan ini dan tunjukkan di presentasi Anda. Semangat! 🎓
 
 ---
 

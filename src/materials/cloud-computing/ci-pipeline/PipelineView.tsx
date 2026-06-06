@@ -118,7 +118,7 @@ function JobCard({ job, focused, width }: { job: JobView; focused: boolean; widt
               key={i}
               animate={{ background: cellBg }}
               className="flex items-center rounded-lg font-mono"
-              style={{ gap: 11, padding: '7px 12px', fontSize: 18 }}
+              style={{ gap: 11, padding: '8px 13px', fontSize: 19 }}
             >
               <span style={{ width: 20, display: 'flex', justifyContent: 'center' }}>
                 <StepGlyph status={s.status} />
