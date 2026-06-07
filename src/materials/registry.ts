@@ -15,6 +15,7 @@ import MicroservicesMaterial from './cloud-computing/microservices/Microservices
 import ReliabilityMaterial from './cloud-computing/reliability/ReliabilityMaterial'
 import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
 import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
+import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -116,6 +117,21 @@ export const COURSES: Course[] = [
         subtitle: 'AI/ML · scalar → vector → matrix → tensor',
         status: 'ready',
         component: TensorMaterial,
+      },
+    ],
+  },
+  {
+    id: 'algorithms',
+    code: 'MK',
+    name: 'Algoritma',
+    accent: '#0d9488',
+    materials: [
+      {
+        id: 'pathfinding',
+        title: 'Pathfinding',
+        subtitle: 'Pencarian jalur · BFS, Greedy & A*',
+        status: 'ready',
+        component: PathfindingMaterial,
       },
     ],
   },

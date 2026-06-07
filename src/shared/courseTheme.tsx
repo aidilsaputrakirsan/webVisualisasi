@@ -50,8 +50,21 @@ export const CLOUD: CourseTheme = {
   accentText: '#4326A0',
 }
 
+export const ALGO: CourseTheme = {
+  paper: '#F1F6F3',
+  stageBg:
+    'radial-gradient(70% 55% at 50% 22%, rgba(13,148,136,0.06), transparent 70%), radial-gradient(55% 45% at 78% 85%, rgba(5,150,105,0.05), transparent 70%), #F1F6F3',
+  letterbox: '#E3EDE7',
+  ink: '#163029',
+  accent: '#0D9488',
+  accentDeep: '#0F766E',
+  accentSoft: '#CCFBF1',
+  accentText: '#115E59',
+}
+
 const THEMES: Record<string, CourseTheme> = {
   'cloud-computing': CLOUD,
+  algorithms: ALGO,
 }
 
 const Ctx = createContext<CourseTheme>(EDITORIAL)
