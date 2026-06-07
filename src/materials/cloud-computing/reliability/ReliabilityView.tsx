@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { ACCENT, NODE } from '../palette'
 import {
   LANE,
   LANE_EDGES,
@@ -103,7 +103,7 @@ export default function ReliabilityView({ step, stepKey }: { step: RelStep; step
             <path d="M0 0 L7 3 L0 6" fill="none" stroke="#B7AB95" strokeWidth="1.4" />
           </marker>
           <marker id="rel-arrow-on" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
-            <path d="M0 0 L7 3 L0 6" fill="none" stroke="#D97706" strokeWidth="1.6" />
+            <path d="M0 0 L7 3 L0 6" fill="none" stroke={ACCENT.accent} strokeWidth="1.6" />
           </marker>
         </defs>
         {TRANSITIONS.map((t, i) => {
@@ -115,7 +115,7 @@ export default function ReliabilityView({ step, stepKey }: { step: RelStep; step
               y1={t.ay}
               x2={t.bx}
               y2={t.by}
-              animate={{ stroke: on ? '#D97706' : '#CFC5B4', strokeWidth: on ? 3 : 1.6 }}
+              animate={{ stroke: on ? ACCENT.accent : '#C7CADD', strokeWidth: on ? 3 : 1.6 }}
               markerEnd={on ? 'url(#rel-arrow-on)' : 'url(#rel-arrow)'}
             />
           )
@@ -129,7 +129,7 @@ export default function ReliabilityView({ step, stepKey }: { step: RelStep; step
           <div
             key={i}
             className="absolute font-mono"
-            style={{ left: t.lx - 85, top: t.ly - 11, width: 170, textAlign: 'center', fontSize: 16, color: on ? '#B45309' : '#9C8F7B', fontWeight: on ? 700 : 400 }}
+            style={{ left: t.lx - 85, top: t.ly - 11, width: 170, textAlign: 'center', fontSize: 16, color: on ? ACCENT.accentDeep : '#9C8F7B', fontWeight: on ? 700 : 400 }}
           >
             {t.label}
           </div>
@@ -213,7 +213,7 @@ function BreakerBox({ step, active }: { step: RelStep; active: boolean }) {
   return (
     <motion.div
       className="absolute flex flex-col rounded-2xl border-2"
-      animate={{ borderColor: st.border, background: active ? st.bg : '#FFFDF9', boxShadow: active ? st.shadow : '0 2px 10px rgba(0,0,0,0.06)', scale: active ? 1.03 : 1 }}
+      animate={{ borderColor: st.border, background: active ? st.bg : '#FAFBFF', boxShadow: active ? st.shadow : '0 2px 10px rgba(0,0,0,0.06)', scale: active ? 1.03 : 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 26 }}
       style={{ left: n.cx - n.w / 2, top: n.cy - n.h / 2, width: n.w, height: n.h, padding: '14px 20px', gap: 10 }}
     >
@@ -240,7 +240,7 @@ function BreakerBox({ step, active }: { step: RelStep; active: boolean }) {
         </span>
         <div className="relative flex-1 overflow-hidden rounded-full" style={{ height: 11, background: '#EFE6D7' }}>
           <motion.div
-            animate={{ width: `${Math.min(ratio, 1) * 100}%`, background: step.state === 'OPEN' ? FAIL.border : ratio > 0 ? '#D97706' : '#D3C8B6' }}
+            animate={{ width: `${Math.min(ratio, 1) * 100}%`, background: step.state === 'OPEN' ? FAIL.border : ratio > 0 ? ACCENT.accent : '#D3C8B6' }}
             transition={{ type: 'spring', stiffness: 200, damping: 26 }}
             className="absolute inset-y-0 left-0 rounded-full"
           />

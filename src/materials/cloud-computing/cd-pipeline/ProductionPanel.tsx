@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { NODE } from '../palette'
 import type { CdStep, ServiceStatus, ServiceView } from './cd'
 import { BrowserIcon, CloudIcon, DatabaseIcon, GlobeIcon, LockIcon, ServerIcon } from './Icons'
 
@@ -63,7 +63,7 @@ export default function ProductionPanel({ step }: { step: CdStep }) {
   return (
     <div
       className="flex flex-col items-center rounded-2xl border-2"
-      style={{ width: 700, borderColor: NODE.info.border, background: '#F4F8FE', padding: 20, gap: 16 }}
+      style={{ width: 700, borderColor: NODE.info.border, background: '#F4F8FE', padding: 16, gap: 12 }}
     >
       <div className="flex items-center" style={{ gap: 10 }}>
         <span style={{ color: NODE.info.border, display: 'flex' }}>

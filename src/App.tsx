@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { COURSES, findMaterial, type Course, type Material } from './materials/registry'
 import Watermark from './shared/Watermark'
 import { ChromeProvider, useChrome } from './shared/chrome'
+import { CourseThemeProvider } from './shared/courseTheme'
 
 interface Selection {
   courseId: string
@@ -13,16 +14,18 @@ export default function App() {
 
   const material = selection ? findMaterial(selection.courseId, selection.materialId) : undefined
 
-  if (material?.component) {
+  if (material?.component && selection) {
     const MaterialComponent = material.component
     return (
-      <ChromeProvider>
-        <div className="stage-bg min-h-screen w-full">
-          <BackButton onBack={() => setSelection(null)} />
-          <MaterialComponent />
-          <ChromeToggle />
-        </div>
-      </ChromeProvider>
+      <CourseThemeProvider courseId={selection.courseId}>
+        <ChromeProvider>
+          <div className="min-h-screen w-full">
+            <BackButton onBack={() => setSelection(null)} />
+            <MaterialComponent />
+            <ChromeToggle />
+          </div>
+        </ChromeProvider>
+      </CourseThemeProvider>
     )
   }
 

@@ -135,7 +135,7 @@ export default function CdPipelineMaterial() {
   return (
     <>
       <MaterialStage>
-        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 80, paddingBottom: 110, gap: 22 }}>
+        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 72, paddingBottom: 96, gap: 18 }}>
           <TitleBlock title="CD PIPELINE" subtitle={MODES[mode].desc} badges={BADGES} />
 
           <StageFlow step={step} />

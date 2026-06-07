@@ -54,29 +54,26 @@ export const PROD_URL = 'cloudapp.up.railway.app'
 
 /** The deploy job shown in the CodeBlock (indices referenced by *LINE below). */
 export const CODE_SOURCE = [
-  '# .github/workflows/ci.yml — job: deploy',
+  '# ci.yml — job: deploy (CD)',
   '  deploy:',
   '    needs: [test-backend, test-frontend, build-docker]',
   "    if: github.ref == 'refs/heads/main'",
-  "       && github.event_name == 'push'   # GATE",
+  "        && github.event_name == 'push'   # GATE",
   '    steps:',
   '      - uses: actions/checkout@v4',
-  '      - run: npm i -g @railway/cli',
-  '      - name: Deploy Backend',
-  '        env:  { RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} }',
-  '        run:  railway up --service backend',
-  '      - name: Deploy Frontend',
-  '        run:  railway up --service frontend',
-  '      - name: Health check',
-  '        run:  curl .../health    # harap 200',
+  '      - run:  npm i -g @railway/cli',
+  '      - run:  railway up --service backend   # deploy BE',
+  '        env:  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}',
+  '      - run:  railway up --service frontend  # deploy FE',
+  '      - run:  curl .../health   # health check → 200',
 ]
 
 const LINE = {
   needs: 2,
-  gate: 3,
-  deployBe: 10,
-  deployFe: 12,
-  health: 14,
+  gate: 4,
+  deployBe: 8,
+  deployFe: 10,
+  health: 11,
   live: 0,
 }
 

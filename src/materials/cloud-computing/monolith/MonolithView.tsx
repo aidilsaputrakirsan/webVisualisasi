@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { ACCENT, NODE } from '../palette'
 import { BACKEND_BOX, EDGES, NODES, edgeBetween, type FlowStep, type NodeId, type Tone } from './arch'
 import { AppIcon, BoxIcon, BrowserIcon, DatabaseIcon, ShieldIcon } from './Icons'
 
@@ -156,7 +156,7 @@ export default function MonolithView({ step, stepKey }: { step: FlowStep; stepKe
             {step.hasToken && (step.packet.tone === 'request' || step.packet.tone === 'internal') && (
               <span
                 className="rounded-full"
-                style={{ fontSize: 13, padding: '1px 8px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
+                style={{ fontSize: 13, padding: '1px 8px', background: ACCENT.accentSoft, color: ACCENT.accentText, border: `1px solid ${ACCENT.accent}55` }}
               >
                 JWT
               </span>

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { ACCENT, NODE } from '../palette'
 import { EDGES, NODES, edgeBetween, type FlowStep, type NodeId, type Tone } from './arch'
 import { BoxIcon, BrowserIcon, DatabaseIcon, GatewayIcon, ShieldIcon } from './Icons'
 
@@ -136,7 +136,7 @@ export default function ArchView({ step, stepKey }: { step: FlowStep; stepKey: n
             {step.hasToken && (step.packet.tone === 'request' || step.packet.tone === 'verify') && (
               <span
                 className="rounded-full"
-                style={{ fontSize: 13, padding: '1px 8px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893' }}
+                style={{ fontSize: 13, padding: '1px 8px', background: ACCENT.accentSoft, color: ACCENT.accentText, border: `1px solid ${ACCENT.accent}55` }}
               >
                 JWT
               </span>

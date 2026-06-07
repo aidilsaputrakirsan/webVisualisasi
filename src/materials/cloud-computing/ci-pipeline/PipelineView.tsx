@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { NODE } from '../palette'
 import type { GhaStep, JobId, JobStatus, JobView, StepStatus } from './gha'
 import {
   BranchIcon,
@@ -104,7 +104,7 @@ function JobCard({ job, focused, width }: { job: JobView; focused: boolean; widt
                 ? FAIL.bg
                 : active
                   ? NODE.active.bg
-                  : '#FBF8F2'
+                  : '#F4F5FA'
           const txt =
             s.status === 'pass'
               ? NODE.done.text

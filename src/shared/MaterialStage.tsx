@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import Watermark from './Watermark'
+import { useCourseTheme } from './courseTheme'
 
 /** Fixed 9:16 design canvas (matches a 1080×1920 reel). */
 export const CANVAS_W = 1080
@@ -16,6 +17,7 @@ export const CANVAS_H = 1920
  */
 export default function MaterialStage({ children }: { children: ReactNode }) {
   const [scale, setScale] = useState(1)
+  const theme = useCourseTheme()
 
   useEffect(() => {
     const update = () => {
@@ -32,14 +34,15 @@ export default function MaterialStage({ children }: { children: ReactNode }) {
   }, [])
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ background: '#F1E9DB' }}>
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ background: theme.letterbox }}>
       <div
-        className="stage-bg relative shrink-0 overflow-hidden"
+        className="relative shrink-0 overflow-hidden"
         style={{
           width: CANVAS_W,
           height: CANVAS_H,
           transform: `scale(${scale})`,
           transformOrigin: 'center center',
+          background: theme.stageBg,
           border: '1px solid #E4DCCF',
           boxShadow: '0 18px 60px rgba(33,28,22,0.14)',
         }}

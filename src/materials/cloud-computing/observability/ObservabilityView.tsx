@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { ACCENT, NODE } from '../palette'
 import { CID, EDGES, NODES, edgeBetween, type Level, type LogRow, type NodeId, type ObsStep, type Signals, type Tone } from './arch'
 import { BoxIcon, BrowserIcon, GatewayIcon, ShieldIcon } from './Icons'
 
@@ -168,7 +168,7 @@ function LogLine({ log }: { log: LogRow }) {
         {log.level}
       </span>
       <span style={{ color: '#57503F', minWidth: 128 }}>{log.service}</span>
-      <span className="rounded-md" style={{ fontSize: 14, padding: '2px 8px', background: '#FDEBC8', color: '#92400E', border: '1px solid #E9C893', whiteSpace: 'nowrap' }}>
+      <span className="rounded-md" style={{ fontSize: 14, padding: '2px 8px', background: ACCENT.accentSoft, color: ACCENT.accentText, border: `1px solid ${ACCENT.accent}55`, whiteSpace: 'nowrap' }}>
         cid={CID}
       </span>
       <span style={{ color: '#3A3329', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{log.msg}</span>
@@ -200,7 +200,7 @@ function LogJson({ log, cidAction }: { log: LogRow; cidAction: 'generate' | 'reu
       exit={{ opacity: 0 }}
       transition={{ type: 'spring', stiffness: 240, damping: 26 }}
       className="rounded-xl border"
-      style={{ borderColor: lv.border, background: '#FFFDF9', padding: '12px 16px' }}
+      style={{ borderColor: lv.border, background: '#FAFBFF', padding: '12px 16px' }}
     >
       <div className="flex items-center" style={{ gap: 11, marginBottom: 6 }}>
         <span className="rounded-md font-semibold font-mono" style={{ fontSize: 13, padding: '2px 9px', background: lv.bg, color: lv.text, border: `1px solid ${lv.border}` }}>
@@ -222,13 +222,13 @@ function LogJson({ log, cidAction }: { log: LogRow; cidAction: 'generate' | 'reu
             key={f.k}
             style={{
               paddingLeft: 18,
-              background: f.hl ? 'rgba(217,119,6,0.14)' : 'transparent',
-              borderLeft: f.hl ? '3px solid #D97706' : '3px solid transparent',
+              background: f.hl ? `${ACCENT.accent}22` : 'transparent',
+              borderLeft: f.hl ? `3px solid ${ACCENT.accent}` : '3px solid transparent',
             }}
           >
-            <span style={{ color: f.hl ? '#92400E' : '#8A7C61' }}>"{f.k}"</span>
+            <span style={{ color: f.hl ? ACCENT.accentText : '#8A7C61' }}>"{f.k}"</span>
             <span style={{ color: '#9C8F7B' }}>: </span>
-            <span style={{ color: f.num ? '#2563EB' : f.hl ? '#B45309' : '#3A3329', fontWeight: f.hl ? 700 : 400 }}>{f.v}</span>
+            <span style={{ color: f.num ? '#2563EB' : f.hl ? ACCENT.accentDeep : '#3A3329', fontWeight: f.hl ? 700 : 400 }}>{f.v}</span>
             {i < fields.length - 1 && <span style={{ color: '#9C8F7B' }}>,</span>}
           </div>
         ))}

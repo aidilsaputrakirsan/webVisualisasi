@@ -1,3 +1,5 @@
+import { useCourseTheme } from './courseTheme'
+
 export interface BadgeSpec {
   label: string
   value: string
@@ -15,6 +17,7 @@ export default function TitleBlock({
   subtitle?: string
   badges?: BadgeSpec[]
 }) {
+  const theme = useCourseTheme()
   return (
     <header className="flex flex-col items-center text-center select-none">
       <h1
@@ -23,7 +26,7 @@ export default function TitleBlock({
           letterSpacing: '0.06em',
           fontSize: 78,
           lineHeight: 1.05,
-          color: '#211C16',
+          color: theme.ink,
         }}
       >
         {title}

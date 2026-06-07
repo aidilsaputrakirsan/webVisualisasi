@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useCourseTheme } from './courseTheme'
 
 /**
  * Generic source-code panel with line numbers and an animated highlight on the
@@ -17,6 +18,7 @@ export default function CodeBlock({
   width?: number
   fontSize?: number
 }) {
+  const theme = useCourseTheme()
   return (
     <div
       className="overflow-hidden rounded-2xl border"
@@ -43,7 +45,7 @@ export default function CodeBlock({
                 <motion.div
                   layoutId="code-highlight"
                   className="absolute inset-y-0 left-0 right-0 border-l-4"
-                  style={{ borderColor: '#D97706', background: 'rgba(217,119,6,0.12)' }}
+                  style={{ borderColor: theme.accent, background: `${theme.accent}1F` }}
                   transition={{ type: 'spring', stiffness: 400, damping: 34 }}
                 />
               )}
@@ -51,7 +53,7 @@ export default function CodeBlock({
                 <span className="w-7 select-none text-right" style={{ color: '#C2B7A4' }}>
                   {i + 1}
                 </span>
-                <pre style={{ color: active ? '#92400E' : '#3A3329' }}>{line || ' '}</pre>
+                <pre style={{ color: active ? theme.accentText : '#3A3329' }}>{line || ' '}</pre>
               </div>
             </div>
           )

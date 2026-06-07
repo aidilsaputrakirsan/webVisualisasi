@@ -26,7 +26,7 @@ export default function Controls(props: ControlsProps) {
             onClick={() => props.onModeChange(m)}
             className={`rounded-lg px-2 py-2 text-xs font-medium transition-colors ${
               props.mode === m
-                ? 'border border-amber-400 bg-amber-100 text-amber-800'
+                ? 'border border-violet-400 bg-violet-100 text-violet-800'
                 : 'border border-stone-200 bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
@@ -57,7 +57,7 @@ export default function Controls(props: ControlsProps) {
           step={0.25}
           value={props.speed}
           onChange={(e) => props.onSpeedChange(Number(e.target.value))}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-stone-200 accent-amber-600"
+          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-stone-200 accent-violet-600"
         />
         <span className="w-10 text-right font-mono text-stone-600">{props.speed}×</span>
       </label>
@@ -81,9 +81,9 @@ function Button({
   const base =
     'rounded-lg px-3.5 py-2 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
   const look = primary
-    ? 'bg-amber-600 text-white hover:bg-amber-500'
+    ? 'bg-violet-600 text-white hover:bg-violet-500'
     : active
-      ? 'bg-amber-100 text-amber-800 border border-amber-400'
+      ? 'bg-violet-100 text-violet-800 border border-violet-400'
       : 'bg-stone-100 text-stone-700 hover:bg-stone-200 border border-stone-200'
   return (
     <button onClick={onClick} disabled={disabled} className={`${base} ${look}`}>

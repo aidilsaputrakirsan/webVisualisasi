@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { ACCENT, NODE } from '../palette'
 import { CAPACITY, EDGES, NODES, RATE, edgeBetween, type NodeId, type RateStep, type Tone } from './arch'
 import { GatewayIcon, ServerIcon, UserIcon } from './Icons'
 
@@ -120,7 +120,7 @@ function GatewayBox({ step, active }: { step: RateStep; active: boolean }) {
   return (
     <motion.div
       className="absolute flex flex-col rounded-2xl border-2"
-      animate={{ borderColor: st.border, background: '#FFFDF9', boxShadow: active ? st.shadow : '0 2px 10px rgba(0,0,0,0.06)', scale: active ? 1.02 : 1 }}
+      animate={{ borderColor: st.border, background: '#FAFBFF', boxShadow: active ? st.shadow : '0 2px 10px rgba(0,0,0,0.06)', scale: active ? 1.02 : 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 26 }}
       style={{ left: n.cx - n.w / 2, top: n.cy - n.h / 2, width: n.w, height: n.h, padding: '14px 20px', gap: 12 }}
     >
@@ -152,8 +152,8 @@ function GatewayBox({ step, active }: { step: RateStep; active: boolean }) {
               <motion.span
                 key={i}
                 animate={{
-                  background: filled ? '#D97706' : '#FFFFFF',
-                  borderColor: filled ? '#B45309' : '#E0D6C5',
+                  background: filled ? ACCENT.accent : '#FFFFFF',
+                  borderColor: filled ? ACCENT.accentDeep : '#D5D8E6',
                   scale: filled ? 1 : 0.86,
                 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 22 }}

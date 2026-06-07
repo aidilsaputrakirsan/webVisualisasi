@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { NODE } from '../../../shared/theme'
+import { NODE } from '../palette'
 import type { CdStep, StageId, StageStatus, StageView } from './cd'
 import {
   BranchIcon,
@@ -71,7 +71,7 @@ function StageRow({ stage, focused, gateBlocked }: { stage: StageView; focused: 
       style={{
         width: 680,
         background: stage.status === 'idle' ? '#FFFFFF' : st.bg,
-        padding: '13px 20px',
+        padding: '9px 18px',
         gap: 14,
         borderStyle: dashed ? 'dashed' : 'solid',
       }}
@@ -106,8 +106,8 @@ function StageRow({ stage, focused, gateBlocked }: { stage: StageView; focused: 
 function Link({ active, done }: { active: boolean; done: boolean }) {
   const color = done ? NODE.done.border : active ? NODE.active.border : '#D3C8B6'
   return (
-    <div className="flex justify-center" style={{ height: 16 }}>
-      <motion.div animate={{ background: color }} style={{ width: 3, height: 16, borderRadius: 2 }} />
+    <div className="flex justify-center" style={{ height: 11 }}>
+      <motion.div animate={{ background: color }} style={{ width: 3, height: 11, borderRadius: 2 }} />
     </div>
   )
 }
