@@ -12,7 +12,9 @@ import CiPipelineMaterial from './cloud-computing/ci-pipeline/CiPipelineMaterial
 import CdPipelineMaterial from './cloud-computing/cd-pipeline/CdPipelineMaterial'
 import MonolithMaterial from './cloud-computing/monolith/MonolithMaterial'
 import MicroservicesMaterial from './cloud-computing/microservices/MicroservicesMaterial'
+import JwtAuthMaterial from './cloud-computing/jwt-auth/JwtAuthMaterial'
 import ReliabilityMaterial from './cloud-computing/reliability/ReliabilityMaterial'
+import SagaMaterial from './cloud-computing/saga/SagaMaterial'
 import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
 import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
@@ -170,11 +172,25 @@ export const COURSES: Course[] = [
         component: MicroservicesMaterial,
       },
       {
+        id: 'jwt-auth',
+        title: 'JWT Auth Patterns',
+        subtitle: '3 pola verifikasi token · call Auth vs local vs gateway',
+        status: 'ready',
+        component: JwtAuthMaterial,
+      },
+      {
         id: 'reliability',
         title: 'Reliability',
         subtitle: 'Retry & Circuit Breaker · tahan saat service gagal',
         status: 'ready',
         component: ReliabilityMaterial,
+      },
+      {
+        id: 'saga',
+        title: 'Saga Pattern',
+        subtitle: 'Distributed transaction · commit & compensating rollback',
+        status: 'ready',
+        component: SagaMaterial,
       },
       {
         id: 'observability',
