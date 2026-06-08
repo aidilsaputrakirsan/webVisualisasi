@@ -12,7 +12,7 @@
  */
 
 export type Mode = 'bfs' | 'greedy' | 'astar'
-export type Cue = 'visit' | 'path' | 'done' | null
+export type Cue = 'visit' | 'frontier' | 'path' | 'done' | null
 
 export const COLS = 13
 export const ROWS = 15
@@ -111,12 +111,13 @@ const ASTAR_CODE = [
   'path = reconstruct(came_from)',
 ]
 
-export const MODES: Record<Mode, { label: string; desc: string; code: string[]; popLine: number; pathLine: number }> = {
+export const MODES: Record<Mode, { label: string; desc: string; code: string[]; popLine: number; addLine: number; pathLine: number }> = {
   bfs: {
     label: 'BFS',
     desc: 'Breadth-First — melebar seragam lapis demi lapis (optimal, boros)',
     code: BFS_CODE,
     popLine: 2,
+    addLine: 7,
     pathLine: 8,
   },
   greedy: {
@@ -124,6 +125,7 @@ export const MODES: Record<Mode, { label: string; desc: string; code: string[]; 
     desc: 'Best-First — pakai heuristik saja, meluncur ke goal (cepat, belum tentu optimal)',
     code: GREEDY_CODE,
     popLine: 3,
+    addLine: 8,
     pathLine: 9,
   },
   astar: {
@@ -131,6 +133,7 @@ export const MODES: Record<Mode, { label: string; desc: string; code: string[]; 
     desc: 'A* — f = g + h: terarah ke goal sekaligus optimal & efisien',
     code: ASTAR_CODE,
     popLine: 3,
+    addLine: 9,
     pathLine: 10,
   },
 }
@@ -191,7 +194,10 @@ export function buildSteps(mode: Mode): PfStep[] {
       found = true
       break
     }
-    snap(e.id, def.popLine, `Eksplor sel ke-${order.length} · frontier: ${openCount}`, 'visit')
+    // Beat 1 — pop sel jadi "current" (frontier belum bertambah).
+    snap(e.id, def.popLine, `Pop sel ke-${order.length} · frontier: ${openCount}`, 'visit')
+    // Perluas tetangga.
+    let added = 0
     for (const n of neighbors(e.id)) {
       if (closed.has(n)) continue
       const ng = (g.get(e.id) ?? 0) + 1
@@ -199,7 +205,12 @@ export function buildSteps(mode: Mode): PfStep[] {
         g.set(n, ng)
         cameFrom.set(n, e.id)
         push(n, ng)
+        added++
       }
+    }
+    // Beat 2 — tetangga baru masuk frontier (highlight baris append/put).
+    if (added > 0) {
+      snap(e.id, def.addLine, `Tambah ${added} tetangga ke frontier`, 'frontier')
     }
   }
 

@@ -7,7 +7,7 @@ import { useChrome } from '../../../shared/chrome'
 import GridView from './GridView'
 import Controls from './Controls'
 import { GOAL, buildSteps, rc, MODES, type Mode } from './pathfinding'
-import { ensureAudio, setMuted, playCompare, playVisit, playDone } from '../../../audio/sounds'
+import { ensureAudio, setMuted, playCompare, playEnqueue, playVisit, playDone } from '../../../audio/sounds'
 
 const BASE_DELAY_MS = 130
 
@@ -42,6 +42,8 @@ export default function PathfindingMaterial() {
       const [gr, gc] = rc(GOAL)
       const dist = Math.abs(r - gr) + Math.abs(c - gc)
       playCompare(28 - dist) // closer → higher pitch
+    } else if (step.sound === 'frontier') {
+      playEnqueue(58)
     } else if (step.sound === 'path') {
       playVisit(60)
     } else if (step.sound === 'done') {
