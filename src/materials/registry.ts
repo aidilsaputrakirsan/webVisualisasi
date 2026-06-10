@@ -18,6 +18,7 @@ import SagaMaterial from './cloud-computing/saga/SagaMaterial'
 import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
 import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
+import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -134,6 +135,13 @@ export const COURSES: Course[] = [
         subtitle: 'Pencarian jalur · BFS, Greedy & A*',
         status: 'ready',
         component: PathfindingMaterial,
+      },
+      {
+        id: 'coin-change',
+        title: 'Uang Kembalian',
+        subtitle: 'Greedy · coin change — kapan greedy gagal hemat?',
+        status: 'ready',
+        component: CoinChangeMaterial,
       },
     ],
   },
