@@ -4,8 +4,8 @@ import MaterialStage from '../../../shared/MaterialStage'
 import TitleBlock from '../../../shared/TitleBlock'
 import CodeBlock from '../../../shared/CodeBlock'
 import { useChrome } from '../../../shared/chrome'
+import ControlPanel, { ModeButton } from '../../../shared/ControlPanel'
 import GridView from './GridView'
-import Controls from './Controls'
 import { GOAL, buildSteps, rc, MODES, type Mode } from './pathfinding'
 import { ensureAudio, setMuted, playCompare, playEnqueue, playVisit, playDone } from '../../../audio/sounds'
 
@@ -156,22 +156,26 @@ export default function PathfindingMaterial() {
       </MaterialStage>
 
       <div className={`fixed bottom-4 left-4 z-50 w-[340px] max-w-[90vw] ${hidden ? 'hidden' : ''}`}>
-        <Controls
+        <ControlPanel
           isPlaying={isPlaying}
           atEnd={atEnd}
           speed={speed}
-          mode={mode}
           soundOn={soundOn}
           onPlayPause={handlePlayPause}
           onStep={handleStep}
           onReset={handleReset}
           onSpeedChange={setSpeed}
-          onModeChange={handleModeChange}
           onToggleSound={() => {
             ensureAudio()
             setSoundOn((s) => !s)
           }}
-        />
+        >
+          <div className="grid grid-cols-3 gap-2">
+            {(['bfs', 'greedy', 'astar'] as Mode[]).map((m) => (
+              <ModeButton key={m} label={MODES[m].label} active={mode === m} onClick={() => handleModeChange(m)} />
+            ))}
+          </div>
+        </ControlPanel>
       </div>
     </>
   )

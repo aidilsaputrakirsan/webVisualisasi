@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { NODE, theme } from '../../../shared/theme'
+import { CartIcon, CheckIcon, LightbulbIcon } from '../../../shared/Icons'
 import { fmtRp, type CcStep, type ModeDef, type Piece } from './coinChange'
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 30 } as const
@@ -10,8 +11,9 @@ export default function CoinView({ step, def }: { step: CcStep; def: ModeDef }) 
     <div className="flex flex-col items-center" style={{ gap: 26, width: 960 }}>
       {/* Konteks transaksi */}
       <div
-        className="rounded-full border font-mono"
+        className="flex items-center rounded-full border font-mono"
         style={{
+          gap: 12,
           fontSize: 22,
           padding: '10px 28px',
           borderColor: theme.line,
@@ -19,7 +21,10 @@ export default function CoinView({ step, def }: { step: CcStep; def: ModeDef }) 
           color: theme.inkSoft,
         }}
       >
-        🛒 {def.scenario}
+        <span style={{ color: theme.accentDeep }}>
+          <CartIcon size={26} />
+        </span>
+        {def.scenario}
       </div>
 
       {/* Laci kasir — pecahan yang tersedia */}
@@ -76,8 +81,21 @@ export default function CoinView({ step, def }: { step: CcStep; def: ModeDef }) 
           </motion.span>
         </AnimatePresence>
         {step.remaining === 0 && (
-          <motion.span initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} style={{ fontSize: 40 }}>
-            ✅
+          <motion.span
+            initial={{ opacity: 0, scale: 0.4 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+            className="flex items-center justify-center self-center rounded-full border-2"
+            style={{
+              width: 52,
+              height: 52,
+              borderColor: NODE.done.border,
+              background: NODE.done.bg,
+              color: NODE.done.border,
+              boxShadow: NODE.done.shadow,
+            }}
+          >
+            <CheckIcon size={28} />
           </motion.span>
         )}
       </div>
@@ -118,7 +136,8 @@ export default function CoinView({ step, def }: { step: CcStep; def: ModeDef }) 
             style={{ gap: 14 }}
           >
             <SectionLabel color={NODE.done.border}>
-              💡 CARA PALING HEMAT — {step.optimal.length} {def.unit.toUpperCase()}
+              <LightbulbIcon size={22} />
+              CARA PALING HEMAT — {step.optimal.length} {def.unit.toUpperCase()}
             </SectionLabel>
             <div
               className="flex items-center justify-center rounded-2xl border-2"
@@ -167,7 +186,10 @@ function PieceCard({ piece }: { piece: Piece }) {
 
 function SectionLabel({ children, color }: { children: React.ReactNode; color?: string }) {
   return (
-    <span className="font-mono tracking-widest" style={{ fontSize: 19, color: color ?? theme.inkFaint }}>
+    <span
+      className="flex items-center font-mono tracking-widest"
+      style={{ gap: 10, fontSize: 19, color: color ?? theme.inkFaint }}
+    >
       {children}
     </span>
   )

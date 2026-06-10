@@ -6,19 +6,27 @@ import StatusPill from '../../../shared/StatusPill'
 import StoryPanel from '../../../shared/StoryPanel'
 import ControlPanel, { ModeButton, type ViewMode } from '../../../shared/ControlPanel'
 import { useChrome } from '../../../shared/chrome'
-import CoinView from './CoinView'
-import { CODE_SOURCE, MODES, buildSteps, type Mode } from './coinChange'
-import { ensureAudio, setMuted, playCompare, playInsert, playReturn, playVisit, playDone } from '../../../audio/sounds'
+import RangeView from './RangeView'
+import { CODE_SOURCE, MODES, buildSteps, type Mode } from './guessNumber'
+import {
+  ensureAudio,
+  setMuted,
+  playCompare,
+  playShift,
+  playDequeue,
+  playVisit,
+  playDone,
+} from '../../../audio/sounds'
 
 const BASE_DELAY_MS = 1600
 
 const BADGES = [
-  { label: 'STRATEGI', value: 'greedy', color: '#0d9488' },
-  { label: 'TIME', value: 'O(n)', color: '#3b82f6' },
+  { label: 'STRATEGI', value: 'binary search', color: '#0d9488' },
+  { label: 'TIME', value: 'O(log n)', color: '#3b82f6' },
 ]
 
-export default function CoinChangeMaterial() {
-  const [mode, setMode] = useState<Mode>('rupiah')
+export default function GuessNumberMaterial() {
+  const [mode, setMode] = useState<Mode>('r1')
   const [view, setView] = useState<ViewMode>('story')
   const [index, setIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -31,7 +39,7 @@ export default function CoinChangeMaterial() {
   const step = steps[Math.min(index, steps.length - 1)]
   const def = MODES[mode]
 
-  // Suara — pitch lembar uang mengikuti besar pecahan (ribuan).
+  // Suara — pitch mengikuti nilai tebakan (tebakan besar = nada tinggi).
   const lastSounded = useRef('')
   useEffect(() => {
     if (!soundOn) return
@@ -39,13 +47,13 @@ export default function CoinChangeMaterial() {
     if (lastSounded.current === key) return
     lastSounded.current = key
     if (index === 0) return
-    const denomK = step.denomIndex != null ? def.denoms[step.denomIndex].value / 1000 : 0
-    if (step.sound === 'check') playCompare(denomK)
-    else if (step.sound === 'take') playInsert(denomK)
-    else if (step.sound === 'skip') playReturn()
-    else if (step.sound === 'twist') playVisit(9)
+    const g = (step.guess ?? 50) / 10
+    if (step.sound === 'guess') playCompare(g)
+    else if (step.sound === 'up') playShift(g)
+    else if (step.sound === 'down') playDequeue(g)
+    else if (step.sound === 'hit') playVisit(8)
     else if (step.sound === 'done') playDone()
-  }, [index, mode, soundOn, step, def])
+  }, [index, mode, soundOn, step])
 
   // Autoplay.
   const timer = useRef<number | null>(null)
@@ -114,15 +122,19 @@ export default function CoinChangeMaterial() {
   return (
     <>
       <MaterialStage>
-        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 80, paddingBottom: 110, gap: 26 }}>
-          <TitleBlock title="UANG KEMBALIAN" subtitle={def.desc} badges={BADGES} />
+        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 80, paddingBottom: 110, gap: 30 }}>
+          <TitleBlock
+            title="TEBAK ANGKA"
+            subtitle="Binary search: tebak tengah, buang setengah — angka 1–100 ketemu maksimal 7 tebakan"
+            badges={BADGES}
+          />
 
-          <CoinView step={step} def={def} />
+          <RangeView step={step} secret={def.secret} />
 
           {view === 'code' ? (
             <>
               <StatusPill text={step.status} />
-              <CodeBlock filename={def.filename} source={CODE_SOURCE} activeLine={step.line} width={760} fontSize={21} />
+              <CodeBlock filename="tebak_angka.py" source={CODE_SOURCE} activeLine={step.line} width={760} fontSize={21} />
             </>
           ) : (
             <StoryPanel story={step.story} />
@@ -151,8 +163,8 @@ export default function CoinChangeMaterial() {
             setSoundOn((s) => !s)
           }}
         >
-          <div className="grid grid-cols-2 gap-2">
-            {(['rupiah', 'kupon'] as Mode[]).map((m) => (
+          <div className="grid grid-cols-3 gap-2">
+            {(['r1', 'r2', 'r3'] as Mode[]).map((m) => (
               <ModeButton key={m} label={MODES[m].label} active={mode === m} onClick={() => handleModeChange(m)} />
             ))}
           </div>
