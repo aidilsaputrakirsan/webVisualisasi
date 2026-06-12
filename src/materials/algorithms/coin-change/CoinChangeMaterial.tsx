@@ -1,26 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import MaterialStage from '../../../shared/MaterialStage'
 import TitleBlock from '../../../shared/TitleBlock'
 import CodeBlock from '../../../shared/CodeBlock'
+import StatusPill from '../../../shared/StatusPill'
+import StoryPanel from '../../../shared/StoryPanel'
+import ControlPanel, { ModeButton, type ViewMode } from '../../../shared/ControlPanel'
 import { useChrome } from '../../../shared/chrome'
-import ControlPanel, { ModeButton } from '../../../shared/ControlPanel'
-import GridView from './GridView'
-import { GOAL, buildSteps, rc, MODES, type Mode } from './pathfinding'
-import { ensureAudio, setMuted, playCompare, playEnqueue, playVisit, playDone } from '../../../audio/sounds'
+import CoinView from './CoinView'
+import { CODE_SOURCE, MODES, buildSteps, type Mode } from './coinChange'
+import { ensureAudio, setMuted, playCompare, playInsert, playReturn, playVisit, playDone } from '../../../audio/sounds'
 
-const BASE_DELAY_MS = 130
+const BASE_DELAY_MS = 1600
 
 const BADGES = [
-  { label: 'GRAPH', value: 'shortest path', color: '#0d9488' },
-  { label: 'GRID', value: '13 × 15', color: '#3b82f6' },
+  { label: 'STRATEGI', value: 'greedy', color: '#0d9488' },
+  { label: 'TIME', value: 'O(n)', color: '#3b82f6' },
 ]
 
-export default function PathfindingMaterial() {
-  const [mode, setMode] = useState<Mode>('astar')
+export default function CoinChangeMaterial() {
+  const [mode, setMode] = useState<Mode>('rupiah')
+  const [view, setView] = useState<ViewMode>('story')
   const [index, setIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [speed, setSpeed] = useState(1.5)
+  const [speed, setSpeed] = useState(1)
   const [soundOn, setSoundOn] = useState(true)
   const { hidden } = useChrome()
 
@@ -29,7 +31,7 @@ export default function PathfindingMaterial() {
   const step = steps[Math.min(index, steps.length - 1)]
   const def = MODES[mode]
 
-  // Sound — expansion pitched by how close the current cell is to the goal.
+  // Suara — pitch lembar uang mengikuti besar pecahan (ribuan).
   const lastSounded = useRef('')
   useEffect(() => {
     if (!soundOn) return
@@ -37,19 +39,13 @@ export default function PathfindingMaterial() {
     if (lastSounded.current === key) return
     lastSounded.current = key
     if (index === 0) return
-    if (step.sound === 'visit' && step.current != null) {
-      const [r, c] = rc(step.current)
-      const [gr, gc] = rc(GOAL)
-      const dist = Math.abs(r - gr) + Math.abs(c - gc)
-      playCompare(28 - dist) // closer → higher pitch
-    } else if (step.sound === 'frontier') {
-      playEnqueue(58)
-    } else if (step.sound === 'path') {
-      playVisit(60)
-    } else if (step.sound === 'done') {
-      playDone()
-    }
-  }, [index, mode, soundOn, step])
+    const denomK = step.denomIndex != null ? def.denoms[step.denomIndex].value / 1000 : 0
+    if (step.sound === 'check') playCompare(denomK)
+    else if (step.sound === 'take') playInsert(denomK)
+    else if (step.sound === 'skip') playReturn()
+    else if (step.sound === 'twist') playVisit(9)
+    else if (step.sound === 'done') playDone()
+  }, [index, mode, soundOn, step, def])
 
   // Autoplay.
   const timer = useRef<number | null>(null)
@@ -118,36 +114,19 @@ export default function PathfindingMaterial() {
   return (
     <>
       <MaterialStage>
-        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 72, paddingBottom: 96, gap: 18 }}>
-          <TitleBlock title="PATHFINDING" subtitle={def.desc} badges={BADGES} />
+        <div className="flex h-full w-full flex-col items-center" style={{ paddingTop: 80, paddingBottom: 110, gap: 26 }}>
+          <TitleBlock title="UANG KEMBALIAN" subtitle={def.desc} badges={BADGES} />
 
-          <GridView step={step} />
+          <CoinView step={step} def={def} />
 
-          <div className="flex items-center justify-center" style={{ height: 46 }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={step.status}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="rounded-full border font-mono"
-                style={{
-                  fontSize: 21,
-                  padding: '8px 24px',
-                  borderColor: '#D6E3DD',
-                  background: '#FFFFFF',
-                  color: '#2C3A34',
-                  maxWidth: 920,
-                  textAlign: 'center',
-                }}
-              >
-                {step.status}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <CodeBlock filename={`${mode}.py`} source={def.code} activeLine={step.line} width={760} fontSize={19} />
+          {view === 'code' ? (
+            <>
+              <StatusPill text={step.status} />
+              <CodeBlock filename={def.filename} source={CODE_SOURCE} activeLine={step.line} width={760} fontSize={21} />
+            </>
+          ) : (
+            <StoryPanel story={step.story} />
+          )}
 
           <div className="font-mono text-stone-400" style={{ fontSize: 22 }}>
             step {Math.min(index + 1, steps.length)} / {steps.length}
@@ -161,6 +140,8 @@ export default function PathfindingMaterial() {
           atEnd={atEnd}
           speed={speed}
           soundOn={soundOn}
+          view={view}
+          onViewChange={setView}
           onPlayPause={handlePlayPause}
           onStep={handleStep}
           onReset={handleReset}
@@ -170,8 +151,8 @@ export default function PathfindingMaterial() {
             setSoundOn((s) => !s)
           }}
         >
-          <div className="grid grid-cols-3 gap-2">
-            {(['bfs', 'greedy', 'astar'] as Mode[]).map((m) => (
+          <div className="grid grid-cols-2 gap-2">
+            {(['rupiah', 'kupon'] as Mode[]).map((m) => (
               <ModeButton key={m} label={MODES[m].label} active={mode === m} onClick={() => handleModeChange(m)} />
             ))}
           </div>

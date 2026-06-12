@@ -17,7 +17,10 @@ import ReliabilityMaterial from './cloud-computing/reliability/ReliabilityMateri
 import SagaMaterial from './cloud-computing/saga/SagaMaterial'
 import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
 import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
+import MessageQueueMaterial from './cloud-computing/message-queue/MessageQueueMaterial'
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
+import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
+import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -135,6 +138,20 @@ export const COURSES: Course[] = [
         status: 'ready',
         component: PathfindingMaterial,
       },
+      {
+        id: 'coin-change',
+        title: 'Uang Kembalian',
+        subtitle: 'Greedy · coin change — kapan greedy gagal hemat?',
+        status: 'ready',
+        component: CoinChangeMaterial,
+      },
+      {
+        id: 'guess-number',
+        title: 'Tebak Angka',
+        subtitle: 'Binary search · 1–100 ketemu maks 7 tebakan',
+        status: 'ready',
+        component: GuessNumberMaterial,
+      },
     ],
   },
   {
@@ -205,6 +222,13 @@ export const COURSES: Course[] = [
         subtitle: 'Security · token bucket di Gateway (429 saat flood)',
         status: 'ready',
         component: RateLimitingMaterial,
+      },
+      {
+        id: 'message-queue',
+        title: 'Message Queue',
+        subtitle: 'Async · publish/consume — pesan tak hilang saat service mati',
+        status: 'ready',
+        component: MessageQueueMaterial,
       },
       {
         id: 'load-balancing',
