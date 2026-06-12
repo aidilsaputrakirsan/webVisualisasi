@@ -71,7 +71,7 @@ Setiap `Step` adalah **snapshot lengkap** satu frame, minimal berisi:
 - kondisi data (array/tree/queue/dll) — pakai **id stabil** per elemen supaya
   `layout` Framer Motion bisa meluncur mulus saat posisi berubah,
 - `line`: nomor baris kode yang sedang "dieksekusi" (0-based),
-- `status`: teks penjelasan langkah (Bahasa Indonesia, gaya seperti trace di modul),
+- `status`: teks penjelasan langkah (**Bahasa Inggris**, gaya seperti trace di modul),
 - field spesifik materi (mis. `keyId`, `activeId`, `visited`, `queue`, `output`).
 
 Generator step ditulis sebagai **fungsi murni**: `buildXxxSteps(input): Step[]`.
@@ -289,5 +289,7 @@ export default function XxxMaterial() {
   setiap materi via `MaterialStage`. Ubah di `src/shared/Watermark.tsx`.
 - **Badge kompleksitas** saat ini statis per materi. Boleh dibuat dinamis bila relevan.
 - Mode tampilan **default 9:16**; tidak ada mode landscape.
-- Bahasa: **UI/teks status → Indonesia**, **kode & nama variabel → Inggris**
-  (konsisten dengan kode yang ada).
+- Bahasa: **SEMUA teks penonton (UI, status, story, subtitle, judul) → Bahasa Inggris**,
+  begitu pula **kode & nama variabel → Inggris**. (Pembaruan: dulu teks UI/status
+  Bahasa Indonesia; sekarang materi baru ditulis full English. Materi lama boleh
+  ikut dikonversi saat disentuh.)

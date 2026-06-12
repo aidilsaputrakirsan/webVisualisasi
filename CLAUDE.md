@@ -29,4 +29,4 @@ npm run build    # tsc --noEmit && vite build — harus lolos sebelum selesai
 - Konten di dalam `MaterialStage` pakai ukuran **px tetap** (bukan vw/clamp).
 - Kontrol diletakkan **di luar** `MaterialStage` (frame rekaman harus bersih).
 - Pakai komponen di `src/shared/` — jangan duplikasi.
-- Teks UI/status Bahasa Indonesia; kode & variabel Bahasa Inggris.
+- Semua teks penonton (UI, status, story, judul) **Bahasa Inggris**; kode & variabel juga Bahasa Inggris. (Materi baru full English; materi lama dikonversi saat disentuh.)

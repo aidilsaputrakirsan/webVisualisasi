@@ -21,6 +21,7 @@ import MessageQueueMaterial from './cloud-computing/message-queue/MessageQueueMa
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
 import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
+import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -152,6 +153,13 @@ export const COURSES: Course[] = [
         status: 'ready',
         component: GuessNumberMaterial,
       },
+      {
+        id: 'sliding-window',
+        title: 'Sliding Window',
+        subtitle: 'Two pointers · shortest subarray ≥ target (brute O(n²) vs O(n))',
+        status: 'ready',
+        component: SlidingWindowMaterial,
+      },
     ],
   },
   {
@@ -226,7 +234,7 @@ export const COURSES: Course[] = [
       {
         id: 'message-queue',
         title: 'Message Queue',
-        subtitle: 'Async · publish/consume — pesan tak hilang saat service mati',
+        subtitle: 'Async · publish/consume — no message lost when a service goes down',
         status: 'ready',
         component: MessageQueueMaterial,
       },

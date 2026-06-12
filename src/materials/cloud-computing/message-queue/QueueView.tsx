@@ -230,7 +230,7 @@ export default function QueueView({
           <motion.div
             className="absolute flex items-center rounded-full border font-mono"
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: [1, 0.45, 1], scale: 1 }}
+            animate={{ opacity: [1, 0.72, 1], scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ opacity: { repeat: Infinity, duration: 1.1 } }}
             style={{
@@ -240,12 +240,12 @@ export default function QueueView({
               padding: '5px 14px',
               fontSize: 16,
               whiteSpace: 'nowrap',
-              borderColor: '#D97706',
-              background: '#FDEBC8',
-              color: '#92400E',
+              borderColor: '#B45309',
+              background: '#FBD38D',
+              color: '#7C2D12',
             }}
           >
-            menunggu jawaban…
+            waiting for reply…
           </motion.div>
         )}
       </AnimatePresence>
@@ -269,7 +269,7 @@ export default function QueueView({
               color: FAIL.text,
             }}
           >
-            ✕ checkout gagal
+            ✕ checkout failed
           </motion.div>
         )}
       </AnimatePresence>

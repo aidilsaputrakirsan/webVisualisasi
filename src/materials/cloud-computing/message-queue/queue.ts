@@ -118,12 +118,12 @@ const SYNC_CODE = [
   '@app.post("/checkout")',
   'def checkout(order):',
   '    db.save(order)',
-  '    # panggil Payment & TUNGGU jawabannya',
+  '    # call Payment & WAIT for its reply',
   '    r = requests.post(',
   '        f"{PAY_URL}/charge",',
   '        json=order, timeout=10)  # blocking!',
   '    if r.status_code != 200:',
-  '        raise HTTPException(502)  # ikut gagal',
+  '        raise HTTPException(502)  # fail too',
   '    return {"status": "paid"}',
 ]
 
@@ -134,7 +134,7 @@ const ASYNC_CODE = [
   '    db.save(order)',
   '    channel.basic_publish(',
   '        queue="orders", body=json(order))',
-  '    return {"status": "diproses"}  # instan!',
+  '    return {"status": "processing"}  # instant!',
   '',
   '# consumer — payment-worker',
   'def on_message(ch, method, body):',
@@ -149,21 +149,21 @@ export const MODES: Record<
 > = {
   sync: {
     label: 'Sync (HTTP)',
-    desc: 'Tanpa queue — pemanggil ikut menunggu & ikut gagal (tight coupling)',
+    desc: 'No queue — the caller waits and fails along with it (tight coupling)',
     filename: 'order-service/main.py',
     code: SYNC_CODE,
     showQueue: false,
   },
   async: {
     label: 'Async (Queue)',
-    desc: 'Dengan queue — publish lalu lanjut; consumer mengambil saat siap',
+    desc: 'With a queue — publish then move on; the consumer pulls when ready',
     filename: 'producer_consumer.py',
     code: ASYNC_CODE,
     showQueue: true,
   },
   down: {
-    label: 'Consumer Mati',
-    desc: 'Payment mati — pesan menumpuk aman di queue, diproses saat pulih',
+    label: 'Consumer Down',
+    desc: 'Payment down — messages pile up safely in the queue, processed on recovery',
     filename: 'producer_consumer.py',
     code: ASYNC_CODE,
     showQueue: true,
@@ -192,49 +192,49 @@ function b(p: Partial<QueueStep> & Required): QueueStep {
 
 function buildSync(): QueueStep[] {
   return [
-    b({ activeNodes: ['fe'], line: 0, status: 'Synchronous: Order memanggil Payment via HTTP dan menunggu jawabannya.', story: 'Bayangkan warung makan: kasir HARUS menunggu koki selesai masak sebelum bisa melayani pembeli berikutnya.' }),
-    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], line: 1, status: 'User #1 checkout → request masuk ke Order Service.', story: 'Pembeli #1 datang memesan ke kasir.', sound: 'send' }),
-    b({ packet: { from: 'order', to: 'pay', tag: 'POST /charge', tone: 'request' }, activeNodes: ['order', 'pay'], payState: 'busy', waiting: true, line: 4, status: 'Order panggil Payment lalu MENUNGGU — request user ikut menggantung.', story: 'Kasir meneriakkan pesanan ke koki, lalu berdiri diam menunggu di tempat.', sound: 'send' }),
-    b({ activeNodes: ['pay'], payState: 'busy', waiting: true, line: 6, status: 'Payment memproses (±3 detik)… selama itu Order diblokir (blocking).', story: 'Koki memasak… kasir menunggu, antrean pembeli di belakang ikut tertahan.', sound: 'process' }),
-    b({ packet: { from: 'pay', to: 'order', tag: '200 OK', tone: 'response' }, activeNodes: ['pay', 'order'], processed: ['#1'], line: 7, status: 'Payment selesai → Order baru bisa melanjutkan.', story: 'Masakan jadi! Koki menyerahkannya ke kasir.', sound: 'back' }),
-    b({ packet: { from: 'order', to: 'fe', tag: 'paid ✓', tone: 'response' }, activeNodes: ['order', 'fe'], processed: ['#1'], line: 9, status: 'User akhirnya dapat jawaban — setelah ikut menunggu seluruh proses.', story: 'Pembeli #1 terlayani… tapi ia menunggu lama berdiri di depan kasir.', sound: 'back' }),
-    b({ payState: 'down', processed: ['#1'], line: 3, status: 'Tiba-tiba Payment Service MATI. Lalu pesanan #2 masuk…', story: 'Gawat — koki pulang mendadak! Dan pembeli #2 baru saja datang…', sound: 'fail' }),
-    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #2', tone: 'request' }, activeNodes: ['fe', 'order'], payState: 'down', processed: ['#1'], line: 1, status: 'User #2 checkout → Order Service menerima request.', story: 'Pembeli #2 memesan ke kasir seperti biasa.', sound: 'send' }),
-    b({ packet: { from: 'order', to: 'pay', tag: 'POST /charge', tone: 'request' }, activeNodes: ['order', 'pay'], payState: 'down', waiting: true, processed: ['#1'], line: 4, status: 'Order memanggil Payment… tidak ada jawaban…', story: 'Kasir berteriak ke dapur… hening. Tidak ada yang menjawab.', sound: 'send' }),
-    b({ packet: { from: 'pay', to: 'order', tag: 'timeout ✕', tone: 'fail' }, activeNodes: ['pay', 'order'], payState: 'down', processed: ['#1'], line: 7, status: 'Timeout 10 detik → panggilan GAGAL.', story: 'Tidak ada koki = tidak ada masakan. Kasir menyerah menunggu.', sound: 'fail' }),
-    b({ packet: { from: 'order', to: 'fe', tag: '502 error', tone: 'fail' }, activeNodes: ['order', 'fe'], payState: 'down', failed: true, processed: ['#1'], line: 8, status: 'Order ikut gagal → user menerima error. Checkout GAGAL.', story: 'Kasir terpaksa menolak: "Maaf, tidak bisa pesan." Pembeli pergi kecewa.', sound: 'fail' }),
-    b({ activeNodes: ['fe'], payState: 'down', failed: true, processed: ['#1'], line: 8, status: 'Tight coupling: satu service mati → semua yang memanggilnya ikut gagal.', story: 'Satu koki absen, seluruh warung berhenti melayani. Pasti ada cara yang lebih baik…', sound: 'done' }),
+    b({ activeNodes: ['fe'], line: 0, status: 'Synchronous: Order calls Payment over HTTP and waits for its reply.', story: 'Picture a food stall: the cashier MUST wait for the cook to finish before serving the next customer.' }),
+    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], line: 1, status: 'User #1 checks out → request reaches the Order Service.', story: 'Customer #1 walks up and orders at the cashier.', sound: 'send' }),
+    b({ packet: { from: 'order', to: 'pay', tag: 'POST /charge', tone: 'request' }, activeNodes: ['order', 'pay'], payState: 'busy', waiting: true, line: 4, status: 'Order calls Payment then WAITS — the user request hangs along with it.', story: 'The cashier shouts the order to the cook, then stands still, waiting in place.', sound: 'send' }),
+    b({ activeNodes: ['pay'], payState: 'busy', waiting: true, line: 6, status: 'Payment processes (~3 seconds)… meanwhile Order is blocked (blocking).', story: 'The cook is cooking… the cashier waits, and the line of customers behind is held up too.', sound: 'process' }),
+    b({ packet: { from: 'pay', to: 'order', tag: '200 OK', tone: 'response' }, activeNodes: ['pay', 'order'], processed: ['#1'], line: 7, status: 'Payment is done → only now can Order continue.', story: 'The dish is ready! The cook hands it to the cashier.', sound: 'back' }),
+    b({ packet: { from: 'order', to: 'fe', tag: 'paid ✓', tone: 'response' }, activeNodes: ['order', 'fe'], processed: ['#1'], line: 9, status: 'The user finally gets a reply — after waiting through the whole process.', story: 'Customer #1 is served… but only after a long wait standing at the cashier.', sound: 'back' }),
+    b({ payState: 'down', processed: ['#1'], line: 3, status: 'Suddenly the Payment Service goes DOWN. Then order #2 arrives…', story: 'Disaster — the cook leaves out of nowhere! And customer #2 has just arrived…', sound: 'fail' }),
+    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #2', tone: 'request' }, activeNodes: ['fe', 'order'], payState: 'down', processed: ['#1'], line: 1, status: 'User #2 checks out → the Order Service receives the request.', story: 'Customer #2 orders at the cashier as usual.', sound: 'send' }),
+    b({ packet: { from: 'order', to: 'pay', tag: 'POST /charge', tone: 'request' }, activeNodes: ['order', 'pay'], payState: 'down', waiting: true, processed: ['#1'], line: 4, status: 'Order calls Payment… no answer…', story: 'The cashier shouts toward the kitchen… silence. No one answers.', sound: 'send' }),
+    b({ packet: { from: 'pay', to: 'order', tag: 'timeout ✕', tone: 'fail' }, activeNodes: ['pay', 'order'], payState: 'down', processed: ['#1'], line: 7, status: 'Timeout after 10 seconds → the call FAILS.', story: 'No cook = no food. The cashier gives up waiting.', sound: 'fail' }),
+    b({ packet: { from: 'order', to: 'fe', tag: '502 error', tone: 'fail' }, activeNodes: ['order', 'fe'], payState: 'down', failed: true, processed: ['#1'], line: 8, status: 'Order fails too → the user gets an error. Checkout FAILED.', story: 'The cashier has to refuse: "Sorry, can\'t take your order." The customer leaves disappointed.', sound: 'fail' }),
+    b({ activeNodes: ['fe'], payState: 'down', failed: true, processed: ['#1'], line: 8, status: 'Tight coupling: one service goes down → everything calling it fails too.', story: 'One cook is absent and the whole stall stops serving. There must be a better way…', sound: 'done' }),
   ]
 }
 
 function buildAsync(): QueueStep[] {
   return [
-    b({ activeNodes: ['fe'], line: 0, status: 'Asynchronous: Order menaruh pesan di queue; Payment mengambil saat siap.', story: 'Warung kini punya REL STRUK: kasir tinggal menempel pesanan di rel, koki mengambil satu per satu.' }),
-    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], line: 2, status: 'User #1 checkout → masuk ke Order Service.', story: 'Pembeli #1 datang memesan ke kasir.', sound: 'send' }),
-    b({ packet: { from: 'order', to: 'queue', tag: 'publish #1', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M1], line: 4, status: 'Order publish pesan "order #1" ke queue — tidak menunggu siapa pun.', story: 'Kasir menempel struk #1 di rel dapur. Urusannya selesai!', sound: 'publish' }),
-    b({ packet: { from: 'order', to: 'fe', tag: '201 diproses ✓', tone: 'response' }, activeNodes: ['order', 'fe'], queued: [M1], line: 6, status: 'Order LANGSUNG balas ke user (±50ms) — tanpa menunggu Payment.', story: 'Kasir langsung bilang: "Siap! Pesananmu sedang diproses." Pembeli senang.', sound: 'back' }),
-    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #1', tone: 'consume' }, activeNodes: ['queue', 'pay'], payState: 'busy', line: 9, status: 'Payment mengambil (consume) pesan #1 dari queue.', story: 'Koki mengambil struk #1 dari rel dan mulai memasak.', sound: 'consume' }),
-    b({ activeNodes: ['pay'], processed: ['#1'], line: 11, status: 'Payment selesai memproses → kirim ack. Pesan #1 tuntas.', story: 'Masakan #1 jadi — struknya dicoret dari rel.', sound: 'process' }),
-    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #2', tone: 'request' }, activeNodes: ['fe', 'order'], processed: ['#1'], line: 2, status: 'Pesanan #2 masuk…', story: 'Pembeli #2 datang.', sound: 'send' }),
-    b({ packet: { from: 'order', to: 'queue', tag: 'publish #2', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M2], processed: ['#1'], line: 4, status: 'Publish #2 → user #2 juga langsung dapat konfirmasi.', story: 'Struk #2 ditempel; kasir langsung siap melayani pembeli berikutnya.', sound: 'publish' }),
-    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #2', tone: 'consume' }, activeNodes: ['queue', 'pay'], payState: 'busy', processed: ['#1'], line: 9, status: 'Payment mengambil #2 dengan ritme kerjanya sendiri.', story: 'Koki memasak #2 dengan temponya sendiri — tidak ada yang saling menunggu.', sound: 'consume' }),
-    b({ activeNodes: ['pay'], processed: ['#1', '#2'], line: 11, status: 'Selesai. Producer & consumer DECOUPLED — terpisah penuh.', story: 'Kasir cepat melayani, koki tenang memasak. Antrean pembeli tetap lancar.', sound: 'done' }),
+    b({ activeNodes: ['fe'], line: 0, status: 'Asynchronous: Order puts a message on the queue; Payment pulls it when ready.', story: 'The stall now has an ORDER RAIL: the cashier just clips the ticket onto the rail, and the cook takes them one by one.' }),
+    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], line: 2, status: 'User #1 checks out → reaches the Order Service.', story: 'Customer #1 walks up and orders at the cashier.', sound: 'send' }),
+    b({ packet: { from: 'order', to: 'queue', tag: 'publish #1', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M1], line: 4, status: 'Order publishes the "order #1" message to the queue — waiting for no one.', story: 'The cashier clips ticket #1 onto the kitchen rail. Their part is done!', sound: 'publish' }),
+    b({ packet: { from: 'order', to: 'fe', tag: '201 processing ✓', tone: 'response' }, activeNodes: ['order', 'fe'], queued: [M1], line: 6, status: 'Order replies to the user IMMEDIATELY (~50ms) — without waiting for Payment.', story: 'The cashier says right away: "Got it! Your order is being processed." The customer is happy.', sound: 'back' }),
+    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #1', tone: 'consume' }, activeNodes: ['queue', 'pay'], payState: 'busy', line: 9, status: 'Payment pulls (consumes) message #1 from the queue.', story: 'The cook takes ticket #1 off the rail and starts cooking.', sound: 'consume' }),
+    b({ activeNodes: ['pay'], processed: ['#1'], line: 11, status: 'Payment finishes processing → sends ack. Message #1 is complete.', story: 'Dish #1 is ready — its ticket comes off the rail.', sound: 'process' }),
+    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #2', tone: 'request' }, activeNodes: ['fe', 'order'], processed: ['#1'], line: 2, status: 'Order #2 arrives…', story: 'Customer #2 walks up.', sound: 'send' }),
+    b({ packet: { from: 'order', to: 'queue', tag: 'publish #2', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M2], processed: ['#1'], line: 4, status: 'Publish #2 → user #2 also gets instant confirmation.', story: 'Ticket #2 is clipped on; the cashier is immediately ready for the next customer.', sound: 'publish' }),
+    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #2', tone: 'consume' }, activeNodes: ['queue', 'pay'], payState: 'busy', processed: ['#1'], line: 9, status: 'Payment pulls #2 at its own working pace.', story: 'The cook prepares #2 at their own tempo — no one waits on anyone.', sound: 'consume' }),
+    b({ activeNodes: ['pay'], processed: ['#1', '#2'], line: 11, status: 'Done. Producer & consumer are DECOUPLED — fully separated.', story: 'The cashier serves quickly, the cook cooks calmly. The customer line keeps flowing.', sound: 'done' }),
   ]
 }
 
 function buildDown(): QueueStep[] {
   return [
-    b({ payState: 'down', line: 8, status: 'Skenario kunci: Payment Service MATI. Apa nasib pesanan baru?', story: 'Koki tidak masuk kerja hari ini. Tapi warung tetap buka…', sound: 'fail' }),
-    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], payState: 'down', line: 2, status: 'User #1 checkout — tidak tahu (dan tidak perlu tahu) Payment mati.', story: 'Pembeli #1 memesan seperti biasa.', sound: 'send' }),
-    b({ packet: { from: 'order', to: 'queue', tag: 'publish #1', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M1], payState: 'down', line: 4, status: 'Pesan #1 tersimpan AMAN di queue (durable — ditulis ke disk).', story: 'Struk #1 ditempel di rel. Aman — tidak akan hilang.', sound: 'publish' }),
-    b({ packet: { from: 'order', to: 'fe', tag: '201 diproses ✓', tone: 'response' }, activeNodes: ['order', 'fe'], queued: [M1], payState: 'down', line: 6, status: 'User #1 tetap dapat konfirmasi instan!', story: '"Siap, pesananmu diproses!" — pembeli pulang dengan tenang.', sound: 'back' }),
-    b({ packet: { from: 'order', to: 'queue', tag: 'publish #2', tone: 'publish' }, activeNodes: ['fe', 'order', 'queue'], queued: [M1, M2], payState: 'down', line: 4, status: 'Pesanan #2 masuk → mengantre di belakang #1.', story: 'Pembeli #2 memesan — struknya ikut ditempel di rel.', sound: 'publish' }),
-    b({ packet: { from: 'order', to: 'queue', tag: 'publish #3', tone: 'publish' }, activeNodes: ['fe', 'order', 'queue'], queued: [M1, M2, M3], payState: 'down', line: 4, status: '3 pesan menunggu. NOL pesanan hilang, NOL user gagal checkout.', story: 'Rel makin penuh, tapi rapi. Tidak satu pun pesanan dibuang.', sound: 'publish' }),
-    b({ activeNodes: ['pay'], queued: [M1, M2, M3], payState: 'up', line: 9, status: 'Payment hidup kembali → langsung melihat antrean di queue.', story: 'Koki datang! Melihat rel penuh struk, ia langsung mulai bekerja.', sound: 'recover' }),
-    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #1', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [M2, M3], payState: 'busy', processed: ['#1'], line: 9, status: 'Consume #1 → proses → ack.', story: 'Struk #1 diambil, dimasak, selesai.', sound: 'consume' }),
-    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #2', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [M3], payState: 'busy', processed: ['#1', '#2'], line: 9, status: 'Consume #2 → proses → ack.', story: 'Struk #2 menyusul.', sound: 'consume' }),
-    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #3', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [], payState: 'busy', processed: ['#1', '#2', '#3'], line: 9, status: 'Consume #3 → antrean bersih.', story: 'Struk terakhir selesai. Rel kosong kembali.', sound: 'consume' }),
-    b({ payState: 'up', processed: ['#1', '#2', '#3'], line: 11, status: 'Semua pesanan terproses tanpa ada yang hilang — queue = penyangga (buffer).', story: 'Tidak ada pembeli yang kecewa. Itulah kekuatan message queue.', sound: 'done' }),
+    b({ payState: 'down', line: 8, status: 'Key scenario: the Payment Service is DOWN. What happens to new orders?', story: 'The cook did not show up today. But the stall stays open…', sound: 'fail' }),
+    b({ packet: { from: 'fe', to: 'order', tag: 'POST /checkout #1', tone: 'request' }, activeNodes: ['fe', 'order'], payState: 'down', line: 2, status: 'User #1 checks out — unaware (and not needing to know) Payment is down.', story: 'Customer #1 orders as usual.', sound: 'send' }),
+    b({ packet: { from: 'order', to: 'queue', tag: 'publish #1', tone: 'publish' }, activeNodes: ['order', 'queue'], queued: [M1], payState: 'down', line: 4, status: 'Message #1 is stored SAFELY in the queue (durable — written to disk).', story: 'Ticket #1 is clipped onto the rail. Safe — it will not be lost.', sound: 'publish' }),
+    b({ packet: { from: 'order', to: 'fe', tag: '201 processing ✓', tone: 'response' }, activeNodes: ['order', 'fe'], queued: [M1], payState: 'down', line: 6, status: 'User #1 still gets instant confirmation!', story: '"Got it, your order is being processed!" — the customer heads home at ease.', sound: 'back' }),
+    b({ packet: { from: 'order', to: 'queue', tag: 'publish #2', tone: 'publish' }, activeNodes: ['fe', 'order', 'queue'], queued: [M1, M2], payState: 'down', line: 4, status: 'Order #2 arrives → queues up behind #1.', story: 'Customer #2 orders — their ticket is clipped onto the rail too.', sound: 'publish' }),
+    b({ packet: { from: 'order', to: 'queue', tag: 'publish #3', tone: 'publish' }, activeNodes: ['fe', 'order', 'queue'], queued: [M1, M2, M3], payState: 'down', line: 4, status: '3 messages waiting. ZERO orders lost, ZERO failed checkouts.', story: 'The rail fills up, but stays orderly. Not a single order is thrown away.', sound: 'publish' }),
+    b({ activeNodes: ['pay'], queued: [M1, M2, M3], payState: 'up', line: 9, status: 'Payment comes back up → immediately sees the backlog in the queue.', story: 'The cook arrives! Seeing the rail full of tickets, they get straight to work.', sound: 'recover' }),
+    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #1', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [M2, M3], payState: 'busy', processed: ['#1'], line: 9, status: 'Consume #1 → process → ack.', story: 'Ticket #1 is taken, cooked, done.', sound: 'consume' }),
+    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #2', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [M3], payState: 'busy', processed: ['#1', '#2'], line: 9, status: 'Consume #2 → process → ack.', story: 'Ticket #2 follows.', sound: 'consume' }),
+    b({ packet: { from: 'queue', to: 'pay', tag: 'consume #3', tone: 'consume' }, activeNodes: ['queue', 'pay'], queued: [], payState: 'busy', processed: ['#1', '#2', '#3'], line: 9, status: 'Consume #3 → the queue is clear.', story: 'The last ticket is done. The rail is empty again.', sound: 'consume' }),
+    b({ payState: 'up', processed: ['#1', '#2', '#3'], line: 11, status: 'Every order processed with none lost — the queue acts as a buffer.', story: 'No customer left disappointed. That is the power of a message queue.', sound: 'done' }),
   ]
 }
 
