@@ -24,6 +24,7 @@ import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
 import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
+import RideMatchingMaterial from './algorithms/ride-matching/RideMatchingMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -161,6 +162,13 @@ export const COURSES: Course[] = [
         subtitle: 'Two pointers · shortest subarray ≥ target (brute O(n²) vs O(n))',
         status: 'ready',
         component: SlidingWindowMaterial,
+      },
+      {
+        id: 'ride-matching',
+        title: 'Ride Matching',
+        subtitle: 'Dispatch · why apps don’t always pick the nearest driver (ETA, factors & batch matching)',
+        status: 'ready',
+        component: RideMatchingMaterial,
       },
     ],
   },
