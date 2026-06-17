@@ -18,6 +18,8 @@ import SagaMaterial from './cloud-computing/saga/SagaMaterial'
 import ObservabilityMaterial from './cloud-computing/observability/ObservabilityMaterial'
 import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMaterial'
 import MessageQueueMaterial from './cloud-computing/message-queue/MessageQueueMaterial'
+import RagMaterial from './cloud-computing/rag/RagMaterial'
+import EmbeddingSpaceMaterial from './cloud-computing/embedding-space/EmbeddingSpaceMaterial'
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
 import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
@@ -237,6 +239,20 @@ export const COURSES: Course[] = [
         subtitle: 'Async · publish/consume — no message lost when a service goes down',
         status: 'ready',
         component: MessageQueueMaterial,
+      },
+      {
+        id: 'rag',
+        title: 'RAG',
+        subtitle: 'AI · retrieval-augmented generation (vector DB + LLM)',
+        status: 'ready',
+        component: RagMaterial,
+      },
+      {
+        id: 'embedding-space',
+        title: 'Embeddings 3D',
+        subtitle: 'AI · vector space — similar meaning sits close (semantic search)',
+        status: 'ready',
+        component: EmbeddingSpaceMaterial,
       },
       {
         id: 'load-balancing',
