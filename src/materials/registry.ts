@@ -20,6 +20,8 @@ import RateLimitingMaterial from './cloud-computing/rate-limiting/RateLimitingMa
 import MessageQueueMaterial from './cloud-computing/message-queue/MessageQueueMaterial'
 import RagMaterial from './cloud-computing/rag/RagMaterial'
 import EmbeddingSpaceMaterial from './cloud-computing/embedding-space/EmbeddingSpaceMaterial'
+import AiAgentMaterial from './cloud-computing/ai-agent/AiAgentMaterial'
+import AgenticRagMaterial from './cloud-computing/agentic-rag/AgenticRagMaterial'
 import PathfindingMaterial from './algorithms/pathfinding/PathfindingMaterial'
 import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
@@ -254,6 +256,20 @@ export const COURSES: Course[] = [
         subtitle: 'AI · retrieval-augmented generation (vector DB + LLM)',
         status: 'ready',
         component: RagMaterial,
+      },
+      {
+        id: 'ai-agent',
+        title: 'AI Agent',
+        subtitle: 'AI · LLM that reasons, picks tools, and loops (ReAct)',
+        status: 'ready',
+        component: AiAgentMaterial,
+      },
+      {
+        id: 'agentic-rag',
+        title: 'Agentic RAG',
+        subtitle: 'AI · RAG + agent loop — grade, retry, validate',
+        status: 'ready',
+        component: AgenticRagMaterial,
       },
       {
         id: 'embedding-space',

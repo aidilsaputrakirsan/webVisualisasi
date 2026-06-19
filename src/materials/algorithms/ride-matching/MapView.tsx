@@ -125,8 +125,9 @@ export default function MapView({ step }: { step: RideStep }) {
         <div
           className="absolute font-mono"
           style={{
-            left: (px(dimas.pos[0]) + pkx) / 2 - 44,
-            top: (py(dimas.pos[1]) + pky) / 2 - 30,
+            left: px(dimas.pos[0]) + 70,
+            top: py(dimas.pos[1]) - 48,
+            zIndex: 7,
             fontSize: 16,
             fontWeight: 700,
             color: '#B91C1C',

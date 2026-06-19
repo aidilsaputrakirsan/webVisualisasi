@@ -7,6 +7,7 @@ const LINE = '#D6E3DD'
 export default function ScoreBoard({ step }: { step: RideStep }) {
   const decider = PHASES[step.phase].decider
   const showScore = step.phase === 'smart' || step.phase === 'batch'
+  const assignedTo = (id: string) => step.assignments.find((a) => a.driverId === id)?.to
 
   return (
     <div
@@ -26,7 +27,8 @@ export default function ScoreBoard({ step }: { step: RideStep }) {
           d={d}
           revealed={step.revealed.includes(d.id)}
           candidate={step.candidateId === d.id}
-          chosen={step.chosenId === d.id}
+          chosen={step.chosenId === d.id || assignedTo(d.id) === 'you'}
+          toB={assignedTo(d.id) === 'b'}
           decider={decider}
           showScore={showScore}
         />
@@ -69,6 +71,7 @@ function DriverRow({
   revealed,
   candidate,
   chosen,
+  toB,
   decider,
   showScore,
 }: {
@@ -76,12 +79,13 @@ function DriverRow({
   revealed: boolean
   candidate: boolean
   chosen: boolean
+  toB: boolean
   decider: string
   showScore: boolean
 }) {
   const isElig = eligible(d)
   const dim = !isElig
-  const bg = chosen ? '#DCFCE7' : candidate ? '#FFFBEB' : 'transparent'
+  const bg = chosen ? '#DCFCE7' : toB ? '#E0F2FE' : candidate ? '#FFFBEB' : 'transparent'
   const dash = (v: ReactNode) => (revealed && isElig ? v : <span style={{ color: '#C2CCD6' }}>—</span>)
 
   return (
@@ -100,6 +104,7 @@ function DriverRow({
         <span style={{ width: 12, height: 12, borderRadius: 999, background: d.color, flexShrink: 0 }} />
         <span style={{ fontSize: 20, fontWeight: 700, color: '#1C2A24', fontFamily: 'ui-sans-serif, system-ui' }}>{d.name}</span>
         {chosen && <span style={{ fontSize: 16, color: '#15803D', fontWeight: 700 }}>✓</span>}
+        {toB && <span style={{ fontSize: 15, color: '#0369A1', fontWeight: 700 }}>→ B</span>}
       </span>
 
       {!isElig ? (

@@ -152,7 +152,7 @@ export function buildSteps(): RideStep[] {
       traffic: false,
       note: 'One rider, many drivers — who comes?',
     }),
-    s('nearest', 'Drivers nearby are online. Rafi rides a motorbike, but you ordered a car — filtered out.', 'ping', {
+    s('nearest', 'You ordered a car, so Rafi (motorbike) is filtered out.', 'ping', {
       pickupPulse: true,
       traffic: false,
     }),
@@ -160,41 +160,41 @@ export function buildSteps(): RideStep[] {
     // ── 1. NEAREST ──
     s('nearest', 'Idea 1 — Nearest: just pick the closest driver as the crow flies.', null, { lines: 'straight' }),
     s('nearest', 'Straight-line distances measured for every eligible car.', 'scan', { lines: 'straight', revealed: allIds }),
-    s('nearest', `Closest is ${dimas.name} (${dimas.dist.toFixed(1)} km) — but he is stuck in traffic, ETA 11 min. Distance ≠ time.`, 'pick', {
+    s('nearest', `${dimas.name}: ${dimas.dist.toFixed(1)} km but ETA 11 min in traffic. Distance ≠ time.`, 'pick', {
       lines: 'route',
       revealed: allIds,
       chosenId: dimas.id,
     }),
 
     // ── 2. FASTEST ETA ──
-    s('eta', 'Idea 2 — Fastest ETA: who actually arrives soonest on real roads (traffic counts now)?', null, { traffic: true }),
-    s('eta', 'ML-predicted road ETAs — Dimas’ 0.8 km turns into 11 min through congestion.', 'scan', { traffic: true, revealed: allIds }),
-    s('eta', `${maya.name} arrives in ${maya.eta} min though she is farther away. ETA beats raw distance.`, 'pick', {
+    s('eta', 'Idea 2 — Fastest ETA: who arrives soonest on real roads?', null, { traffic: true }),
+    s('eta', 'ML-predicted ETAs — Dimas’ 0.8 km becomes 11 min in traffic.', 'scan', { traffic: true, revealed: allIds }),
+    s('eta', `${maya.name} arrives in ${maya.eta} min though farther — ETA beats distance.`, 'pick', {
       traffic: true,
       revealed: allIds,
       chosenId: maya.id,
     }),
 
     // ── 3. SMART MATCH ──
-    s('smart', 'Idea 3 — Smart Match: score many factors at once. Grab cites 40+ of them.', null, {
+    s('smart', 'Idea 3 — Smart Match: score many factors at once (Grab cites 40+).', null, {
       traffic: true,
       note: 'ETA · rating · heading · vehicle · waiting time',
     }),
-    s('smart', 'Each driver gets one combined score (lower = better) from all the columns.', 'scan', { traffic: true, revealed: allIds }),
-    s('smart', `${sari.name} wins: +1 min ETA, but top rating (★${sari.rating}) and waited ${sari.wait} min. Already a farther driver than Dimas.`, 'pick', {
+    s('smart', 'Each driver gets one combined score — lower is better.', 'scan', { traffic: true, revealed: allIds }),
+    s('smart', `${sari.name} wins: +1 min ETA, but top rating ★${sari.rating}, waited ${sari.wait} min.`, 'pick', {
       traffic: true,
       revealed: allIds,
       chosenId: sari.id,
     }),
 
     // ── 4. GLOBAL BATCH ──
-    s('batch', 'Zoom out — you are not the only rider. Real systems match a whole BATCH at once.', 'ping', {
+    s('batch', 'Zoom out — you are not the only rider. Systems match a whole BATCH.', 'ping', {
       traffic: true,
       revealed: allIds,
       chosenId: sari.id,
       riderB: true,
     }),
-    s('batch', `${maya.name} is even closer to Rider B, so the system sends ${maya.name} → Rider B and ${sari.name} → you. Best total for everyone.`, 'pick', {
+    s('batch', `${maya.name} is closer to Rider B — send ${maya.name} → B and ${sari.name} → you.`, 'pick', {
       traffic: true,
       revealed: allIds,
       riderB: true,
@@ -203,7 +203,7 @@ export function buildSteps(): RideStep[] {
         { driverId: sari.id, to: 'you' },
       ],
     }),
-    s('batch', 'That is the real answer: dispatch solves a global min-cost matching over many riders & 40+ factors — not just your distance.', 'done', {
+    s('batch', 'Dispatch: a global min-cost match over many riders, not just you.', 'done', {
       traffic: true,
       revealed: allIds,
       riderB: true,
