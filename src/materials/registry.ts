@@ -27,6 +27,9 @@ import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
 import RideMatchingMaterial from './algorithms/ride-matching/RideMatchingMaterial'
+import ClaudeCodeMaterial from './claude-code/tour/ClaudeCodeMaterial'
+import VibeCodingMaterial from './vibe-coding/tour/VibeCodingMaterial'
+import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -60,6 +63,51 @@ export interface Course {
 }
 
 export const COURSES: Course[] = [
+  {
+    id: 'claude-code',
+    code: 'AI',
+    name: 'Claude Code',
+    accent: '#D97757',
+    materials: [
+      {
+        id: 'tour',
+        title: 'Claude Code',
+        subtitle: 'AI · a comprehensive tour — the agentic loop, tools, context, customization, models & security',
+        status: 'ready',
+        component: ClaudeCodeMaterial,
+      },
+    ],
+  },
+  {
+    id: 'vibe-coding',
+    code: 'AI',
+    name: 'Vibe Coding',
+    accent: '#A78BFA',
+    materials: [
+      {
+        id: 'tour',
+        title: 'Vibe Coding',
+        subtitle: 'AI · the full workflow — mindset, plan, prompt, context, debug, git, test & security',
+        status: 'ready',
+        component: VibeCodingMaterial,
+      },
+    ],
+  },
+  {
+    id: 'openclaw',
+    code: 'AI',
+    name: 'OpenClaw',
+    accent: '#34D399',
+    materials: [
+      {
+        id: 'tour',
+        title: 'OpenClaw',
+        subtitle: 'AI · self-hosted agent in your chats — architecture, hosting, channels, memory, proactive core & security',
+        status: 'ready',
+        component: OpenClawMaterial,
+      },
+    ],
+  },
   {
     id: 'data-structure',
     code: 'MK',

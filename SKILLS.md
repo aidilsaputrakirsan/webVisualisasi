@@ -117,6 +117,18 @@ Edge pohon pakai `EDGE.idle/done/active`. **Tidak ada glow neon** — gunakan
 **bayangan halus** (sudah ada di `theme.ts` tiap state). Chrome berbasis class
 (Controls, menu, status) pakai utility Tailwind `stone-*` (netral) + `amber-*` (aksen).
 
+### Ikon — JANGAN pakai emoji
+- **Tidak boleh ada emoji** di konten apa pun (kartu, node, status, judul). Emoji
+  bikin hasil terasa "template AI" dan tampil beda-beda antar OS/recording. Pakai
+  **ikon garis (line-icon) SVG profesional** dengan `stroke="currentColor"` supaya
+  warnanya ikut parent. Set lebar/tinggi dalam **px tetap** seperti konten lain.
+- Pakai ikon di [`src/shared/Icons.tsx`](src/shared/Icons.tsx) (Lucide-style). Kalau
+  butuh ikon spesifik materi, buat file `Icons.tsx` di folder materi itu dan ekspor
+  satu komponen `CCIcon`/`XxxIcon` yang me-render path SVG — lihat contoh di
+  `materials/claude-code/tour/Icons.tsx`.
+- Simbol tipografi yang sudah dipakai di seluruh proyek (`→`, `↻`, `✓`, `·`) **boleh**
+  — itu bukan emoji. Yang dilarang adalah piktograf berwarna (😀🔌🚀📄 dst).
+
 ### Animasi
 - Spring halus untuk geser posisi: `{ type: 'spring', stiffness: 300, damping: 30 }`.
 - Elemen yang berpindah posisi pakai prop **`layout`** + key = id stabil.
