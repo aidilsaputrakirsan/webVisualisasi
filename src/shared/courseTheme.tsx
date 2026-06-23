@@ -113,12 +113,30 @@ export const OPENCLAW: CourseTheme = {
   accentText: '#86EFAC',
 }
 
+/**
+ * Palm Research (GRS) → a light "field notebook" departure: a warm leaf-green
+ * paper with an olive-leaf accent, evoking plantation foliage. Stays on the
+ * light Editorial base and reuses the shared CodeBlock.
+ */
+export const SAWIT: CourseTheme = {
+  paper: '#F4F6EE',
+  stageBg:
+    'radial-gradient(70% 55% at 50% 22%, rgba(79,138,47,0.06), transparent 70%), radial-gradient(55% 45% at 78% 85%, rgba(60,110,34,0.05), transparent 70%), #F4F6EE',
+  letterbox: '#E7ECDD',
+  ink: '#22291A',
+  accent: '#4F8A2F',
+  accentDeep: '#3C6E22',
+  accentSoft: '#E5F3D6',
+  accentText: '#3C6E22',
+}
+
 const THEMES: Record<string, CourseTheme> = {
   'cloud-computing': CLOUD,
   algorithms: ALGO,
   'claude-code': CLAUDE,
   'vibe-coding': VIBE,
   openclaw: OPENCLAW,
+  research: SAWIT,
 }
 
 const Ctx = createContext<CourseTheme>(EDITORIAL)

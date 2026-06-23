@@ -27,6 +27,7 @@ import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
 import RideMatchingMaterial from './algorithms/ride-matching/RideMatchingMaterial'
+import BSmartIpmMaterial from './research/b-smart-ipm/BSmartIpmMaterial'
 import ClaudeCodeMaterial from './claude-code/tour/ClaudeCodeMaterial'
 import VibeCodingMaterial from './vibe-coding/tour/VibeCodingMaterial'
 import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
@@ -63,6 +64,21 @@ export interface Course {
 }
 
 export const COURSES: Course[] = [
+  {
+    id: 'research',
+    code: 'GRS',
+    name: 'Riset Sawit',
+    accent: '#4F8A2F',
+    materials: [
+      {
+        id: 'b-smart-ipm',
+        title: 'B-SMART IPM',
+        subtitle: 'IoT · loop edge deteksi–putuskan–tindak untuk hama sawit tanpa kimia',
+        status: 'ready',
+        component: BSmartIpmMaterial,
+      },
+    ],
+  },
   {
     id: 'claude-code',
     code: 'AI',

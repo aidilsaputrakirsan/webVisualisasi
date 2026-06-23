@@ -141,3 +141,41 @@ export function playEnqueue(value: number) {
 export function playDequeue(value: number) {
   playNote(pitchFor(value) / 2, { type: 'square', duration: 0.1, gain: 0.12 })
 }
+
+// ── Cues for the B-SMART IPM material (synthesized, no asset files) ──────────
+
+/** Short low-pass noise burst — a rain "patter" for the weather-gate cue. */
+export function playRain() {
+  if (!ctx || !master) return
+  const t = ctx.currentTime
+  const dur = 0.5
+  const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.6
+  const src = ctx.createBufferSource()
+  src.buffer = buffer
+  const lp = ctx.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.frequency.value = 1700
+  const env = ctx.createGain()
+  env.gain.setValueAtTime(0.0001, t)
+  env.gain.exponentialRampToValueAtTime(0.16, t + 0.05)
+  env.gain.exponentialRampToValueAtTime(0.0001, t + dur)
+  src.connect(lp)
+  lp.connect(env)
+  env.connect(master)
+  src.start(t)
+  src.stop(t + dur)
+}
+
+/** Buzzy electric pulse — the UV/blue phototactic trap switching on. */
+export function playTrap() {
+  playNote(180, { type: 'sawtooth', duration: 0.18, gain: 0.15 })
+  playNote(362, { type: 'square', duration: 0.12, gain: 0.05 })
+}
+
+/** Wavering two-tone "whoop" — stands in for the predator-call deterrent. */
+export function playDeter() {
+  playGlide(900, 520, { type: 'sawtooth', duration: 0.18, gain: 0.15 })
+  setTimeout(() => playGlide(760, 430, { type: 'sawtooth', duration: 0.2, gain: 0.13 }), 130)
+}
