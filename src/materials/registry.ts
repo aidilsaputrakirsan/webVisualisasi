@@ -28,6 +28,9 @@ import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
 import RideMatchingMaterial from './algorithms/ride-matching/RideMatchingMaterial'
 import BSmartIpmMaterial from './research/b-smart-ipm/BSmartIpmMaterial'
+import HashingMaterial from './blockchain/hashing/HashingMaterial'
+import ChainMaterial from './blockchain/block-chain/ChainMaterial'
+import ImmutabilityMaterial from './blockchain/immutability/ImmutabilityMaterial'
 import ClaudeCodeMaterial from './claude-code/tour/ClaudeCodeMaterial'
 import VibeCodingMaterial from './vibe-coding/tour/VibeCodingMaterial'
 import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
@@ -121,6 +124,53 @@ export const COURSES: Course[] = [
         subtitle: 'AI · self-hosted agent in your chats — architecture, hosting, channels, memory, proactive core & security',
         status: 'ready',
         component: OpenClawMaterial,
+      },
+    ],
+  },
+  {
+    id: 'blockchain',
+    code: 'MK',
+    name: 'Blockchain',
+    accent: '#2563EB',
+    materials: [
+      {
+        id: 'hashing',
+        title: 'Hashing Blockchain',
+        subtitle: 'Kripto · SHA-256 — selalu sama, ukuran tetap, efek longsor & satu arah',
+        status: 'ready',
+        component: HashingMaterial,
+      },
+      {
+        id: 'block-chain',
+        title: 'Struktur Blockchain',
+        subtitle: 'Blok disambung pakai hash · genesis → rantai terkunci (anti-palsu)',
+        status: 'ready',
+        component: ChainMaterial,
+      },
+      {
+        id: 'immutability',
+        title: 'Blockchain Anti-Ubah',
+        subtitle: 'Ubah satu blok lama → semua hash sesudahnya ikut rusak',
+        status: 'ready',
+        component: ImmutabilityMaterial,
+      },
+      {
+        id: 'proof-of-work',
+        title: 'Proof of Work',
+        subtitle: 'Mining · cari nonce agar hash punya N angka nol di depan',
+        status: 'soon',
+      },
+      {
+        id: 'merkle-tree',
+        title: 'Merkle Tree',
+        subtitle: 'Hash transaksi naik sampai satu Merkle root + bukti',
+        status: 'soon',
+      },
+      {
+        id: 'digital-signature',
+        title: 'Tanda Tangan Digital',
+        subtitle: 'Tanda tangan pakai kunci privat, verifikasi pakai kunci publik',
+        status: 'soon',
       },
     ],
   },

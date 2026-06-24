@@ -130,6 +130,23 @@ export const SAWIT: CourseTheme = {
   accentText: '#3C6E22',
 }
 
+/**
+ * Blockchain → a light "ledger" departure: a cool steel-paper canvas with a
+ * cobalt accent, distinct from Cloud's violet and Algorithms' teal. Stays on the
+ * light Editorial base and reuses the shared CodeBlock.
+ */
+export const BLOCKCHAIN: CourseTheme = {
+  paper: '#EEF2F9',
+  stageBg:
+    'radial-gradient(70% 55% at 50% 22%, rgba(37,99,235,0.07), transparent 70%), radial-gradient(55% 45% at 78% 85%, rgba(29,78,216,0.05), transparent 70%), #EEF2F9',
+  letterbox: '#E0E6F1',
+  ink: '#16213A',
+  accent: '#2563EB',
+  accentDeep: '#1D4ED8',
+  accentSoft: '#DBEAFE',
+  accentText: '#1E40AF',
+}
+
 const THEMES: Record<string, CourseTheme> = {
   'cloud-computing': CLOUD,
   algorithms: ALGO,
@@ -137,6 +154,7 @@ const THEMES: Record<string, CourseTheme> = {
   'vibe-coding': VIBE,
   openclaw: OPENCLAW,
   research: SAWIT,
+  blockchain: BLOCKCHAIN,
 }
 
 const Ctx = createContext<CourseTheme>(EDITORIAL)
