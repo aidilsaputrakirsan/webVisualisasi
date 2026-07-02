@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:roadmap.sh)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.espn.com)",
+      "WebFetch(domain:www.cbssports.com)",
+      "WebFetch(domain:www.skysports.com)",
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "Bash(node /tmp/wcbuild2/run.mjs)"
     ]
   }
 }

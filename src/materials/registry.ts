@@ -27,6 +27,7 @@ import CoinChangeMaterial from './algorithms/coin-change/CoinChangeMaterial'
 import GuessNumberMaterial from './algorithms/guess-number/GuessNumberMaterial'
 import SlidingWindowMaterial from './algorithms/sliding-window/SlidingWindowMaterial'
 import RideMatchingMaterial from './algorithms/ride-matching/RideMatchingMaterial'
+import WorldCupPredictorMaterial from './algorithms/world-cup-predictor/WorldCupPredictorMaterial'
 import BSmartIpmMaterial from './research/b-smart-ipm/BSmartIpmMaterial'
 import HashingMaterial from './blockchain/hashing/HashingMaterial'
 import ChainMaterial from './blockchain/block-chain/ChainMaterial'
@@ -285,6 +286,13 @@ export const COURSES: Course[] = [
         subtitle: 'Dispatch · why apps don’t always pick the nearest driver (ETA, factors & batch matching)',
         status: 'ready',
         component: RideMatchingMaterial,
+      },
+      {
+        id: 'world-cup-predictor',
+        title: 'World Cup Predictor',
+        subtitle: 'Simulation · Monte Carlo bracket — thousands of tournaments to estimate the champion',
+        status: 'ready',
+        component: WorldCupPredictorMaterial,
       },
     ],
   },
