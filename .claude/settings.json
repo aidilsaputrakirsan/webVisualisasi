@@ -9,7 +9,9 @@
       "WebFetch(domain:www.skysports.com)",
       "Bash(npm run *)",
       "Bash(npx tsc *)",
-      "Bash(node /tmp/wcbuild2/run.mjs)"
+      "Bash(node /tmp/wcbuild2/run.mjs)",
+      "Bash(rm -rf /tmp/wc3)",
+      "Bash(node /tmp/wc3/run.mjs)"
     ]
   }
 }

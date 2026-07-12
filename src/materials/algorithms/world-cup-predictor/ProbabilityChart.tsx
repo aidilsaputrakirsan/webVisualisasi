@@ -2,12 +2,11 @@ import { motion } from 'framer-motion'
 import { theme, NODE } from '../../../shared/theme'
 import { formatPct, type Team } from './worldCup'
 
-const BAR_MAX = 440
-const TOP_N = 8
+const BAR_MAX = 460
+const TOP_N = 4
 
-/** Top contenders ranked by current championship probability — bars grow and
- *  rows reorder (via `layout`) as the trial count climbs and the estimate
- *  settles. Only the leaders are shown; eliminated teams sit at 0%. */
+/** Tim diurutkan menurut peluang juara saat ini — bar tumbuh dan baris
+ *  berpindah (via `layout`) seiring jumlah simulasi naik dan angkanya stabil. */
 export default function ProbabilityChart({
   teams,
   probabilities,
@@ -32,16 +31,16 @@ export default function ProbabilityChart({
         padding: '18px 24px',
       }}
     >
-      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-        <span className="font-mono" style={{ fontSize: 19, letterSpacing: '0.06em', color: theme.inkFaint }}>
-          TOP {TOP_N} CHAMPIONSHIP PROBABILITY
+      <div className="flex items-center justify-between" style={{ marginBottom: 16 }}>
+        <span className="font-mono" style={{ fontSize: 21, letterSpacing: '0.06em', color: theme.inkFaint }}>
+          PELUANG JADI JUARA
         </span>
-        <span className="font-mono" style={{ fontSize: 19, color: theme.inkFaint }}>
-          {trialCount.toLocaleString('en-US')} trials
+        <span className="font-mono" style={{ fontSize: 21, color: theme.inkFaint }}>
+          {trialCount.toLocaleString('id-ID')} simulasi
         </span>
       </div>
 
-      <div className="flex flex-col" style={{ gap: 11 }}>
+      <div className="flex flex-col" style={{ gap: 13 }}>
         {ranked.map((t, i) => {
           const p = probabilities[t.id]
           const isFav = championId === t.id
@@ -51,19 +50,19 @@ export default function ProbabilityChart({
               layout
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               className="flex items-center"
-              style={{ gap: 12 }}
+              style={{ gap: 14 }}
             >
-              <span className="font-mono" style={{ width: 24, fontSize: 18, color: theme.inkFaint, textAlign: 'right' }}>
+              <span className="font-mono" style={{ width: 26, fontSize: 20, color: theme.inkFaint, textAlign: 'right' }}>
                 {i + 1}
               </span>
-              <span style={{ width: 12, height: 12, borderRadius: 999, background: t.color, flexShrink: 0 }} />
+              <span style={{ width: 14, height: 14, borderRadius: 999, background: t.color, flexShrink: 0 }} />
               <span
-                className="truncate font-mono font-semibold"
-                style={{ width: 152, fontSize: 22, color: isFav ? NODE.active.text : theme.ink }}
+                className="truncate font-semibold"
+                style={{ width: 168, fontSize: 26, color: isFav ? NODE.active.text : theme.ink }}
               >
                 {t.name}
               </span>
-              <div className="relative overflow-hidden rounded-full" style={{ width: BAR_MAX, height: 20, background: theme.paperDeep }}>
+              <div className="relative overflow-hidden rounded-full" style={{ width: BAR_MAX, height: 22, background: theme.paperDeep }}>
                 <motion.div
                   layout
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -73,7 +72,7 @@ export default function ProbabilityChart({
               </div>
               <span
                 className="font-mono font-semibold"
-                style={{ width: 64, fontSize: 21, color: isFav ? NODE.active.text : theme.inkSoft, textAlign: 'right' }}
+                style={{ width: 70, fontSize: 24, color: isFav ? NODE.active.text : theme.inkSoft, textAlign: 'right' }}
               >
                 {formatPct(p)}
               </span>

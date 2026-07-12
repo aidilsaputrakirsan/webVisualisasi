@@ -290,7 +290,7 @@ export const COURSES: Course[] = [
       {
         id: 'world-cup-predictor',
         title: 'World Cup Predictor',
-        subtitle: 'Simulation · Monte Carlo bracket — thousands of tournaments to estimate the champion',
+        subtitle: 'Simulation · Monte Carlo — run the real 2026 semifinals 10,000 times to predict the champion',
         status: 'ready',
         component: WorldCupPredictorMaterial,
       },
