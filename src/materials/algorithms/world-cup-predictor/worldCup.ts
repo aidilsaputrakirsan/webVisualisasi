@@ -45,7 +45,7 @@ const SF_PAIRS: [string, string][] = [
 ]
 
 const TRIALS = 10000
-const CHECKPOINTS = [1, 150, 600, 2500, TRIALS]
+const CHECKPOINTS = [1, 20, 150, 600, 1500, 4000, TRIALS]
 const RATING_SCALE = 20
 
 export const SIM_COUNT = TRIALS
@@ -172,6 +172,24 @@ export function buildSteps(): PredictorStep[] {
     sound: 'reveal',
   })
 
+  // ── Terjemahkan rating jadi peluang menang tiap laga (rumus Elo) ──
+  const pFRA = winProbability(TEAM_MAP.FRA, TEAM_MAP.ESP)
+  const pARG = winProbability(TEAM_MAP.ARG, TEAM_MAP.ENG)
+  push({
+    stage: 'method',
+    status: `Semifinal 1 — Prancis (91) vs Spanyol (90): selisih rating tipis, jadi hampir imbang, ${formatPct(pFRA)} vs ${formatPct(1 - pFRA)}.`,
+    line: 3,
+    showProb: true,
+    sound: 'reveal',
+  })
+  push({
+    stage: 'method',
+    status: `Semifinal 2 — Argentina (92) vs Inggris (89): rating lebih tinggi berarti peluang lebih besar, ${formatPct(pARG)} vs ${formatPct(1 - pARG)}.`,
+    line: 4,
+    showProb: true,
+    sound: 'reveal',
+  })
+
   // ── Monte Carlo: mainkan 3 laga sisa 10.000 kali ──
   const counts: Record<string, number> = Object.fromEntries(TEAMS.map((t) => [t.id, 0]))
   let ci = 0
@@ -197,16 +215,48 @@ export function buildSteps(): PredictorStep[] {
   const final = steps[steps.length - 1].probabilities!
   const favorite = [...TEAMS].sort((x, y) => final[y.id] - final[x.id])[0]
 
-  // ── Jalur prediksi (pemenang paling mungkin tiap laga) untuk bagan ──
+  // ── Hukum Bilangan Besar: kenapa angkanya bisa dipercaya ──
+  push({
+    stage: 'montecarlo',
+    status: 'Makin banyak simulasi, peluangnya makin menstabil dan berhenti berubah — inilah Hukum Bilangan Besar.',
+    line: 7,
+    showProb: true,
+    trialCount: TRIALS,
+    probabilities: final,
+    sound: 'tally',
+  })
+
+  // ── Jalur prediksi dibangun bertahap (pemenang paling mungkin tiap laga) ──
   const sf0 = get('sf-0')
   const sf1 = get('sf-1')
   const finalM = get('final')
   const w0 = likelier(TEAM_MAP[sf0.teamAId!], TEAM_MAP[sf0.teamBId!])
   const w1 = likelier(TEAM_MAP[sf1.teamAId!], TEAM_MAP[sf1.teamBId!])
+
   sf0.winnerId = w0.id
+  push({
+    stage: 'result',
+    status: `Menyusun jalur paling mungkin — di semifinal 1, ${w0.name} yang paling sering lolos.`,
+    line: 3,
+    showProb: true,
+    trialCount: TRIALS,
+    probabilities: final,
+    sound: 'advance',
+  })
+
   sf1.winnerId = w1.id
   finalM.teamAId = w0.id
   finalM.teamBId = w1.id
+  push({
+    stage: 'result',
+    status: `Di semifinal 2, ${w1.name} yang paling sering lolos — mereka bertemu di final.`,
+    line: 4,
+    showProb: true,
+    trialCount: TRIALS,
+    probabilities: final,
+    sound: 'advance',
+  })
+
   finalM.winnerId = likelier(w0, w1).id
 
   push({
