@@ -34,6 +34,10 @@ import ChainMaterial from './blockchain/block-chain/ChainMaterial'
 import ImmutabilityMaterial from './blockchain/immutability/ImmutabilityMaterial'
 import ClaudeCodeMaterial from './claude-code/tour/ClaudeCodeMaterial'
 import VibeCodingMaterial from './vibe-coding/tour/VibeCodingMaterial'
+import InstallationMaterial from './laravel/installation-setup/InstallationMaterial'
+import RequestLifecycleMaterial from './laravel/request-lifecycle/RequestLifecycleMaterial'
+import RoutingMiddlewareMaterial from './laravel/routing-middleware/RoutingMiddlewareMaterial'
+import MvcFlowMaterial from './laravel/mvc-flow/MvcFlowMaterial'
 import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
 
 /**
@@ -125,6 +129,90 @@ export const COURSES: Course[] = [
         subtitle: 'AI · self-hosted agent in your chats — architecture, hosting, channels, memory, proactive core & security',
         status: 'ready',
         component: OpenClawMaterial,
+      },
+    ],
+  },
+  {
+    id: 'laravel',
+    code: 'MK',
+    name: 'Laravel 12',
+    accent: '#F53003',
+    materials: [
+      {
+        id: 'installation-setup',
+        title: 'Install Laravel 12',
+        subtitle: 'Setup · installer, scaffold, project tree & the three dev processes',
+        status: 'ready',
+        component: InstallationMaterial,
+      },
+      {
+        id: 'request-lifecycle',
+        title: 'Request Lifecycle',
+        subtitle: 'Core · entry point, kernel, middleware onion & the trip back out',
+        status: 'ready',
+        component: RequestLifecycleMaterial,
+      },
+      {
+        id: 'routing-middleware',
+        title: 'Routing & Middleware',
+        subtitle: 'Basics · route matching, model binding & a middleware that short-circuits',
+        status: 'ready',
+        component: RoutingMiddlewareMaterial,
+      },
+      {
+        id: 'mvc-flow',
+        title: 'MVC in One Request',
+        subtitle: 'Basics · route, controller, model, database & Blade view end to end',
+        status: 'ready',
+        component: MvcFlowMaterial,
+      },
+      {
+        id: 'blade-rendering',
+        title: 'Blade Rendering',
+        subtitle: 'Basics · templates, directives, components & compiled PHP',
+        status: 'soon',
+      },
+      {
+        id: 'validation-flow',
+        title: 'Validation',
+        subtitle: 'Basics · form requests, rules, error bags & old input',
+        status: 'soon',
+      },
+      {
+        id: 'service-container',
+        title: 'Service Container',
+        subtitle: 'Architecture · binding, resolving & automatic dependency injection',
+        status: 'soon',
+      },
+      {
+        id: 'artisan-cli',
+        title: 'Artisan CLI',
+        subtitle: 'Tooling · make, migrate, tinker & route:list',
+        status: 'soon',
+      },
+      {
+        id: 'migration-schema',
+        title: 'Migrations',
+        subtitle: 'Database · up, down, rollback & schema as code',
+        status: 'soon',
+      },
+      {
+        id: 'eloquent-crud',
+        title: 'Eloquent CRUD',
+        subtitle: 'Eloquent · model to row, and the SQL it really runs',
+        status: 'soon',
+      },
+      {
+        id: 'eloquent-relationships',
+        title: 'Relationships',
+        subtitle: 'Eloquent · hasMany, belongsTo & the pivot table',
+        status: 'soon',
+      },
+      {
+        id: 'n-plus-1',
+        title: 'N+1 & Eager Loading',
+        subtitle: 'Eloquent · 23 queries down to 2 with one with() call',
+        status: 'soon',
       },
     ],
   },

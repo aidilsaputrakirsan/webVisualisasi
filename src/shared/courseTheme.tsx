@@ -147,6 +147,23 @@ export const BLOCKCHAIN: CourseTheme = {
   accentText: '#1E40AF',
 }
 
+/**
+ * Laravel → a light "artisan" departure: warm off-white paper tinted red with
+ * Laravel's signature flame-red accent, distinct from Editorial's amber. Stays
+ * on the light base and reuses the shared CodeBlock.
+ */
+export const LARAVEL: CourseTheme = {
+  paper: '#FBF6F4',
+  stageBg:
+    'radial-gradient(70% 55% at 50% 22%, rgba(245,48,3,0.07), transparent 70%), radial-gradient(55% 45% at 78% 85%, rgba(185,28,28,0.05), transparent 70%), #FBF6F4',
+  letterbox: '#F3E7E3',
+  ink: '#2A1A17',
+  accent: '#F53003',
+  accentDeep: '#C42502',
+  accentSoft: '#FFE8E3',
+  accentText: '#9A1C05',
+}
+
 const THEMES: Record<string, CourseTheme> = {
   'cloud-computing': CLOUD,
   algorithms: ALGO,
@@ -155,6 +172,7 @@ const THEMES: Record<string, CourseTheme> = {
   openclaw: OPENCLAW,
   research: SAWIT,
   blockchain: BLOCKCHAIN,
+  laravel: LARAVEL,
 }
 
 const Ctx = createContext<CourseTheme>(EDITORIAL)
