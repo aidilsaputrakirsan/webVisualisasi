@@ -111,6 +111,108 @@ const PATHS = {
       <path d="M12 7v5l3.5 2" />
     </>
   ),
+  qr: (
+    <>
+      <rect x="3.5" y="3.5" width="6" height="6" rx="1" />
+      <rect x="14.5" y="3.5" width="6" height="6" rx="1" />
+      <rect x="3.5" y="14.5" width="6" height="6" rx="1" />
+      <path d="M14.5 14.5h2.5v2.5M20.5 14.5v6h-3.5M14.5 20.5h.01" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="5" y="10.5" width="14" height="10" rx="2" />
+      <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+    </>
+  ),
+  wallet: (
+    <>
+      <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v3" />
+      <rect x="4" y="8" width="16" height="11" rx="2" />
+      <circle cx="16" cy="13.5" r="1.3" />
+    </>
+  ),
+  hub: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <circle cx="4.5" cy="5" r="1.8" />
+      <circle cx="19.5" cy="5" r="1.8" />
+      <circle cx="4.5" cy="19" r="1.8" />
+      <circle cx="19.5" cy="19" r="1.8" />
+      <path d="m6 6.3 3.8 3.6M18 6.3l-3.8 3.6M6 17.7l3.8-3.6M18 17.7l-3.8-3.6" />
+    </>
+  ),
+  bank: (
+    <>
+      <path d="M3 9.5 12 4l9 5.5z" />
+      <path d="M5.5 10v7M10 10v7M14 10v7M18.5 10v7M3.5 20h17" />
+    </>
+  ),
+  chat: (
+    <>
+      <path d="M4 5.5h16v10H9l-5 4z" />
+      <path d="M8 10h8" />
+    </>
+  ),
+  grid: (
+    <>
+      <path d="M5 4v16M9.5 4v16M14 4v16M18.5 4v16" />
+      <path d="M3 8.5h5M7.5 13h4M12 6h4.5M16.5 16h4" />
+    </>
+  ),
+  link: (
+    <>
+      <circle cx="5" cy="17" r="2" />
+      <circle cx="19" cy="17" r="2" />
+      <path d="M5 15c0-9 14-9 14 0" />
+    </>
+  ),
+  bars: (
+    <>
+      <path d="M5 20V10M10 20V4M15 20v-7M20 20v-4M3 20h18" />
+    </>
+  ),
+  loop: (
+    <>
+      <path d="M17 3l3 3-3 3" />
+      <path d="M20 6H9a5 5 0 0 0 0 10h1" />
+      <path d="M7 21l-3-3 3-3" />
+      <path d="M4 18h11a5 5 0 0 0 0-10h-1" />
+    </>
+  ),
+  fingerprint: (
+    <>
+      <path d="M7 11a5 5 0 0 1 10 0v2" />
+      <path d="M12 11v4a6 6 0 0 1-1.5 4" />
+      <path d="M9.5 12.5V15a8 8 0 0 1-1 3.5M14.5 12v3.5a9 9 0 0 1-.8 3.5" />
+      <path d="M4.5 13v-2a7.5 7.5 0 0 1 15 0v3" />
+    </>
+  ),
+  alert: (
+    <>
+      <path d="M12 3.5 21 19.5H3z" />
+      <path d="M12 10v4.5M12 17h.01" />
+    </>
+  ),
+  terminal: (
+    <>
+      <rect x="3" y="4.5" width="18" height="15" rx="2" />
+      <path d="m7 10 3 2.5L7 15M12.5 15.5H17" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M12 3.5 19 6v6c0 4.2-3 7.3-7 8.5-4-1.2-7-4.3-7-8.5V6z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  store: (
+    <>
+      <path d="M4 10v10h16V10" />
+      <path d="M3 10l2-5h14l2 5c0 1.4-1.1 2.5-2.5 2.5S16 11.4 16 10c0 1.4-1.1 2.5-2.5 2.5h-3C9.1 12.5 8 11.4 8 10c0 1.4-1.1 2.5-2.5 2.5S3 11.4 3 10z" />
+      <path d="M10 20v-4h4v4" />
+    </>
+  ),
 }
 
 export type IconName = keyof typeof PATHS

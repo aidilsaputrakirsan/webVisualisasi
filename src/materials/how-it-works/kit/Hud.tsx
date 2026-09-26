@@ -19,11 +19,11 @@ export function PaperFades() {
   )
 }
 
-export function SeriesTag({ episode }: { episode: string }) {
+export function SeriesTag({ episode, series = 'HOW IT WORKS' }: { episode: string; series?: string }) {
   return (
     <div className="flex items-center font-mono" style={{ gap: 14, fontSize: 24, letterSpacing: 4, color: theme.inkSoft }}>
       <span style={{ width: 40, height: 2, background: theme.accent }} />
-      HOW IT WORKS · EP. {episode}
+      {series} · EP. {episode}
       <span style={{ width: 40, height: 2, background: theme.accent }} />
     </div>
   )

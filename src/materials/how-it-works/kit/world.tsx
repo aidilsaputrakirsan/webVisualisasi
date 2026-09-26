@@ -266,6 +266,33 @@ export function Tag({
   )
 }
 
+/** A canvas texture drawn with the 2D API; redrawn when `key` changes (and once fonts load). */
+export function useDrawnTexture(w: number, h: number, draw: (g: CanvasRenderingContext2D) => void, key: string = '') {
+  const texture = useMemo(() => {
+    const c = document.createElement('canvas')
+    c.width = w
+    c.height = h
+    const t = new THREE.CanvasTexture(c)
+    t.colorSpace = THREE.SRGBColorSpace
+    t.anisotropy = 8
+    return t
+  }, [w, h])
+  const drawRef = useRef(draw)
+  drawRef.current = draw
+  useEffect(() => {
+    const paint = () => {
+      const g = (texture.image as HTMLCanvasElement).getContext('2d')
+      if (!g) return
+      g.clearRect(0, 0, w, h)
+      drawRef.current(g)
+      texture.needsUpdate = true
+    }
+    paint()
+    void document.fonts?.ready.then(paint)
+  }, [texture, key, w, h])
+  return texture
+}
+
 // ── Phones ──────────────────────────────────────────────────────────────────
 
 export const PHONE_W = 1.05

@@ -46,4 +46,7 @@ export const WORLD = {
   sat2: NODE.info.border,
   sat3: NODE.done.border,
   sat4: '#7C3AED',
+  /** Warung (QRIS episode). */
+  wood: '#B98B5E',
+  woodDark: '#8E6641',
 } as const

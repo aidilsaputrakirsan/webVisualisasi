@@ -42,6 +42,10 @@ import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
 import HitSendMaterial from './how-it-works/hit-send/HitSendMaterial'
 import NoBufferMaterial from './how-it-works/no-buffer/NoBufferMaterial'
 import GpsMaterial from './how-it-works/gps/GpsMaterial'
+import QrisMaterial from './how-it-works/qris/QrisMaterial'
+import LlmMaterial from './how-it-works/llm/LlmMaterial'
+import PasswordMaterial from './how-it-works/password/PasswordMaterial'
+import SortingRaceMaterial from './race/sorting/SortingRaceMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -76,6 +80,21 @@ export interface Course {
 
 export const COURSES: Course[] = [
   {
+    id: 'race',
+    code: 'RACE',
+    name: 'Algorithm Race',
+    accent: '#B45309',
+    materials: [
+      {
+        id: 'sorting-race',
+        title: 'Which Sorting Algorithm Wins?',
+        subtitle: 'Short EP. 01 · Merge vs Quick vs Insertion vs Bubble on the same 40 bars',
+        status: 'ready',
+        component: SortingRaceMaterial,
+      },
+    ],
+  },
+  {
     id: 'how-it-works',
     code: '3D',
     name: 'How It Works',
@@ -101,6 +120,27 @@ export const COURSES: Course[] = [
         subtitle: 'Reel EP. 03 · GPS trilateration, the clock problem and relativity',
         status: 'ready',
         component: GpsMaterial,
+      },
+      {
+        id: 'qris',
+        title: 'Kok Bisa Bayar QRIS Cuma 2 Detik?',
+        subtitle: 'Reel EP. 04 (Bahasa Indonesia) · issuer → switching → acquirer, dan plot twist setelmen',
+        status: 'ready',
+        component: QrisMaterial,
+      },
+      {
+        id: 'llm',
+        title: 'How Does ChatGPT Answer You?',
+        subtitle: 'Reel EP. 05 · tokens, attention and one-word-at-a-time guessing',
+        status: 'ready',
+        component: LlmMaterial,
+      },
+      {
+        id: 'password',
+        title: 'How Do Hackers Crack Passwords?',
+        subtitle: 'Reel EP. 06 · hashes, leaks, guessing and why length wins',
+        status: 'ready',
+        component: PasswordMaterial,
       },
     ],
   },
