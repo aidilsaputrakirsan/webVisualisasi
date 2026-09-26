@@ -46,6 +46,7 @@ import QrisMaterial from './how-it-works/qris/QrisMaterial'
 import LlmMaterial from './how-it-works/llm/LlmMaterial'
 import PasswordMaterial from './how-it-works/password/PasswordMaterial'
 import SortingRaceMaterial from './race/sorting/SortingRaceMaterial'
+import ApertureMaterial from './cinematic/aperture/ApertureMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -79,6 +80,21 @@ export interface Course {
 }
 
 export const COURSES: Course[] = [
+  {
+    id: 'cinematic',
+    code: '3D',
+    name: 'Cinematic 3D',
+    accent: '#FFB547',
+    materials: [
+      {
+        id: 'aperture',
+        title: 'Rahasia Kamera Jadul',
+        subtitle: 'Cinematic EP. 01 · diafragma 6 bilah (ƒ/1.48–ƒ/4) — model 3D CC0 Poly Haven, bloom & grain',
+        status: 'ready',
+        component: ApertureMaterial,
+      },
+    ],
+  },
   {
     id: 'race',
     code: 'RACE',
