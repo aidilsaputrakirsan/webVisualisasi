@@ -15,10 +15,13 @@ export const CANVAS_H = 1920
  * Keep playback controls OUTSIDE this component (render as siblings) so the
  * recorded frame stays clean.
  */
-export default function MaterialStage({ children }: { children: ReactNode }) {
+/**
+ * Current fit scale of the 1080×1920 canvas in this window (tracks resizes).
+ * 3D scenes use it to render at the size actually shown on screen instead of
+ * the full design size, which is wasted pixels on a small phone display.
+ */
+export function useStageScale() {
   const [scale, setScale] = useState(1)
-  const theme = useCourseTheme()
-
   useEffect(() => {
     const update = () => {
       const pad = 32 // breathing room around the frame
@@ -32,6 +35,12 @@ export default function MaterialStage({ children }: { children: ReactNode }) {
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
+  return scale
+}
+
+export default function MaterialStage({ children }: { children: ReactNode }) {
+  const scale = useStageScale()
+  const theme = useCourseTheme()
 
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden" style={{ background: theme.letterbox }}>

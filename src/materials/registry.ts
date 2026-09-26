@@ -39,6 +39,9 @@ import RequestLifecycleMaterial from './laravel/request-lifecycle/RequestLifecyc
 import RoutingMiddlewareMaterial from './laravel/routing-middleware/RoutingMiddlewareMaterial'
 import MvcFlowMaterial from './laravel/mvc-flow/MvcFlowMaterial'
 import OpenClawMaterial from './openclaw/tour/OpenClawMaterial'
+import HitSendMaterial from './how-it-works/hit-send/HitSendMaterial'
+import NoBufferMaterial from './how-it-works/no-buffer/NoBufferMaterial'
+import GpsMaterial from './how-it-works/gps/GpsMaterial'
 
 /**
  * Catalog of all teaching materials, grouped by course (mata kuliah / MK).
@@ -72,6 +75,35 @@ export interface Course {
 }
 
 export const COURSES: Course[] = [
+  {
+    id: 'how-it-works',
+    code: '3D',
+    name: 'How It Works',
+    accent: '#D97706',
+    materials: [
+      {
+        id: 'hit-send',
+        title: 'What Happens When You Hit Send?',
+        subtitle: 'Reel EP. 01 · 3D journey of a chat message — tower, undersea cable, server, queue',
+        status: 'ready',
+        component: HitSendMaterial,
+      },
+      {
+        id: 'no-buffer',
+        title: 'Why Doesn’t Your Movie Buffer?',
+        subtitle: 'Reel EP. 02 · CDN edge servers + chunked adaptive streaming',
+        status: 'ready',
+        component: NoBufferMaterial,
+      },
+      {
+        id: 'gps',
+        title: 'How Does Your Phone Know Where You Are?',
+        subtitle: 'Reel EP. 03 · GPS trilateration, the clock problem and relativity',
+        status: 'ready',
+        component: GpsMaterial,
+      },
+    ],
+  },
   {
     id: 'research',
     code: 'GRS',
